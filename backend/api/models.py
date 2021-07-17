@@ -11,7 +11,7 @@ class TimeSlot(models.Model):
     """
     time (int): Number of 15 minute periods passed since epoch 
     """
-    time = models.IntegerField()
+    time_slot = models.IntegerField()
 
 class Availability(models.Model):
     meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE, related_name="availability")

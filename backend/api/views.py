@@ -3,8 +3,8 @@ from django.shortcuts import render
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import MeetingSerializer
-from .models import Meeting
+from .serializers import MeetingSerializer, CreateAvailabilitySerializer, GetAvailabilitySerializer
+from .models import Meeting, TimeSlot
 
 class CreateMeeting(APIView):
     def post(self, request):
@@ -23,26 +23,34 @@ class GetMeeting(APIView):
         # get meeting from db if it exists
         try:
             meeting = Meeting.objects.get(meeting_id=meeting_id)
-            serializer = MeetingSerializer(meeting)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except Exception as e:
-            print(str(e))
-            return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
+            serializer = MeetingSerializer(meeting, data={"title": meeting.title, "availabilities": list(meeting.availability.all())})
+            if serializer.is_valid():
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except meeting.DoesNotExist:
+            return Response({'error': 'Meeting does not exist'}, status=status.HTTP_404_NOT_FOUND)
             
 
 class SubmitAvailability(APIView):
     def post(self, request, *args, **kwargs):
         meeting_id = kwargs['id']
+        try:
+            meeting = Meeting.objects.get(meeting_id=meeting_id)
+        except Meeting.DoesNotExist:
+            return Response({'error': 'Meeting does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
         data = request.data
         """
         data = {
             "name": "John Doe",
-            "slots: [1, 2, 3, 4, 5]
+            "slots": [1, 2, 3, 4, 5]
             }
         """
-        serializer = AvailabilitySerializer(meeting_id=meeting_id, data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        write_serializer = CreateAvailabilitySerializer(data=data)
+        if write_serializer.is_valid():
+            instance = write_serializer.save(meeting=meeting) 
+            read_serializer = GetAvailabilitySerializer(instance)
+            return Response(read_serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
