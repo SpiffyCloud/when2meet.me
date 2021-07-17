@@ -1,0 +1,38 @@
+version: '3.7'
+
+services:
+  django:
+    container_name: django-app
+    build:
+      context: ./
+      dockerfile: ./compose/local/django/Dockerfile
+    command: /start.sh
+    volumes:
+      - .:/app
+    ports:
+      - 8000:8000
+    environment:
+      - SQL_DATABASE=djangotemplate
+      - SQL_USER=djangotemplate
+      - SQL_PASSWORD=djangotemplate
+      - SQL_HOST=postgres
+      - SQL_PORT=5432
+    depends_on:
+      - postgres
+      - mailhog
+
+  postgres:
+    image: postgres:12.3-alpine
+    container_name: django-db
+    environment:
+      - POSTGRES_USER=djangotemplate
+      - POSTGRES_PASSWORD=djangotemplate
+      - POSTGRES_DB=djangotemplate
+
+  mailhog:
+    image: mailhog/mailhog:v1.0.0
+    container_name: django-mailhog
+    ports:
+      - 8025:8025
+
+# 2021.07.16-DEA
