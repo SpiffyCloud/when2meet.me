@@ -33,7 +33,7 @@ ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS += [
     "core",
-    "website",
+    "api",
 ]
 
 # Databases
@@ -69,4 +69,11 @@ LOGOUT_REDIRECT_URL = "website:home_page"
 RECAPTCHA_SECRET_KEY = get_secret("RECAPTCHA_SECRET_KEY")
 RECAPTCHA_SITE_KEY = get_secret("RECAPTCHA_SITE_KEY")
 
+# Rest Framework
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ]
+}
 # 2021.07.16-DEA
