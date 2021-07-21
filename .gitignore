@@ -1,1 +1,19 @@
+# Git Ignores
+
+# Django Files and Data
+secrets.json
+local-secrets.json
+backend/static
+
+# OS Related
+.DS_Store
+
+# Python Related
+__pycache__/
+*.py[cod]
 venv/
+
+# Development
+/.vscode
+
+# 2021.07.16-DEA

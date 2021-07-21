@@ -8,7 +8,7 @@ services:
       dockerfile: ./compose/local/django/Dockerfile
     command: /start.sh
     volumes:
-      - .:/app
+      - ./backend:/app
     ports:
       - 8000:8000
     environment:
