@@ -3,8 +3,8 @@ from django.shortcuts import render
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import MeetingSerializer, CreateAvailabilitySerializer, GetAvailabilitySerializer
-from .models import Meeting, TimeSlot
+from .serializers import MeetingSerializer, AvailabilitySerializer, AvailabilitySerializer
+from .models import Meeting
 
 class CreateMeeting(APIView):
     def post(self, request):
@@ -46,11 +46,11 @@ class SubmitAvailability(APIView):
             "slots": [1, 2, 3, 4, 5]
             }
         """
-        write_serializer = CreateAvailabilitySerializer(data=data)
+        write_serializer = AvailabilitySerializer(data=data)
         if write_serializer.is_valid():
             instance = write_serializer.save(meeting=meeting) 
-            read_serializer = GetAvailabilitySerializer(instance)
+            read_serializer = AvailabilitySerializer(instance)
             return Response(read_serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(write_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

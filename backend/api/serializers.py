@@ -1,41 +1,27 @@
 from rest_framework import serializers
-from .models import Meeting, Availability, TimeSlot
+from .models import Meeting, Availability
 import random
 import string
 import datetime
 
-class TimeSlotSerializer(serializers.Serializer):
-    time_slot = serializers.IntegerField()
-            
-class CreateAvailabilitySerializer(serializers.Serializer):
+class AvailabilitySerializer(serializers.Serializer):
     name = serializers.CharField(required=True, max_length=100)
-    slots = serializers.ListField(child=serializers.IntegerField(), write_only=True)
+    slots = serializers.ListField(child=serializers.IntegerField())
     
     def create(self, validated_data):
         meeting = validated_data.get('meeting')
         time_slots = validated_data.pop('slots')
 
         availability, created = Availability.objects.get_or_create(meeting=meeting, name=validated_data['name'])
-        if not created:  # it exists
-            availability.slots.clear()
-
-        for time_slot in time_slots:
-            slot, _ = TimeSlot.objects.get_or_create(time_slot=time_slot)
-            availability.slots.add(slot)
-
+        availability.slots = time_slots
         availability.save()
         return availability
-
-class GetAvailabilitySerializer(serializers.Serializer):
-    name = serializers.CharField(required=True, max_length=100)
-    slots = TimeSlotSerializer(many=True, required=False)
-
 
 class MeetingSerializer(serializers.Serializer):
     title = serializers.CharField(required=True, max_length=100)
     by_end_date = serializers.DateField(required=False)
     meeting_id = serializers.CharField(required=False, max_length=8)
-    availability = GetAvailabilitySerializer(many=True, required=False)
+    availability = AvailabilitySerializer(many=True, required=False)
 
     def validate_meeting_id(self, meeting_id):
         try:
