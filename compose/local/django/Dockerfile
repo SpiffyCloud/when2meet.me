@@ -19,7 +19,7 @@ RUN apk --update add postgresql-client
 
 # install dependencies
 RUN pip install --upgrade pip
-COPY ./requirements.txt /requirements.txt
+COPY ./backend/requirements.txt /requirements.txt
 RUN pip install -r /requirements.txt
 
 # copy entrypoint.sh
