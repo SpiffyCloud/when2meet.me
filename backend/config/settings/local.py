@@ -41,11 +41,11 @@ INSTALLED_APPS += [
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get('SQL_DATABASE') or "djangotemplate",
-        "USER": os.environ.get('SQL_USER') or get_secret("SQL_USER"),
-        "PASSWORD": os.environ.get('SQL_USER') or get_secret("SQL_PASSWORD"),
-        "HOST": os.environ.get('SQL_HOST') or "postgres",
-        "PORT": os.environ.get('SQL_PORT') or "5432",
+        "NAME": os.environ.get("SQL_DATABASE") or "djangotemplate",
+        "USER": os.environ.get("SQL_USER") or get_secret("SQL_USER"),
+        "PASSWORD": os.environ.get("SQL_USER") or get_secret("SQL_PASSWORD"),
+        "HOST": os.environ.get("SQL_HOST") or "postgres",
+        "PORT": os.environ.get("SQL_PORT") or "5432",
     }
 }
 
@@ -71,9 +71,9 @@ RECAPTCHA_SITE_KEY = get_secret("RECAPTCHA_SITE_KEY")
 
 # Rest Framework
 REST_FRAMEWORK = {
-    'DEFAULT_RENDERER_CLASSES': [
-        'rest_framework.renderers.JSONRenderer',
-        'rest_framework.renderers.BrowsableAPIRenderer',
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
+        "rest_framework.renderers.BrowsableAPIRenderer",
     ]
 }
 # 2021.07.16-DEA

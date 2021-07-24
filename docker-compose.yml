@@ -1,11 +1,11 @@
-version: '3.7'
+version: '3'
 
 services:
   django:
-    container_name: django-app
+    image: local/django:latest
     build:
-      context: ./
-      dockerfile: ./compose/local/django/Dockerfile
+      context: .
+      dockerfile: ./docker/django/Dockerfile
     command: /start.sh
     volumes:
       - ./backend:/app
@@ -28,11 +28,13 @@ services:
       - POSTGRES_USER=djangotemplate
       - POSTGRES_PASSWORD=djangotemplate
       - POSTGRES_DB=djangotemplate
+    logging:
+      driver: none
 
   mailhog:
     image: mailhog/mailhog:v1.0.0
     container_name: django-mailhog
     ports:
       - 8025:8025
-
-# 2021.07.16-DEA
+    logging:
+      driver: none

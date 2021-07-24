@@ -7,13 +7,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0002_delete_timeslot'),
+        ("api", "0002_delete_timeslot"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='availability',
-            name='slots',
-            field=django.contrib.postgres.fields.ArrayField(base_field=models.IntegerField(), default=list, size=None),
+            model_name="availability",
+            name="slots",
+            field=django.contrib.postgres.fields.ArrayField(
+                base_field=models.IntegerField(), default=list, size=None
+            ),
         ),
     ]

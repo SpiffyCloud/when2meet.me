@@ -39,13 +39,13 @@ INSTALLED_APPS += [
 # Databases
 
 DATABASES = {
-    'default': {
+    "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get('SQL_DATABASE') or "djangotemplate",
-        "USER": os.environ.get('SQL_USER') or get_secret("SQL_USER"),
-        "PASSWORD": os.environ.get('SQL_USER') or get_secret("SQL_PASSWORD"),
-        "HOST": os.environ.get('SQL_HOST') or "localhost",
-        "PORT": os.environ.get('SQL_PORT') or "5432",
+        "NAME": os.environ.get("SQL_DATABASE") or "djangotemplate",
+        "USER": os.environ.get("SQL_USER") or get_secret("SQL_USER"),
+        "PASSWORD": os.environ.get("SQL_USER") or get_secret("SQL_PASSWORD"),
+        "HOST": os.environ.get("SQL_HOST") or "localhost",
+        "PORT": os.environ.get("SQL_PORT") or "5432",
     }
 }
 
