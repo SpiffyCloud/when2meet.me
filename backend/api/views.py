@@ -12,7 +12,31 @@ from .models import Meeting, Availability
 
 
 class CreateMeeting(APIView):
+    """/api/v1/meetings"""
+
     def post(self, request):
+        """
+        post data:
+        {
+            "title": "Meeting Title",
+            "by_end_date": "YYYY-MM-DD",
+        }
+
+        *by_end_date is optional*
+
+        return data:
+        {
+            "title": "Meeting Title",
+            "by_end_date": "YYYY-MM-DD",
+            "meeting_id": "integer"
+            "availability": [
+                {
+                    "name": "Name",
+                    "slots": []
+                }
+            ]
+        }
+        """
         data = request.data
         serializer = MeetingSerializer(data=data)
         if serializer.is_valid():
@@ -23,7 +47,23 @@ class CreateMeeting(APIView):
 
 
 class GetMeeting(APIView):
+    """/api/v1/meetings/<meeting_id>"""
+
     def get(self, request, *args, **kwargs):
+        """
+        return data:
+        {
+            "title": "Meeting Title",
+            "by_end_date": "YYYY-MM-DD",
+            "meeting_id": "integer"
+            "availability": [
+                {
+                    "name": "Name",
+                    "slots": []
+                }
+            ]
+        }
+        """
         # get key from url
         meeting_id = kwargs["id"]
         # get meeting from db if it exists
@@ -40,18 +80,28 @@ class GetMeeting(APIView):
 
 class SubmitAvailability(APIView):
     def post(self, request, *args, **kwargs):
+        """
+        post data:
+        {
+            "name": "Name",
+            "slots": [],
+        }
+        *slots are optional*
+        *meeting id comes from url*
+
+        return data:
+        {
+            "name": "Name",
+            "slots": [],
+            "meeting_id": "integer"
+        }
+
+        """
         new_data = {
             "name": request.data["name"],
             "slots": [int(slot) for slot in request.data.getlist("slots", [])],
             "meeting": kwargs["id"],
         }
-        """
-        data = {
-            "name": "John Doe",
-            "slots": [1, 2, 3, 4, 5]
-            "meeting": 00000001
-            }
-        """
         availability = Availability.objects.filter(
             meeting=new_data["meeting"], name=new_data["name"]
         )
