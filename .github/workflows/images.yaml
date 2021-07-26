@@ -3,7 +3,7 @@ name: Publish container images
 on:
   push:
     paths:
-      - "Dockerfile"
+      - docker/**
 
 env:
   REGISTRY: ghcr.io
