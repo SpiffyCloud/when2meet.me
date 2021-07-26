@@ -1,9 +1,5 @@
 FROM python:3.6-alpine
 
-# Environment varibles
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-
 # Install OS dependencies
 RUN apk update \
     && apk add --no-cache --virtual=build-deps gcc python3-dev musl-dev \
@@ -17,16 +13,18 @@ RUN pip install -r /requirements.txt
 # Remove extraneous OS dependencies after Python dependencies are installed
 RUN apk del build-deps
 
-# Add Docker scripts
+# Entrypoint is run on the start of every container
 COPY ./docker/django/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-COPY ./docker/django/start.sh /start.sh
-RUN chmod +x /start.sh
+# Dev is run when specified as the command to run in development by compose
+COPY ./docker/django/dev.sh /dev.sh
+RUN chmod +x /dev.sh
 
-# Disabled 2021.07.24 by Jack (Why do we need this?)
-# Copy project
-# COPY . .
+# Prod is run when specified as the command to run in production by whatever
+# container orchestrator is being used
+COPY ./docker/django/prod.sh /prod.sh
+RUN chmod +x /prod.sh
 
 # Use Tini for proper init
 RUN apk add --no-cache tini

@@ -4,8 +4,9 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-python manage.py makemigrations #  FIXME: is this a good idea?
-python manage.py migrate
-python manage.py runserver 0.0.0.0:8000
+echo "Importing data..."
 
-# 2021.07.16-DEA
+python manage.py makemigrations
+python manage.py migrate
+python manage.py loaddata config/fixtures/*.json
+python manage.py runserver 0.0.0.0:8000

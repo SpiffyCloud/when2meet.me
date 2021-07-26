@@ -17,6 +17,8 @@ services:
       - SQL_PASSWORD=djangotemplate
       - SQL_HOST=postgres
       - SQL_PORT=5432
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
     depends_on:
       - postgres
       - mailhog

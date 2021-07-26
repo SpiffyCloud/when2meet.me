@@ -1,30 +1,23 @@
 #!/bin/sh
 
+# Common behavior run in all environments
+
 set -o errexit
 set -o pipefail
 set -o nounset
 
-echo "Waiting for postgres..."
+echo "Waiting for database..."
 
-while ! nc -z postgres 5432; do
+while ! nc -z "$SQL_HOST" 5432; do
   sleep 0.1
 done
 
-echo "PostgreSQL started"
+echo "Checking for secrets..."
 
-echo "Checking Secrets..."
-
-if [ ! -f local-secrets.json ]; then
-  cp sample-secrets.json local-secrets.json
-  sed -i "s/sample-secrets.json/local-secrets.json/g" local-secrets.json
+if [ ! -f /secrets.json ]; then
+  echo 'Missing local-secrets.json! Aborting...'
+  exit 1
 fi
 
-echo "Importing data..."
-
-python manage.py makemigrations #  FIXME: is this a good idea?
-python manage.py migrate
-python manage.py loaddata config/fixtures/*.json
-
+# Run whatever was passed to us as arguments
 exec "$@"
-
-# 2021.07.16-DEA
