@@ -26,12 +26,12 @@ RUN chmod +x /dev.sh
 COPY ./docker/django/prod.sh /prod.sh
 RUN chmod +x /prod.sh
 
+# Set working directory
+WORKDIR /app
+
 # Use Tini for proper init
 RUN apk add --no-cache tini
 ENTRYPOINT ["/sbin/tini", "--"]
-
-# Set working directory
-WORKDIR /app
 
 # Default entrypoint
 CMD ["/entrypoint.sh"]
