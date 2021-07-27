@@ -5,5 +5,5 @@ A scheduling application
 ## Development Quickstart
 
 ```shell
-docker-compose up
+docker-compose up --build -d
 ```
