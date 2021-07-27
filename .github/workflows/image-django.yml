@@ -7,7 +7,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: cliq/django
+  IMAGE_NAME: cliqteam/django
 
 jobs:
   build-and-push-image:
