@@ -2,10 +2,10 @@ version: "3"
 
 services:
   django:
-    image: cliqteam/django:dev
+    image: cliqteam/when2meet-backend:dev
     build:
       context: .
-      dockerfile: ./docker/django/Dockerfile
+      dockerfile: ./docker/backend/Dockerfile
 
     command: /dev.sh
     depends_on:
@@ -15,14 +15,6 @@ services:
       - ./backend:/app
     ports:
       - 8000:8000
-    environment:
-      - SQL_DATABASE=djangotemplate
-      - SQL_USER=djangotemplate
-      - SQL_PASSWORD=djangotemplate
-      - SQL_HOST=postgres
-      - SQL_PORT=5432
-      - PYTHONDONTWRITEBYTECODE=1
-      - PYTHONUNBUFFERED=1
     env_file:
       - .env
 
@@ -30,7 +22,7 @@ services:
     image: cliqteam/vue:dev
     build:
       context: .
-      dockerfile: ./docker/vue/Dockerfile
+      dockerfile: ./docker/frontend/Dockerfile.dev
 
     tty: true
 

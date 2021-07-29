@@ -14,16 +14,16 @@ RUN pip install -r /requirements.txt
 RUN apk del build-deps
 
 # Entrypoint is run on the start of every container
-COPY ./docker/django/entrypoint.sh /entrypoint.sh
+COPY ./docker/backend/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 # Dev is run when specified as the command to run in development by compose
-COPY ./docker/django/dev.sh /dev.sh
+COPY ./docker/backend/dev.sh /dev.sh
 RUN chmod +x /dev.sh
 
 # Prod is run when specified as the command to run in production by whatever
 # container orchestrator is being used
-COPY ./docker/django/prod.sh /prod.sh
+COPY ./docker/backend/prod.sh /prod.sh
 RUN chmod +x /prod.sh
 
 # Copy files for production builds
