@@ -6,7 +6,11 @@ services:
     build:
       context: .
       dockerfile: ./docker/django/Dockerfile
+
     command: /dev.sh
+    depends_on:
+      - postgres
+
     volumes:
       - ./backend:/app
     ports:
@@ -19,8 +23,8 @@ services:
       - SQL_PORT=5432
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
-    depends_on:
-      - postgres
+    env_file:
+      - .env
 
   vue:
     image: cliqteam/vue:dev
@@ -38,9 +42,11 @@ services:
 
   postgres:
     image: postgres:12.3-alpine
+
+    logging:
+      driver: none
+
     environment:
       - POSTGRES_USER=djangotemplate
       - POSTGRES_PASSWORD=djangotemplate
       - POSTGRES_DB=djangotemplate
-    logging:
-      driver: none
