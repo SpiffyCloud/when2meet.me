@@ -1,4 +1,3 @@
 #!/bin/sh
 
-echo 'No production behavior defined yet! Aborting...'
-exit 1
+gunicorn --bind :8000 --workers 3 config.wsgi

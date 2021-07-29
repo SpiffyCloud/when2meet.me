@@ -26,8 +26,11 @@ RUN chmod +x /dev.sh
 COPY ./docker/django/prod.sh /prod.sh
 RUN chmod +x /prod.sh
 
-# Set working directory
+# Copy files for production builds
+COPY ./backend /app
+
 WORKDIR /app
+EXPOSE 8000
 
 # Use Tini for proper init
 RUN apk add --no-cache tini
