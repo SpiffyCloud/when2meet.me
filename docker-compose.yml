@@ -1,12 +1,12 @@
-version: '3'
+version: "3"
 
 services:
   django:
-    image: local/django:latest
+    image: cliqteam/django:dev
     build:
       context: .
       dockerfile: ./docker/django/Dockerfile
-    command: /start.sh
+    command: /dev.sh
     volumes:
       - ./backend:/app
     ports:
@@ -21,22 +21,26 @@ services:
       - PYTHONUNBUFFERED=1
     depends_on:
       - postgres
-      - mailhog
+
+  vue:
+    image: cliqteam/vue:dev
+    build:
+      context: .
+      dockerfile: ./docker/vue/Dockerfile
+
+    tty: true
+
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - 8080:8080
 
   postgres:
     image: postgres:12.3-alpine
-    container_name: django-db
     environment:
       - POSTGRES_USER=djangotemplate
       - POSTGRES_PASSWORD=djangotemplate
       - POSTGRES_DB=djangotemplate
-    logging:
-      driver: none
-
-  mailhog:
-    image: mailhog/mailhog:v1.0.0
-    container_name: django-mailhog
-    ports:
-      - 8025:8025
     logging:
       driver: none
