@@ -31,6 +31,7 @@ COPY ./backend /app
 
 WORKDIR /app
 EXPOSE 8000
+VOLUME ["/app"]
 
 # Use Tini for proper init
 RUN apk add --no-cache tini
