@@ -1,8 +1,0 @@
-name: dockerized-django
-services:
-  - dockerfile_path: docker/django/Dockerfile
-    github:
-      branch: master
-      deploy_on_push: true
-      repo: cliqteam/when2meet
-    name: dockerized-django
