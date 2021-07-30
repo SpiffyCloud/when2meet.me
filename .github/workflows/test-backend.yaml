@@ -31,8 +31,8 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build docker images
-        run: docker-compose build
+        run: docker-compose build backend
 
       - name: Run tests
         run: |
-          docker-compose run django /test.sh
+          docker-compose run backend /test.sh
