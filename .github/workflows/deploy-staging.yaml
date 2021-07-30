@@ -6,7 +6,6 @@ on:
       - staging
 
 env:
-  STAGING_SERVER: "104.131.35.188"
   COMPOSE_FILE: "/srv/when2meet/compose/docker-compose.yaml"
 
 jobs:
@@ -21,7 +20,7 @@ jobs:
         with:
           command: |
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            docker-compose up -f /srv/when2meet/compose/docker-compose.yaml -d
-          host: ${{ env.STAGING_SERVER }}
+            docker-compose -f /srv/when2meet/compose/docker-compose.yaml up -d
+          host: ${{ secrets.STAGING_SERVER }}
           username: root
           privateKey: ${{ secrets.DEPLOY_KEY_STAGING }}
