@@ -1,6 +1,6 @@
 <template>
     <div class="home">
-        <h1 id="title" class="title">When 2 Meet Me</h1>
+        <p id="title" class="title">When 2 Meet Me</p>
         <div id="meeting-name" class="name-form">
             <label for="name" class="input-label">What's its name?</label>
             <p class="hint">Type the meeting name you want here.</p>
@@ -9,9 +9,16 @@
         <div id="meeting-date" class="date-form">
             <label for="date" class="input-label">When are you meeting?</label>
             <p class="placeholder">This is optional</p>
-            <div id="date-options" class="date-options"></div>
-
         </div>
+        <div id="date-options" class="date-options">
+            <button class="date-option">Today</button>
+            <button class="date-option">Tomorrow</button>
+            <button class="date-option">This week</button>
+            <button class="date-option">Next week</button>
+            <button class="date-option">In the next 2 weeks</button>
+            <button class="date-option">Sometime before X</button>
+        </div>
+
     </div>
 </template>
 
@@ -34,7 +41,6 @@ export default class Home extends Vue {}
 }
 .title {
     font-weight: bold;
-    font-size: 14pt;
     align-self: center;
     margin: 3rem 0;
 }
@@ -52,21 +58,39 @@ export default class Home extends Vue {}
     margin: 2rem 0;
 }
 .input-label {
-    font-size: 12pt;
     font-weight: bold;
 }
 .placeholder {
-    font-size: 12pt;
     opacity:0.4;
     margin: 0.5rem 0;
 }
 
 .name-input {
-    font-size: 14pt;
     line-height: 2;
     border: none;
     width: 100%;
     border-bottom: 2px solid #707070;
+    font-size: 1.25rem;
+}
+
+.date-options {
+    display: flex;
+    flex-direction: row;
+    justify-content:flex-start;
+    flex-wrap: wrap;
+}
+
+.date-option {
+    display: inline-flex;
+    height: 56px;
+    align-items: center;
+    background-color: white;
+    white-space: nowrap;
+    border: 1px solid #707070;
+    font-size: 1.25rem;
+    color: #707070;
+    margin: 0.25rem;
+    padding: 1.5rem;
 }
 
 
