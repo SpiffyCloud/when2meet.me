@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - docker/backend/**
+      - backend/**
 
 env:
   REGISTRY: ghcr.io
