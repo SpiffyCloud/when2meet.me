@@ -32,8 +32,8 @@ jobs:
 
       - name: Run tests
         run: |
-          docker-compose run \
-            --rm \
+          docker-compose up \
+            --exit-code-from backend \
             -e SECRET_KEY=${{ secrets.SECRET_KEY }} \
             -e RECAPTCHA_SECRET_KEY=${{ secrets.RECAPTCHA_SECRET_KEY }} \
             -e RECAPTCHA_SITE_KEY=${{ secrets.RECAPTCHA_SITE_KEY }} \
