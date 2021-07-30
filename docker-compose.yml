@@ -1,8 +1,8 @@
 version: "3"
 
 services:
-  django:
-    image: cliqteam/when2meet-backend:dev
+  backend:
+    image: ghcr.io/cliqteam/when2meet-backend:dev
     build:
       context: .
       dockerfile: ./docker/backend/Dockerfile
@@ -24,8 +24,8 @@ services:
       - SQL_HOST=postgres
       - SQL_PORT=5432
 
-  vue:
-    image: cliqteam/vue:dev
+  frontend:
+    image: ghcr.io/cliqteam/when2meet-frontend:dev
     build:
       context: .
       dockerfile: ./docker/frontend/Dockerfile.dev
