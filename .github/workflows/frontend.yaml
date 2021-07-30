@@ -43,6 +43,8 @@ jobs:
             frontend npm run build
 
   build-and-push-image:
+    needs: [testing]
+
     runs-on: ubuntu-latest
     permissions:
       contents: read
