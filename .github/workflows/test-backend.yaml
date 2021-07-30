@@ -1,0 +1,36 @@
+name: Test backend code
+
+on:
+  push:
+    paths:
+      - docker/backend/**
+      - backend/**
+
+jobs:
+  testing:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # 3.7, 3.8, 3.9
+        python-version: [3.6]
+
+    env:
+      COMPOSE_FILE: docker-compose.yml
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build docker images
+        run: docker-compose build
+
+      - name: Run tests
+        run: |
+          docker-compose run django /test.sh
