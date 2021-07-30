@@ -1,4 +1,4 @@
-name: Backend Workflow (Vue Web Interface)
+name: Frontend Workflow (Vue Web Interface)
 
 on:
   push:
