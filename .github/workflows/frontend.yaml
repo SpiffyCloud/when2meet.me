@@ -7,7 +7,8 @@ on:
       - frontend/**
   workflow_dispatch:
 
-
+env:
+  COMPOSE_FILE: docker-compose.yaml
 
 jobs:
   testing:
@@ -38,5 +39,3 @@ jobs:
           docker-compose run \
             --rm \
             frontend npm run build
-
-  

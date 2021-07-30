@@ -8,9 +8,6 @@ on:
   workflow_dispatch:
 
 env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: cliqteam/when2meet-backend
-  IMAGE_DOCKERFILE: ./docker/backend/Dockerfile
   COMPOSE_FILE: docker-compose.yaml
 
 jobs:
