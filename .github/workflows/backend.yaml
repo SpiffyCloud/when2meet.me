@@ -39,8 +39,6 @@ jobs:
             -e RECAPTCHA_SECRET_KEY=${{ secrets.RECAPTCHA_SECRET_KEY }} \
             -e RECAPTCHA_SITE_KEY=${{ secrets.RECAPTCHA_SITE_KEY }} \
             backend /test.sh && echo $?
-      - name: Failure test
-        run: exit 1
 
   build-and-push-image:
     needs: [testing]
