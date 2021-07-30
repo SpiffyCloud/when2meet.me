@@ -1,4 +1,4 @@
-name: Publish When2Meet Frontend Image
+name: Backend Workflow (Vue Web Interface)
 
 on:
   push:
