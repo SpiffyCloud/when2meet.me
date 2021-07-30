@@ -21,6 +21,7 @@ jobs:
           # TODO: Add step that verifies that docker-compose up was a success
           command: |
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            docker-compose -f /srv/when2meet/compose/docker-compose.yaml down
             docker-compose -f /srv/when2meet/compose/docker-compose.yaml up -d
           host: ${{ secrets.STAGING_SERVER }}
           username: root
