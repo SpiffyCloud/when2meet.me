@@ -15,12 +15,13 @@ services:
       - ./backend:/app
     ports:
       - 8000:8000
-    env_file:
-      - .env
     environment:
-      - SQL_USER=djangoproject
-      - SQL_PASSWORD=djangoproject
-      - SQL_DATABASE=djangotemplate
+      - SECRET_KEY=${SECRET_KEY}
+      - RECAPTCHA_SECRET_KEY=${RECAPTCHA_SECRET_KEY}
+      - RECAPTCHA_SITE_KEY=${RECAPTCHA_SITE_KEY}
+      - SQL_USER=compose
+      - SQL_PASSWORD=compose
+      - SQL_DATABASE=when2meet
       - SQL_HOST=postgres
       - SQL_PORT=5432
 
@@ -45,6 +46,6 @@ services:
       driver: none
 
     environment:
-      - POSTGRES_USER=djangotemplate
-      - POSTGRES_PASSWORD=djangotemplate
-      - POSTGRES_DB=djangotemplate
+      - POSTGRES_USER=compose
+      - POSTGRES_PASSWORD=compose
+      - POSTGRES_DB=when2meet
