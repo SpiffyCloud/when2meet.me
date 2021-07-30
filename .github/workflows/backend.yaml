@@ -5,6 +5,7 @@ on:
     paths:
       - docker/backend/**
       - backend/**
+  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
