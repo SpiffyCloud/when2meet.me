@@ -13,18 +13,9 @@ RUN pip install -r /requirements.txt
 # Remove extraneous OS dependencies after Python dependencies are installed
 RUN apk del build-deps
 
-# Entrypoint is run on the start of every container
-COPY ./docker/backend/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
-# Dev is run when specified as the command to run in development by compose
-COPY ./docker/backend/dev.sh /dev.sh
-RUN chmod +x /dev.sh
-
-# Prod is run when specified as the command to run in production by whatever
-# container orchestrator is being used
-COPY ./docker/backend/prod.sh /prod.sh
-RUN chmod +x /prod.sh
+# Install container scripts
+COPY ./docker/backend/*.sh /
+RUN chmod +x /*.sh
 
 # Copy files for production builds
 COPY ./backend /app
