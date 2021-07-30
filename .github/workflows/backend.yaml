@@ -44,6 +44,8 @@ jobs:
             backend /test.sh
 
   build-and-push-image:
+    needs: [testing]
+
     runs-on: ubuntu-latest
     permissions:
       contents: read
