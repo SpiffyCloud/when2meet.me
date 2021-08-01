@@ -1,5 +1,9 @@
 #!/bin/sh
 
+set -o errexit
+set -o pipefail
+set -o nounset
+
 echo 'Running flake8 linting tests...'
 
 # stop the build if there are Python syntax errors or undefined names
