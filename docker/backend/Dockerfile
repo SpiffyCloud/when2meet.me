@@ -25,8 +25,9 @@ RUN apk del build-deps
 # Copy files for production builds
 COPY ./backend .
 
+# TODO  Integrate into production image
 # Build static files
-RUN python manage.py collectstatic --noinput --settings=config.settings.prod
+# RUN python manage.py collectstatic --noinput --settings=config.settings.prod
 
 # Install container scripts
 COPY ./docker/backend/*.sh /
