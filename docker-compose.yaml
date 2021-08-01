@@ -7,14 +7,13 @@ services:
       context: .
       dockerfile: ./docker/backend/Dockerfile
 
+    restart: unless-stopped
     command: /dev.sh
     depends_on:
       - postgres
 
     volumes:
       - ./backend:/app
-    ports:
-      - 8000:8000
     environment:
       - SECRET_KEY=${SECRET_KEY}
       - RECAPTCHA_SECRET_KEY=${RECAPTCHA_SECRET_KEY}
@@ -31,17 +30,32 @@ services:
       context: .
       dockerfile: ./docker/frontend/Dockerfile.dev
 
+    restart: unless-stopped
     tty: true
 
     volumes:
       - ./frontend:/app
       - /app/node_modules
+
+  ingress:
+    image: nginx
+
+    restart: unless-stopped
+    logging:
+      driver: none
+    depends_on:
+      - backend
+      - frontend
+
+    volumes:
+      - ./docker/ingress/conf:/etc/nginx/conf.d:ro
     ports:
-      - 8080:8080
+      - 8080:80
 
   postgres:
     image: postgres:12.3-alpine
 
+    restart: unless-stopped
     logging:
       driver: none
 
