@@ -1,5 +1,9 @@
 FROM python:3.6-alpine
 
+# Environment defaults
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
 # Install OS dependencies
 RUN apk update \
     && apk add --no-cache --virtual=build-deps gcc python3-dev musl-dev \
