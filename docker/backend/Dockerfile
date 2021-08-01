@@ -1,5 +1,8 @@
 FROM python:3.6-alpine
 
+# TODO  Add nginx into this image, or a seperate one, to allow for serving
+#       static files in production.
+
 # Environment defaults
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
