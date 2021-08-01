@@ -1,14 +1,16 @@
 name: Deploy to Staging
 
 on:
-  push:
-    branches:
-      - staging
+  workflow_run:
+    workflows: ["backend", "frontend"]
+    branches: [staging]
+    types:
+      - completed
   workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
-  COMPOSE_FILE: /srv/when2meet/compose/docker-compose.yaml
+  COMPOSE_ROOT: /srv/when2meet/compose
 
 jobs:
   build-and-push-backend:
@@ -98,11 +100,12 @@ jobs:
       - name: Pull images and start services on staging server
         uses: garygrossgarten/github-action-ssh@release
         with:
-          # TODO: Add step that verifies that docker-compose up was a success
           command: |
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            docker-compose -f /srv/when2meet/compose/docker-compose.yaml down
-            docker-compose -f /srv/when2meet/compose/docker-compose.yaml up -d
+            cd ${{ env.COMPOSE_ROOT }}
+            docker-compose down
+            docker-compose pull
+            docker-compose up -d || exit 1
           host: ${{ secrets.STAGING_SERVER }}
           username: root
           privateKey: ${{ secrets.DEPLOY_KEY_STAGING }}

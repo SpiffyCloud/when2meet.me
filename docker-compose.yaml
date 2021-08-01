@@ -81,3 +81,6 @@ services:
       - POSTGRES_USER=compose
       - POSTGRES_PASSWORD=compose
       - POSTGRES_DB=when2meet
+
+volumes:
+  postgres-data:

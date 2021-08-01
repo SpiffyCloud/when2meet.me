@@ -27,3 +27,13 @@ DATABASES = {
 EMAIL_HOST = "mailhog"
 EMAIL_PORT = 1025
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# REST_FRAMEWORK = {
+#     "DEFAULT_RENDERER_CLASSES": [
+#         "rest_framework.renderers.JSONRenderer",
+#     ]
+# }
+
+REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = REST_FRAMEWORK.get(
+    "DEFAULT_RENDERER_CLASSES", []
+) + ["rest_framework.renderers.BrowsableAPIRenderer"]
