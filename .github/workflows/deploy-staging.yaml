@@ -1,9 +1,11 @@
 name: Deploy to Staging
 
 on:
-  push:
-    branches:
-      - staging
+  workflow_run:
+    workflows: ["backend", "frontend"]
+    branches: [staging]
+    types:
+      - completed
   workflow_dispatch:
 
 env:

@@ -1,4 +1,4 @@
-name: Backend Workflow (Django API)
+name: backend
 
 on:
   push:
