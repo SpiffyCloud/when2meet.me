@@ -16,9 +16,16 @@ DATABASES = {
         "USER": config("SQL_USER"),
         "PASSWORD": config("SQL_PASSWORD"),
         "HOST": config("SQL_HOST"),
-        "PORT": config("SQL_PORT"),
+        "PORT": config("SQL_PORT", default="5432"),
     }
 }
+
+# Middleware (extended)
+
+MIDDLEWARE = [
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    *MIDDLEWARE,
+]
 
 # Static Files (extended)
 
@@ -42,4 +49,4 @@ CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
 USE_X_FORWARDED_HOST = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
