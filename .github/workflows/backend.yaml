@@ -10,6 +10,8 @@ on:
 env:
   REGISTRY: ghcr.io
   COMPOSE_FILE: docker-compose.yaml
+  IMAGE_DOCKERFILE: docker/backend/Dockerfile
+  IMAGE_NAME: cliqteam/when2meet-backend
 
 jobs:
   testing:
