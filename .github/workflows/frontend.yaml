@@ -9,6 +9,8 @@ on:
 
 env:
   REGISTRY: ghcr.io
+  IMAGE_NAME: cliqteam/when2meet-frontend
+  IMAGE_DOCKERFILE: docker/frontend/Dockerfile.prod
   COMPOSE_FILE: docker-compose.yaml
 
 jobs:
@@ -40,3 +42,18 @@ jobs:
           docker-compose run \
             --rm \
             frontend npm run build
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          file: ${{ env.IMAGE_DOCKERFILE }}
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
