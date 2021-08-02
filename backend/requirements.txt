@@ -1,9 +1,9 @@
 Django~=3.2
 psycopg2~=2.9
-requests~=2.25
 djangorestframework~=3.12
-coverage~=5.5
 python-decouple==3.4
+requests~=2.25
 gunicorn==19.9.0
+whitenoise~=5.3
 flake8==3.9.2
-coverage==5.5
+coverage~=5.5
