@@ -1,11 +1,22 @@
+# This file is used for local development of the when2meet application. It
+# orchestrates several services and is a very close mirror of what is done in
+# production. It allows developers' code modifications to be reflected in real
+# time and accounts for environment variables and considerations that are
+# important for environment consistency but are not necessarily relevant for
+# development.
+#
+# Do NOT modify this file unless you know what you're doing! Many people and
+# services depend on this for development, testing, staging, etc. and small
+# changes can lead to big problems!
+
 version: "3"
 
 services:
   backend:
-    image: ghcr.io/cliqteam/when2meet-backend:dev
+    image: ghcr.io/cliqteam/when2meet-backend:local
     build:
       context: .
-      dockerfile: ./docker/backend/Dockerfile
+      dockerfile: ./docker/backend/Dockerfile.local
 
     restart: unless-stopped
     command: /dev.sh
@@ -31,10 +42,10 @@ services:
       - SQL_PORT=5432
 
   frontend:
-    image: ghcr.io/cliqteam/when2meet-frontend:dev
+    image: ghcr.io/cliqteam/when2meet-frontend:local
     build:
       context: .
-      dockerfile: ./docker/frontend/Dockerfile.dev
+      dockerfile: ./docker/frontend/Dockerfile.local
 
     restart: unless-stopped
     tty: true
