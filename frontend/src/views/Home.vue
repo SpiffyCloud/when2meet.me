@@ -136,15 +136,12 @@ export default class Home extends Vue {
     this.selectedOption = date;
     if (date !== "Sometime before X") {
       this.shouldShowDatePicker = false;
-      console.log("calculating date");
     } else {
-      console.log("showing datepicker");
       this.shouldShowDatePicker = true;
     }
   }
 
   closeDatePicker() {
-    console.log("hiding datepicker");
     this.shouldShowDatePicker = false;
   }
 }
@@ -273,6 +270,7 @@ ol.day-grid li.past-date {
 .mobile-date-picker {
   /* cover the screen */
   position: absolute;
+  top: 0;
   width: 100%;
   height: 100%;
   background-color: #fff;
@@ -377,23 +375,14 @@ ol.day-grid li.past-date {
   border: none;
 }
 
-.section-enter {
+.section-enter-from, .section-leave-to {
   top: 100vh;
 }
-.section-enter-to {
-  top: 0;
+.section-enter-to, .section-leave-from {
+  top: 0
 }
-.section-enter-active {
-  transition: 0.5s; /* MISSING RULE */
-}
-
-.section-leave {
-  top: 0;
-}
-.section-leave-to {
-  top: -100vh;
-}
-.section-leave-active {
-  transition: 0.5s; /* MISSING RULE */
+.section-leave-active, 
+.section-enter-active{
+  transition: top 2s; 
 }
 </style>
