@@ -1,6 +1,9 @@
 <template>
-  <div id="meeting" class="p-d-flex p-flex-column p-jc-start p-p-5">
-    <h1>{{ meeting.title }}</h1>
+  <div id="meeting" class="p-d-flex p-flex-column p-jc-between p-p-4">
+    <div id="heading-group" class="p-d-flex p-jc-end p-text-center">
+      <h1 class="p-text-center">{{ meeting.title }}</h1>
+      <Button icon="pi pi-cog" class="p-button-rounded p-button-text p-button-plain" />
+    </div>
     <div id="action-group" class="p-mb-5 p-d-flex p-flex-column p-jc-between">
       <Button
         label="Copy Meeting URL"
@@ -12,12 +15,41 @@
       />
     </div>
 
-    <div id="best-group" class="p-d-flex p-flex-column p-jc-between">
-      <h3 id="best-title" class="p-text-bold">Best Windows of Availability</h3>
-      <Accordion
-        class="p-my-5 p-shadow-5"
-        v-if="meeting.best_windows?.length > 0"
-      >
+    <div id="best-group" class="p-field p-d-flex p-flex-column p-jc-between">
+      <h3 id="best-title" class="p-mb-2 p-text-bold p-text-center">
+        Best Windows of Availability
+      </h3>
+      <div id="filter-group" class="p-d-flex p-flex-column p-jc-between">
+        <div
+          id="first-last-filter"
+          class="p-fluid p-field p-d-flex p-align-center p-jc-between"
+        >
+          <label class="p-text-bold">How soon?</label>
+          <Dropdown
+            v-model="selectedFilter"
+            :options="filters"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="First Available"
+            class="p-my-2"
+          />
+        </div>
+        <div
+          id="first-last-filter"
+          class="p-fluid p-field p-d-flex p-align-center p-jc-between"
+        >
+          <label class="p-text-bold">Duration?</label>
+          <Dropdown
+            v-model="selectedFilter"
+            :options="filters"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="First Available"
+            class="p-my-2"
+          />
+        </div>
+      </div>
+      <Accordion class="p-my-3 p-shadow-5" v-if="meeting.best_windows?.length > 0">
         <AccordionTab
           v-for="win in meeting.best_windows"
           :key="win.time"
@@ -31,10 +63,7 @@
       <h3 class="p-my-2 p-text-center" v-else>No responses yet!</h3>
     </div>
 
-    <div
-      id="responses-group"
-      class="p-field p-d-flex p-flex-column p-jc-between p-mb-4"
-    >
+    <div id="responses-group" class="p-field p-d-flex p-flex-column p-jc-between p-mb-4">
       <h3 id="responders-title" class="p-text-bold">Responders</h3>
       <small class="p-text-bold p-mb-2"
         >Click your name below to update your availability</small
@@ -44,18 +73,13 @@
           v-for="resp in meeting.availability"
           :key="resp.name"
           :label="resp.name"
-          class="p-button p-bg-white p-m-1 p-button-lg"
+          class="p-button p-bg-white p-m-1 p-button-lg p-shadow-2"
         />
       </div>
     </div>
 
-    <div
-      id="new-user-group"
-      class="p-field p-d-flex p-flex-column p-jc-between"
-    >
-      <h3 id="new-user-title" class="p-text-bold p-mt-4">
-        Can't find your name?
-      </h3>
+    <div id="new-user-group" class="p-field p-d-flex p-flex-column p-jc-between">
+      <h3 id="new-user-title" class="p-text-bold p-mt-4">Can't find your name?</h3>
       <small class="p-text-bold p-mb-2"
         >Type your name here to enter your availability</small
       >
@@ -79,6 +103,7 @@ import Accordion from "primevue/accordion";
 import AccordionTab from "primevue/accordiontab";
 import Button from "primevue/button";
 import InputText from "primevue/inputtext";
+import Dropdown from "primevue/dropdown";
 
 // Interfaces
 interface window {
@@ -88,7 +113,7 @@ interface window {
 
 interface availability {
   name: string;
-  time_slots: number[];
+  slots: number[];
 }
 
 interface meeting {
@@ -106,6 +131,7 @@ interface meeting {
     AccordionTab,
     Button,
     InputText,
+    Dropdown,
   },
 })
 export default class Meeting extends Vue {
@@ -117,6 +143,12 @@ export default class Meeting extends Vue {
     best_windows: [],
   };
 
+  filters = [
+    { label: "First Available", value: 0 },
+    { label: "Last Available", value: 1 },
+  ];
+  selectedFilter = { label: "First Available", value: 0 };
+
   // Lifecycle method before render and dom but after data initialization
   async created(): Promise<void> {
     // get meeting id
@@ -126,10 +158,7 @@ export default class Meeting extends Vue {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     };
-    const response = await fetch(
-      `/api/v1/meetings/${meetingId}`,
-      requestOptions
-    );
+    const response = await fetch(`/api/v1/meetings/${meetingId}`, requestOptions);
     if (response.status == 200) {
       this.meeting = await response.json();
 
@@ -137,30 +166,118 @@ export default class Meeting extends Vue {
       this.meeting.availability = [
         {
           name: "John Doe",
-          time_slots: [
-            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
-            19, 20, 21, 22, 23,
+          slots: [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
           ],
         },
         {
           name: "Jane Doe",
-          time_slots: [
-            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
-            19, 20, 21, 22, 23,
+          slots: [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
           ],
         },
         {
           name: "John Smith",
-          time_slots: [
-            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
-            19, 20, 21, 22, 23,
+          slots: [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
           ],
         },
         {
           name: "Jane Smith",
-          time_slots: [
-            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
-            19, 20, 21, 22, 23,
+          slots: [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
           ],
         },
       ];
@@ -207,5 +324,9 @@ export default class Meeting extends Vue {
 .p-button.p-bg-white {
   background-color: white !important;
   color: var(--primary-color) !important;
+}
+
+.settings-icon {
+  font-size: 2rem !important;
 }
 </style>

@@ -12,13 +12,8 @@
         :class="{ 'p-invalid': this.error.nameError }"
         class="p-shadow-5 p-inputtext-lg"
       />
-      <p
-        v-if="this.error.nameError"
-        id="name-help"
-        class="p-error p-text-bold p-mt-2"
-      >
-        <i class="pi pi-exclamation-triangle p-mr-1"></i
-        >{{ this.error.nameError }}
+      <p v-if="this.error.nameError" id="name-help" class="p-error p-text-bold p-mt-2">
+        <i class="pi pi-exclamation-triangle p-mr-1"></i>{{ this.error.nameError }}
       </p>
     </div>
 
@@ -27,17 +22,12 @@
       <Calendar
         id="touchUI"
         v-model="by_end_date"
-        :touchUI="true"
+        :inline="true"
         :class="{ 'p-invalid': this.error.dateError }"
         class="p-shadow-5 p-inputtext-lg"
       />
-      <p
-        v-if="this.error.dateError"
-        id="date-help"
-        class="p-error p-text-bold p-mt-2"
-      >
-        <i class="pi pi-exclamation-triangle p-mr-1"></i
-        >{{ this.error.dateError }}
+      <p v-if="this.error.dateError" id="date-help" class="p-error p-text-bold p-mt-2">
+        <i class="pi pi-exclamation-triangle p-mr-1"></i>{{ this.error.dateError }}
       </p>
     </div>
 
