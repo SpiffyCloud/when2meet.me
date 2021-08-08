@@ -45,7 +45,7 @@
       <Button
         id="create-meeting"
         label="Create Meeting"
-        @click="createMeeting()"
+        @click="onMeetingCreate()"
         class="p-button-raised p-button-success p-button-lg"
       />
     </div>
@@ -85,6 +85,15 @@ interface meeting {
       },
     },
   },
+
+  methods: {
+    async onMeetingCreate() {
+      const id = await this.createMeeting();
+      if (id !== "Error") {
+        this.$router.push(`/${id}`);
+      }
+    },
+  },
 })
 export default class Home extends Vue {
   title = "The Grandiose Meeting";
@@ -95,32 +104,33 @@ export default class Home extends Vue {
     dateError: "",
   };
 
-  async createMeeting() {
+  async createMeeting(): Promise<string> {
     // check if all fields are filled
     if (this.title === "") {
       this.error.nameError = "Please enter a meeting title";
-      return;
-    }
-    const data: meeting = {
-      title: this.title,
-      by_end_date: this.by_end_date.toISOString().split("T")[0],
-    };
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    };
-    const response = await fetch("api/v1/meetings/", requestOptions);
-    if (response.status === 201) {
-      const respData = await response.json();
-      console.log("Success", respData);
+      return "Error";
     } else {
-      const err = await response.json();
-      console.log(err);
-      this.error = {
-        nameError: err.title ? err.title[0] : "",
-        dateError: err.by_end_date ? err.by_end_date[0] : "",
+      const data: meeting = {
+        title: this.title,
+        by_end_date: this.by_end_date.toISOString().split("T")[0],
       };
+      const requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      };
+      const response = await fetch("api/v1/meetings/", requestOptions);
+      if (response.status === 201) {
+        const respData = await response.json();
+        return respData.meeting_id;
+      } else {
+        const err = await response.json();
+        this.error = {
+          nameError: err.title ? err.title[0] : "",
+          dateError: err.by_end_date ? err.by_end_date[0] : "",
+        };
+        return "Error";
+      }
     }
   }
 }
