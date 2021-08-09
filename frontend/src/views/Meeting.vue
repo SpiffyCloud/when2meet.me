@@ -1,9 +1,6 @@
 <template>
   <div id="meeting" class="p-d-flex p-flex-column p-jc-between p-p-4">
-    <div id="heading-group" class="p-d-flex p-jc-end p-text-center">
-      <h1 class="p-text-center">{{ meeting.title }}</h1>
-      <Button icon="pi pi-cog" class="p-button-rounded p-button-text p-button-plain" />
-    </div>
+    <h1>{{ meeting.title }}</h1>
     <div id="action-group" class="p-mb-5 p-d-flex p-flex-column p-jc-between">
       <Button
         label="Copy Meeting URL"
@@ -314,7 +311,7 @@ export default class Meeting extends Vue {
   background-color: var(--primary-color);
   color: var(--primary-color-text);
   font-family: var(--font-family);
-  min-height: 100vh;
+  min-height: 100%;
 }
 
 .p-error {

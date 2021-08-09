@@ -127,17 +127,11 @@ export default class Home extends Vue {
 </script>
 
 <style lang="css">
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
 #home {
   background-color: var(--primary-color);
   color: var(--primary-color-text);
   font-family: var(--font-family);
-  height: 100vh;
+  height: 100%;
 }
 
 .p-error {
