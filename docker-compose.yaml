@@ -46,15 +46,17 @@ services:
       context: .
       dockerfile: ./docker/frontend/Dockerfile.local
 
+    command: /dev.sh
     restart: unless-stopped
     tty: true
+    
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.frontend.rule=Host(`localhost`) && PathPrefix(`/`)"
       - "traefik.http.routers.frontend.entrypoints=web"
     volumes:
+      - node_modules:/app/node_modules
       - ./frontend:/app
-      - /app/node_modules
 
   ingress:
     image: traefik:v2.4
@@ -94,3 +96,4 @@ services:
 
 volumes:
   postgres-data:
+  node_modules:

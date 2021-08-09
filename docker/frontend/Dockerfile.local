@@ -2,14 +2,14 @@ FROM node:lts-alpine
 
 ENV NODE_ENV=development
 
-WORKDIR /app
+RUN apk add --no-cache tini
 
-COPY --chown=node:node ./frontend/package*.json ./
-
-RUN npm install &&\
-    npm install @vue/cli
+COPY ./docker/frontend/*.sh /
+RUN chmod +x /*.sh
 
 EXPOSE 8080
 VOLUME ["/app"]
+WORKDIR /app
 
-CMD ["npm", "run", "serve"]
+# Entrypoint logic
+ENTRYPOINT ["/sbin/tini", "--", "/entrypoint.sh"]
