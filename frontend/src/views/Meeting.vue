@@ -6,16 +6,33 @@
         label="Copy Meeting URL"
         class="p-button-lg p-button-success p-my-3 p-shadow-5"
       />
-      <Button
-        label="Adjust My Availability"
-        class="p-button-lg p-button-success p-my-3 p-shadow-5"
+    </div>
+
+    <div id="chart">
+      <VueApexCharts
+        height="1000px"
+        :options="chartOptions"
+        :series="chartData"
       />
     </div>
 
-    <div id="best-group" class="p-field p-d-flex p-flex-column p-jc-between">
+    <div id="toggle-group" class="p-d-flex p-flex-column p-jc-between"></div>
+
+    <div id="best-group" class="p-d-flex p-jc-start p-align-end">
       <h3 id="best-title" class="p-mb-2 p-text-bold p-text-center">
         Best Windows of Availability
       </h3>
+      <Button
+        icon="pi pi-cog"
+        class="p-button-rounded p-button-primary p-ml-2"
+        @click="openModal"
+      />
+    </div>
+    <Dialog
+      header="Best Window Options"
+      v-model:visible="displayModal"
+      :modal="true"
+    >
       <div id="filter-group" class="p-d-flex p-flex-column p-jc-between">
         <div
           id="first-last-filter"
@@ -45,22 +62,42 @@
             class="p-my-2"
           />
         </div>
-      </div>
-      <Accordion class="p-my-3 p-shadow-5" v-if="meeting.best_windows?.length > 0">
-        <AccordionTab
-          v-for="win in meeting.best_windows"
-          :key="win.time"
-          :header="win.time"
+        <div
+          id="number-filter"
+          class="p-fluid p-field p-d-flex p-align-center p-jc-between"
         >
-          <p v-for="mem in win.members" :key="mem">
-            {{ mem }}
-          </p>
-        </AccordionTab>
-      </Accordion>
-      <h3 class="p-my-2 p-text-center" v-else>No responses yet!</h3>
-    </div>
+          <label class="p-text-bold"># of available?</label>
+          <Dropdown
+            v-model="selectedFilter"
+            :options="filters"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="All"
+            class="p-my-2"
+          />
+        </div>
+      </div>
+    </Dialog>
+    <Accordion
+      class="p-my-3 p-shadow-5"
+      v-if="meeting.best_windows?.length > 0"
+    >
+      <AccordionTab
+        v-for="win in meeting.best_windows"
+        :key="win.time"
+        :header="win.time"
+      >
+        <p v-for="mem in win.members" :key="mem">
+          {{ mem }}
+        </p>
+      </AccordionTab>
+    </Accordion>
+    <h3 class="p-my-2 p-text-center" v-else>No responses yet!</h3>
 
-    <div id="responses-group" class="p-field p-d-flex p-flex-column p-jc-between p-mb-4">
+    <div
+      id="responses-group"
+      class="p-field p-d-flex p-flex-column p-jc-between p-mb-4"
+    >
       <h3 id="responders-title" class="p-text-bold">Responders</h3>
       <small class="p-text-bold p-mb-2"
         >Click your name below to update your availability</small
@@ -75,8 +112,13 @@
       </div>
     </div>
 
-    <div id="new-user-group" class="p-field p-d-flex p-flex-column p-jc-between">
-      <h3 id="new-user-title" class="p-text-bold p-mt-4">Can't find your name?</h3>
+    <div
+      id="new-user-group"
+      class="p-field p-d-flex p-flex-column p-jc-between"
+    >
+      <h3 id="new-user-title" class="p-text-bold p-mt-4">
+        Can't find your name?
+      </h3>
       <small class="p-text-bold p-mb-2"
         >Type your name here to enter your availability</small
       >
@@ -101,7 +143,9 @@ import AccordionTab from "primevue/accordiontab";
 import Button from "primevue/button";
 import InputText from "primevue/inputtext";
 import Dropdown from "primevue/dropdown";
-
+import Dialog from "primevue/dialog";
+import SelectButton from "primevue/selectbutton";
+import VueApexCharts from "vue3-apexcharts";
 // Interfaces
 interface window {
   time: string;
@@ -120,6 +164,16 @@ interface meeting {
   best_windows?: window[];
 }
 
+interface data {
+  x: string;
+  y: number;
+}
+
+interface series {
+  name: string;
+  data: data[];
+}
+
 // Component
 @Options({
   name: "Meeting",
@@ -129,6 +183,9 @@ interface meeting {
     Button,
     InputText,
     Dropdown,
+    Dialog,
+    SelectButton,
+    VueApexCharts,
   },
 })
 export default class Meeting extends Vue {
@@ -145,7 +202,63 @@ export default class Meeting extends Vue {
     { label: "Last Available", value: 1 },
   ];
   selectedFilter = { label: "First Available", value: 0 };
+  displayModal = false;
 
+  chartOptions = {
+    chart: {
+      type: "heatmap",
+      toolbar: false,
+      height: 1000,
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    colors: ["#32a852"],
+  };
+
+  generateData(numPoints: number, options: { min: number, max: number }) {
+    const data = [];
+    for (let i = 0; i < numPoints; i++) {
+      data.push(
+        Math.floor(Math.random() * (options.max - options.min) + options.min)
+      );
+    }
+    return data;
+  }
+  chartData = this.calculateSeries();
+
+  calculateSeries() {
+    // return a series of data points
+    const chart: series[] = [];
+    for (let i = 0; i < 96; i++) {
+      let currentSeries: data[] = [];
+      const data = this.generateData(5, { min: 0, max: 100 });
+      for (let j = 0; j < 5; j++) {
+        currentSeries.push({
+          x: `${j}`,
+          y: data[j],
+        });
+      }
+      chart.push({
+        name: `Series ${i}`,
+        data: currentSeries,
+      });
+    }
+    return chart;
+  }
+  // return {
+  // series: [
+  // {
+  // name: "My First Chart",
+  // data: [
+  // {
+  // x: "x",
+  // y: 1,
+  // },
+  // ],
+  // },
+  // ],
+  // };
   // Lifecycle method before render and dom but after data initialization
   async created(): Promise<void> {
     // get meeting id
@@ -155,7 +268,10 @@ export default class Meeting extends Vue {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     };
-    const response = await fetch(`/api/v1/meetings/${meetingId}`, requestOptions);
+    const response = await fetch(
+      `/api/v1/meetings/${meetingId}`,
+      requestOptions
+    );
     if (response.status == 200) {
       this.meeting = await response.json();
 
@@ -164,117 +280,29 @@ export default class Meeting extends Vue {
         {
           name: "John Doe",
           slots: [
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
-            10,
-            11,
-            12,
-            13,
-            14,
-            15,
-            16,
-            17,
-            18,
-            19,
-            20,
-            21,
-            22,
-            23,
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+            19, 20, 21, 22, 23,
           ],
         },
         {
           name: "Jane Doe",
           slots: [
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
-            10,
-            11,
-            12,
-            13,
-            14,
-            15,
-            16,
-            17,
-            18,
-            19,
-            20,
-            21,
-            22,
-            23,
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+            19, 20, 21, 22, 23,
           ],
         },
         {
           name: "John Smith",
           slots: [
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
-            10,
-            11,
-            12,
-            13,
-            14,
-            15,
-            16,
-            17,
-            18,
-            19,
-            20,
-            21,
-            22,
-            23,
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+            19, 20, 21, 22, 23,
           ],
         },
         {
           name: "Jane Smith",
           slots: [
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
-            10,
-            11,
-            12,
-            13,
-            14,
-            15,
-            16,
-            17,
-            18,
-            19,
-            20,
-            21,
-            22,
-            23,
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+            19, 20, 21, 22, 23,
           ],
         },
       ];
@@ -296,6 +324,14 @@ export default class Meeting extends Vue {
     } else {
       this.$router.push("/404");
     }
+  }
+
+  openModal() {
+    this.displayModal = true;
+  }
+
+  closeModal() {
+    this.displayModal = false;
   }
 }
 </script>

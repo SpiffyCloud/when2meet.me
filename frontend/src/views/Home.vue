@@ -47,7 +47,6 @@ import { Options, Vue } from "vue-class-component";
 import Button from "primevue/button";
 import Calendar from "primevue/calendar";
 import InputText from "primevue/inputtext";
-
 // import adjectives from "../assets/adjectives.json";
 
 interface meeting {
