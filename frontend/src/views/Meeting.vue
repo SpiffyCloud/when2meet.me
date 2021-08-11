@@ -1,6 +1,6 @@
 <template>
   <div id="meeting" class="p-d-flex p-flex-column p-jc-between p-p-4">
-    <h1>{{ meeting.title }}</h1>
+    <h1 id="heading">{{ meeting.title }}</h1>
     <div id="action-group" class="p-mb-5 p-d-flex p-flex-column p-jc-between">
       <Button
         label="Copy Meeting URL"
@@ -13,6 +13,7 @@
         height="1000px"
         :options="chartOptions"
         :series="chartData"
+        @click="handleClick"
       />
     </div>
 
@@ -207,11 +208,12 @@ export default class Meeting extends Vue {
   chartOptions = {
     chart: {
       type: "heatmap",
-      toolbar: false,
-      height: "100px",
     },
     dataLabels: {
       enabled: true,
+    },
+    title: {
+      text: "HeatMap Chart (Single color)",
     },
     colors: ["#32a852"],
   };
@@ -298,7 +300,6 @@ export default class Meeting extends Vue {
       now.setHours(0, 0, 0, 0);
       const end = new Date(now);
       end.setDate(end.getDate() + 5);
-      console.log(now, end);
 
       // convert to epoch time in 15 minute blocks
       const startTime: number = Math.floor(now.getTime() / (15 * 60 * 1000));
@@ -350,6 +351,41 @@ export default class Meeting extends Vue {
 
   closeModal() {
     this.displayModal = false;
+  }
+
+  startDrag = {
+    x: null,
+    y: null,
+  };
+
+  endDrag = {
+    x: null,
+    y: null,
+  };
+
+  handleClick(event: any, chart: any, opts: any) {
+    console.log(this.startDrag);
+    if (this.startDrag.x != null && this.startDrag.y != null) {
+      this.endDrag = {
+        x: opts.dataPointIndex,
+        y: opts.seriesIndex,
+      };
+      console.log("Start", this.startDrag);
+      console.log("End", this.endDrag);
+      this.startDrag = {
+        x: null,
+        y: null,
+      };
+      this.endDrag = {
+        x: null,
+        y: null,
+      };
+    } else {
+      this.startDrag = {
+        x: opts.dataPointIndex,
+        y: opts.seriesIndex,
+      };
+    }
   }
 }
 </script>

@@ -12,8 +12,13 @@
         :class="{ 'p-invalid': this.error.nameError }"
         class="p-shadow-5 p-inputtext-lg"
       />
-      <p v-if="this.error.nameError" id="name-help" class="p-error p-text-bold p-mt-2">
-        <i class="pi pi-exclamation-triangle p-mr-1"></i>{{ this.error.nameError }}
+      <p
+        v-if="this.error.nameError"
+        id="name-help"
+        class="p-error p-text-bold p-mt-2"
+      >
+        <i class="pi pi-exclamation-triangle p-mr-1"></i
+        >{{ this.error.nameError }}
       </p>
     </div>
 
@@ -26,12 +31,20 @@
         :class="{ 'p-invalid': this.error.dateError }"
         class="p-shadow-5 p-inputtext-lg"
       />
-      <p v-if="this.error.dateError" id="date-help" class="p-error p-text-bold p-mt-2">
-        <i class="pi pi-exclamation-triangle p-mr-1"></i>{{ this.error.dateError }}
+      <p
+        v-if="this.error.dateError"
+        id="date-help"
+        class="p-error p-text-bold p-mt-2"
+      >
+        <i class="pi pi-exclamation-triangle p-mr-1"></i
+        >{{ this.error.dateError }}
       </p>
     </div>
 
-    <div id="create-meeting-group" class="p-fluid p-mt-2 p-mx-1">
+    <div
+      id="create-meeting-group"
+      class="p-field p-text-left p-d-flex p-flex-column"
+    >
       <Button
         id="create-meeting"
         label="Create Meeting"
@@ -135,5 +148,10 @@ export default class Home extends Vue {
 
 .p-error {
   color: var(--yellow-500) !important;
+}
+.p-field {
+  max-width: 500px;
+  margin-right: auto;
+  margin-left: auto;
 }
 </style>
