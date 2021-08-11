@@ -1,50 +1,10 @@
 <template>
   <div id="home" class="p-d-flex p-flex-column p-jc-around p-p-5">
     <h1 id="heading" class="p-text-center p-text-bold">When 2 Meet Me</h1>
+    <NameInput />
+    <CalendarInput />
 
-    <div id="name-group" class="p-field p-text-left p-d-flex p-flex-column">
-      <label class="p-text-bold" for="name">What is this meeting for?</label>
-      <InputText
-        id="name"
-        type="text"
-        v-model="title"
-        placeholder="The Grandiose Meeting"
-        :class="{ 'p-invalid': this.error.nameError }"
-        class="p-shadow-5 p-inputtext-lg"
-      />
-      <p
-        v-if="this.error.nameError"
-        id="name-help"
-        class="p-error p-text-bold p-mt-2"
-      >
-        <i class="pi pi-exclamation-triangle p-mr-1"></i
-        >{{ this.error.nameError }}
-      </p>
-    </div>
-
-    <div id="date-group" class="p-field p-text-left p-d-flex p-flex-column">
-      <label for="date" class="p-text-bold">When do you need to meet by?</label>
-      <Calendar
-        id="touchUI"
-        v-model="by_end_date"
-        :inline="true"
-        :class="{ 'p-invalid': this.error.dateError }"
-        class="p-shadow-5 p-inputtext-lg"
-      />
-      <p
-        v-if="this.error.dateError"
-        id="date-help"
-        class="p-error p-text-bold p-mt-2"
-      >
-        <i class="pi pi-exclamation-triangle p-mr-1"></i
-        >{{ this.error.dateError }}
-      </p>
-    </div>
-
-    <div
-      id="create-meeting-group"
-      class="p-field p-text-left p-d-flex p-flex-column"
-    >
+    <div id="create-meeting-group" class="p-field p-text-left p-d-flex p-flex-column">
       <Button
         id="create-meeting"
         label="Create Meeting"
@@ -58,8 +18,9 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import Button from "primevue/button";
-import Calendar from "primevue/calendar";
-import InputText from "primevue/inputtext";
+
+import NameInput from "../components/NameInput.vue";
+import CalendarInput from "../components/CalendarInput.vue";
 // import adjectives from "../assets/adjectives.json";
 
 interface meeting {
@@ -71,8 +32,8 @@ interface meeting {
   name: "Home",
   components: {
     Button,
-    Calendar,
-    InputText,
+    NameInput,
+    CalendarInput,
   },
 
   watch: {
@@ -146,9 +107,6 @@ export default class Home extends Vue {
   height: 100%;
 }
 
-.p-error {
-  color: var(--yellow-500) !important;
-}
 .p-field {
   max-width: 500px;
   margin-right: auto;

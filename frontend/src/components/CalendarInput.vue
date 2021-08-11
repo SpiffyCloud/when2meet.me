@@ -1,15 +1,14 @@
 <template>
-  <div id="name-group" class="p-field p-text-left p-d-flex p-flex-column">
-    <label class="p-text-bold" for="name">What is this meeting for?</label>
-    <InputText
-      id="name"
-      type="text"
+  <div id="date-group" class="p-field p-text-left p-d-flex p-flex-column">
+    <label for="date" class="p-text-bold">When do you need to meet by?</label>
+    <Calendar
+      id="touchUI"
       v-model="value"
-      placeholder="The Grandiose Meeting"
+      :inline="true"
       :class="{ 'p-invalid': this.error }"
       class="p-shadow-5 p-inputtext-lg"
     />
-    <p v-if="this.error" id="name-help" class="p-error p-text-bold p-mt-2">
+    <p v-if="this.error" id="date-help" class="p-error p-text-bold p-mt-2">
       <i class="pi pi-exclamation-triangle p-mr-1"></i>{{ this.error }}
     </p>
   </div>
@@ -18,12 +17,12 @@
 <script lang="ts">
 import { ref } from "vue";
 
-import InputText from "primevue/inputtext";
+import Calendar from "primevue/calendar";
 
 export default {
-  name: "NameInput",
+  name: "CalendarInput",
   components: {
-    InputText,
+    Calendar,
   },
   setup() {
     const value = ref("");
