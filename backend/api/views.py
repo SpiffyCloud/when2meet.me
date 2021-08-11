@@ -11,7 +11,6 @@ from .serializers import (
 from .models import Meeting, Availability
 
 
-
 class CreateMeeting(APIView):
     """/api/v1/meetings"""
 
@@ -35,7 +34,7 @@ class CreateMeeting(APIView):
                     "name": "Name",
                     "slots": []
                 }
-            ]
+            ],
         }
         """
         data = request.data

@@ -27,7 +27,7 @@
       <Calendar
         id="touchUI"
         v-model="by_end_date"
-        :touchUI="true"
+        :inline="true"
         :class="{ 'p-invalid': this.error.dateError }"
         class="p-shadow-5 p-inputtext-lg"
       />
@@ -41,7 +41,10 @@
       </p>
     </div>
 
-    <div id="create-meeting-group" class="p-fluid p-mt-2 p-mx-1">
+    <div
+      id="create-meeting-group"
+      class="p-field p-text-left p-d-flex p-flex-column"
+    >
       <Button
         id="create-meeting"
         label="Create Meeting"
@@ -57,7 +60,6 @@ import { Options, Vue } from "vue-class-component";
 import Button from "primevue/button";
 import Calendar from "primevue/calendar";
 import InputText from "primevue/inputtext";
-
 // import adjectives from "../assets/adjectives.json";
 
 interface meeting {
@@ -137,20 +139,19 @@ export default class Home extends Vue {
 </script>
 
 <style lang="css">
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
 #home {
   background-color: var(--primary-color);
   color: var(--primary-color-text);
   font-family: var(--font-family);
-  height: 100vh;
+  height: 100%;
 }
 
 .p-error {
   color: var(--yellow-500) !important;
+}
+.p-field {
+  max-width: 500px;
+  margin-right: auto;
+  margin-left: auto;
 }
 </style>
