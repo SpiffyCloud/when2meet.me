@@ -17,7 +17,7 @@
 
     <Responses :meeting="meeting" />
 
-    <NewUserForm />
+    <NewUserForm/>
   </div>
 </template>
 

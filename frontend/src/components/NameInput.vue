@@ -4,7 +4,7 @@
     <InputText
       id="name"
       type="text"
-      v-model="value"
+      v-model="title"
       placeholder="The Grandiose Meeting"
       :class="{ 'p-invalid': this.error }"
       class="p-shadow-5 p-inputtext-lg"
@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { ref } from "vue";
+import { ref, toRefs, watch } from "vue";
 
 import InputText from "primevue/inputtext";
 
@@ -25,12 +25,17 @@ export default {
   components: {
     InputText,
   },
-  setup() {
-    const value = ref("");
+  emits: ["update:title"],
+  setup(props: any, context: any) {
+    const title = ref(context.attrs.title);
     const error = ref("");
 
+    watch(title, (newVal: string) => {
+      context.emit("update:title", newVal);
+    });
+
     return {
-      value,
+      title,
       error,
     };
   },

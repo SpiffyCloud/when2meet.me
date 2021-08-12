@@ -54,8 +54,8 @@ export default {
       // return hour and minute
       return `${date.getHours()}:${date.getMinutes()}`;
     },
-    calculateChartData(startTime: number, endTime: number) {
-      const availabilites = this.meeting.availability;
+    calculateChartData(startTime: number, endTime: number, meeting: any) {
+      const availabilites = meeting.availability;
       // create a blank array from the start time to the end time
       const groupAvailability = [];
       for (let i = startTime; i < endTime; i++) {
