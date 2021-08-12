@@ -1,5 +1,5 @@
 <template>
-  <div id="about" class="p-d-flex p-flex-column p-jc-between p-p-5">
+  <div id="about" class="p-d-flex p-flex-column p-jc-between p-p-4">
     <h1 id="heading" class="p-text-center p-text-bold">When 2 Meet Me</h1>
 
     <div id="about-group" class="p-field p-text-left p-d-flex p-flex-column">
@@ -8,13 +8,23 @@
         When2MeetMe is a quick and easy availability survey tool that helps you find the best times you and your group can meet.
       </p>
       <p>
-        Please read our terms and conditions for details on whta we track and use the data we collect.
+        Please read our <Button label="Link" class="p-button-link" @click="openModal">terms and conditions</Button> for details on whta we track and use the data we collect.
       </p>
     </div>
 
+    <Dialog
+      header="Terms and Conditions"
+      v-model:visible="displayModal"
+      :modal="true"
+    >
+      <p>
+        A document that says legal stuff...
+      </p>
+    </Dialog>
+
     <div id="feedback-group" class="p-field p-text-left p-d-flex p-flex-column">
       <label for="feedback" class="p-text-bold">We'd love your feedback!</label>
-      <p class="">
+      <p>
         The good, the bad, and the ugly.
       </p>
 
@@ -48,91 +58,93 @@
           Unintuitive
         </Button>
       </div>
-
-      <div id="fedback-thoughts-group" class="p-field p-text-left p-d-flex p-flex-column">
-        <label for="about" class="p-text-bold">Would you like to say something?</label>
-        <p>
-          Share your thoughts and ideas. <span>optional</span>
-        </p>
-        <Textarea v-model="value" :autoResize="true" rows="5" cols="30" />
-      </div>
-      <!-- 
-  This is cool!
-  Submit My Feedback -->
     </div>
 
-    <div
-      id="create-meeting-group"
-      class="p-field p-text-left p-d-flex p-flex-column"
-    >
+    <div id="thoughts-group" class="p-field p-text-left p-d-flex p-flex-column">
+      <label for="thoughts" class="p-text-bold">Would you like to say something?</label>
+      <p>
+        Share your thoughts and ideas. <span>optional</span>
+      </p>
+      <Textarea v-model="value" :autoResize="true" rows="5" cols="30" placeholder="This is cool!" />
+
       <Button
-        id="create-meeting"
-        label="Create Meeting"
-        @click="onMeetingCreate()"
+        id="submit-feedback"
+        label="Submit My Feedback"
+        @click="onSubmitFeedback()"
         class="p-button-raised p-button-success p-button-lg"
       />
     </div>
+
+    <div id="contact-group" class="p-field p-text-left p-d-flex p-flex-column">
+      <label for="contact" class="p-text-bold">Like our style?</label>
+      <p>
+        When2MeetMe is designed, developed, and maintained by a stellar group of people who love to make great products.
+      </p>
+      <p>
+        If you've got an idea and would like to hire us - just let us know!
+      </p>
+      <Textarea v-model="contact" :autoResize="true" rows="5" cols="30" placeholder="You guys rock!" />
+
+      <Button
+        id="hire-us"
+        label="Hire Us"
+        @click="onHireUs()"
+        class="p-button-raised p-button-success p-button-lg"
+      />
+    </div>
+
+    <h3 id="footer" class="p-text-center p-text-bold">Home</h3>
   </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import Textarea from "primevue/textarea";
 import Button from "primevue/button";
+import Textarea from "primevue/textarea";
+import Dialog from "primevue/dialog";
 
 @Options({
   name: "About",
   components: {
-    Textarea,
     Button,
-  },
-
-  watch: {
-    by_end_date: {
-      handler(value: string) {
-        // check if date is in the past
-        if (new Date(value) < new Date()) {
-          this.error.dateError = "End date cannot be in the past";
-        } else {
-          this.error.dateError = "";
-        }
-      },
-    },
+    Textarea,
+    Dialog,
   },
 
   methods: {
-    async onMeetingCreate() {
-      const id = await this.createMeeting();
-      if (id !== "Error") {
-        this.$router.push(`/${id}`);
-      }
+    async onSubmitFeedback() {
+      console.log("[todo] onSubmitFeedback")
+    },
+    async onHireUs() {
+      console.log("[todo] onHireUs")
     },
   },
 })
 
 export default class About extends Vue {
-  title = "The Grandiose Meeting";
-  by_end_date = new Date();
+  displayModal = false;
 
-  error = {
-    nameError: "",
-    dateError: "",
-  };
+  openModal() {
+    this.displayModal = true;
+  }
 }
 </script>
 
 <style lang="css">
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
 #about {
   background-color: var(--primary-color);
   color: var(--primary-color-text);
   font-family: var(--font-family);
-  height: 100%;
 }
 
-.p-error {
-  color: var(--yellow-500) !important;
-}
 .p-field {
+  min-width: 320px;
   max-width: 500px;
   margin-right: auto;
   margin-left: auto;

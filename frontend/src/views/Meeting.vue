@@ -31,7 +31,7 @@
     </div>
     <Dialog
       header="Best Window Options"
-      v-model="displayModal"
+      v-model:visible="displayModal"
       :modal="true"
     >
       <div id="filter-group" class="p-d-flex p-flex-column p-jc-between">
