@@ -25,7 +25,6 @@ export default {
     Calendar,
   },
 
-  emits: ["update:date", "update:date-error"],
   setup(props: any, context: any) {
     const date = ref(new Date());
     const error = ref("");
@@ -33,8 +32,10 @@ export default {
     watch(date, (newVal: Date) => {
       if (newVal.getDate() < new Date().getDate()) {
         error.value = "End date cannot be in the past";
+        context.emit("update:error", error.value);
       } else {
         error.value = "";
+        context.emit("update:error", error.value);
         context.emit("update:date", newVal);
       }
     });
