@@ -3,19 +3,19 @@
     <label for="date" class="p-text-bold">When do you need to meet by?</label>
     <Calendar
       id="touchUI"
-      v-model="value"
+      v-model="date"
       :inline="true"
-      :class="{ 'p-invalid': this.error }"
+      :class="{ 'p-invalid': error }"
       class="p-shadow-5 p-inputtext-lg"
     />
-    <p v-if="this.error" id="date-help" class="p-error p-text-bold p-mt-2">
-      <i class="pi pi-exclamation-triangle p-mr-1"></i>{{ this.error }}
+    <p v-if="error" id="date-help" class="p-error p-text-bold p-mt-2">
+      <i class="pi pi-exclamation-triangle p-mr-1"></i>{{ error }}
     </p>
   </div>
 </template>
 
 <script lang="ts">
-import { ref } from "vue";
+import { ref, toRefs, watch } from "vue";
 
 import Calendar from "primevue/calendar";
 
@@ -24,12 +24,23 @@ export default {
   components: {
     Calendar,
   },
-  setup() {
-    const value = ref("");
+
+  emits: ["update:date", "update:date-error"],
+  setup(props: any, context: any) {
+    const date = ref(new Date());
     const error = ref("");
 
+    watch(date, (newVal: Date) => {
+      if (newVal.getDate() < new Date().getDate()) {
+        error.value = "End date cannot be in the past";
+      } else {
+        error.value = "";
+        context.emit("update:date", newVal);
+      }
+    });
+
     return {
-      value,
+      date,
       error,
     };
   },

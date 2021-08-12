@@ -6,11 +6,11 @@
       type="text"
       v-model="title"
       placeholder="The Grandiose Meeting"
-      :class="{ 'p-invalid': this.error }"
+      :class="{ 'p-invalid': error }"
       class="p-shadow-5 p-inputtext-lg"
     />
-    <p v-if="this.error" id="name-help" class="p-error p-text-bold p-mt-2">
-      <i class="pi pi-exclamation-triangle p-mr-1"></i>{{ this.error }}
+    <p v-if="error" id="name-help" class="p-error p-text-bold p-mt-2">
+      <i class="pi pi-exclamation-triangle p-mr-1"></i>{{ error }}
     </p>
   </div>
 </template>
@@ -26,9 +26,14 @@ export default {
     InputText,
   },
   emits: ["update:title"],
+  props: {
+    error: {
+      type: String,
+      default: "",
+    },
+  },
   setup(props: any, context: any) {
     const title = ref(context.attrs.title);
-    const error = ref("");
 
     watch(title, (newVal: string) => {
       context.emit("update:title", newVal);
@@ -36,7 +41,6 @@ export default {
 
     return {
       title,
-      error,
     };
   },
 };

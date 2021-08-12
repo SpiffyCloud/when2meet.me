@@ -1,9 +1,9 @@
 <template>
   <div id="home" class="p-d-flex p-flex-column p-jc-around p-p-5">
     <h1 id="heading" class="p-text-center p-text-bold">When 2 Meet Me</h1>
-    <NameInput v-model:title="title" />
+    <NameInput v-model:title="title" :error="titleError" />
 
-    <CalendarInput />
+    <CalendarInput v-model:date="by_end_date" />
 
     <div id="create-meeting-group" class="p-field p-text-left p-d-flex p-flex-column">
       <Button
@@ -17,12 +17,12 @@
 </template>
 
 <script lang="ts">
-import { ref, toRefs } from "vue";
 import Button from "primevue/button";
 
 import NameInput from "../components/NameInput.vue";
 import CalendarInput from "../components/CalendarInput.vue";
-// import adjectives from "../assets/adjectives.json";
+
+import usePostMeeting from "@/composables/usePostMeeting";
 
 export default {
   name: "Home",
@@ -32,16 +32,12 @@ export default {
     Button,
   },
   setup() {
-    const title = ref("The Grandiose Meeting");
-    const by_end_date = ref(new Date());
-
-    const onMeetingCreate = async () => {
-      console.log(title.value, by_end_date.value);
-    };
+    const { onMeetingCreate, title, titleError, by_end_date } = usePostMeeting();
 
     return {
       onMeetingCreate,
       title,
+      titleError,
       by_end_date,
     };
   },
