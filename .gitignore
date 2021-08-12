@@ -16,10 +16,10 @@ venv/
 .coverage
 htmlcov/
 
-# Vue
+# Vue ## should package-lock.json be included in source (for real)? [DEA]
 node_modules
 frontend/dist
-
+package-lock.json
 
 # local env files
 .env.local
