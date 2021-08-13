@@ -9,6 +9,11 @@
         @click="copyMeetingUrl"
         class="p-button-lg p-button-success p-my-3 p-shadow-5"
       />
+      <Button
+        label="Adjust My Availability"
+        @click="copyMeetingUrl"
+        class="p-button-lg p-button-success p-my-3 p-shadow-5"
+      />
     </div>
     <GroupAvailability :meeting="meeting" />
 

@@ -3,6 +3,7 @@
     <label for="date" class="p-text-bold">When do you need to meet by?</label>
     <Calendar
       id="touchUI"
+      name="date"
       v-model="date"
       :inline="true"
       :class="{ 'p-invalid': error }"

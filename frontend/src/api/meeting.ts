@@ -1,3 +1,10 @@
+export interface meeting {
+    title: string,
+    availability: any[],
+    by_end_date: string,
+    meeting_id: string,
+}
+
 export const fetchMeeting = async (id: string) => {
     const requestOptions = {
               method: "GET",

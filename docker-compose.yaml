@@ -24,7 +24,7 @@ services:
       - postgres
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.backend.rule=Host(`localhost`) && (PathPrefix(`/api`) || PathPrefix(`/static`))"
+      - "traefik.http.routers.backend.rule=(PathPrefix(`/api`) || PathPrefix(`/static`))"
       - "traefik.http.routers.backend.entrypoints=web"
       - "traefik.http.middlewares.xForwardedProto.headers.customrequestheaders.X-Forwarded-Proto=https"
       - "traefik.http.routers.backend.middlewares=xForwardedProto"
@@ -52,7 +52,7 @@ services:
     
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`localhost`) && PathPrefix(`/`)"
+      - "traefik.http.routers.frontend.rule=PathPrefix(`/`)"
       - "traefik.http.routers.frontend.entrypoints=web"
     volumes:
       - node_modules:/app/node_modules
