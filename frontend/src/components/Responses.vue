@@ -14,7 +14,7 @@
         v-for="resp in meeting.availability"
         :key="resp.name"
         :label="resp.name"
-        class="p-button p-bg-white p-m-1 p-button-lg p-shadow-2"
+        class="p-button p-bg-white p-m-1 p-button-lg p-shadow-2 response-btn"
       />
     </div>
 
@@ -40,3 +40,14 @@ export default {
   },
 };
 </script>
+
+
+<style lang="css">
+.response-btn {
+  transition: all 0.5s ease-in-out !important;
+}
+
+.response-btn-lg {
+  transform: scale(1.1);
+}
+</style>
