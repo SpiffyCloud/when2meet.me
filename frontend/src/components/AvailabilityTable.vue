@@ -1,5 +1,5 @@
 <template>
-        <table class="availability-table p-shadow-5">
+        <table tabindex="0"  class="availability-table " :onfocus="focusIntoView">
             <thead class="sticky-header">
                 <tr>
                     <td class="sticky-header"></td>
@@ -11,8 +11,8 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="series in chartData" :key="series.name">
-                    <td>{{ series.name }}</td>
+                <tr v-for="(series, index) in chartData" :key="series.name">
+                    <td>{{ index % 2 == 0 ? series.name : null }}</td>
                     <td
                         v-for="(dataPoint, index) in series.data"
                         :key="index"
@@ -32,7 +32,7 @@
 
 </template>
 
-<script>
+<script lang="ts">
 
 export default {
     name: "AvailabilityTable",
@@ -44,10 +44,61 @@ export default {
         disabled: {
             type: Boolean,
             default: false,
-        }
+        },
     },
-    setup() {
-        return {}
+    setup(props: any, context: any) {
+        const focusIntoView = () => {
+            const heading = document.querySelector('#group') as HTMLElement
+            heading.scrollIntoView();
+
+        }
+    
+        return {
+            focusIntoView
+        }
     }
 }
 </script>
+
+<style>
+.availability-table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+.availability-table thead td.sticky-header,
+.availability-table tbody tr td:first-child {
+    background-color: var(--green-600);
+    color: whitesmoke;
+    font-weight: bold;
+    text-align: center;
+    border: none;
+    opacity: 1;
+    z-index: 1;
+    white-space: nowrap;
+}
+
+td.sticky-header { 
+    padding: 0.5rem;
+
+}
+
+.availability-table td {
+    height: 1.25rem;
+    width: 2.5rem;
+}
+
+.availability-table tbody td {
+    color: white;
+    background-color: white;
+    text-align: center;
+    border: 1px solid black;
+}
+
+.sticky-header {
+    position: sticky;
+    top: 0;
+    background-color: var(--green-600);
+}
+</style>

@@ -23,16 +23,41 @@
             <h1 class="active-user">{{ activeUser }}'s availability</h1>
             <AvailabilityTable :chartData="chartData" />
         </Sidebar>
-        <h3 class="p-mb-2">Group Availability</h3>
+        <h3 class="p-mb-2 p-pt-4" id="group">Group Availability</h3>
         <div id="group-availability" class="table-wrapper p-shadow-5">
-            <AvailabilityTable :chartData="chartData" disabled />
+            <AvailabilityTable
+                id="group-availability-table"
+                :chartData="chartData"
+                disabled
+            />
         </div>
 
-        <Responses
-            id="response-group"
-            ref="response-group"
-            :meeting="meeting"
-        />
+        <div
+            id="responses-group"
+            class="p-field p-d-flex p-flex-column p-jc-between p-mb-4"
+        >
+            <div
+                v-if="meeting.availability?.length > 0"
+                id="responders-group"
+                class="p-d-flex p-jc-start p-flex-wrap"
+            >
+                <h3 id="responders-title" class="p-text-bold">Responders</h3>
+
+                <small class="p-text-bold p-mb-2"
+                    >Click your name below to update your availability</small
+                >
+                <Button
+                    v-for="resp in meeting.availability"
+                    @click="setActiveUser"
+                    :key="resp.name"
+                    :label="resp.name"
+                    class="
+                        p-button p-bg-white p-m-1 p-button-lg p-shadow-2
+                        response-btn
+                    "
+                />
+            </div>
+        </div>
         <NewUserForm />
     </div>
 </template>
@@ -46,7 +71,6 @@ import Toast from "primevue/toast";
 import Sidebar from "primevue/sidebar";
 
 // Internal components
-import Responses from "@/components/Responses.vue";
 import NewUserForm from "@/components/NewUserForm.vue";
 import AvailabilityTable from "@/components/AvailabilityTable.vue";
 // Composables
@@ -58,7 +82,6 @@ export default {
     name: "Meeting",
     components: {
         AvailabilityTable,
-        Responses,
         NewUserForm,
         Button,
         Toast,
@@ -71,7 +94,7 @@ export default {
         const route = useRoute();
         const getUserFromLocalStorage = () => {
             const meeting_id = route.params.id;
-            const storedUser = localStorage.getItem(`user-${meeting_id}`);
+            const storedUser = localStorage.getItem(`${meeting_id}`);
             if (storedUser) {
                 activeUser.value = storedUser;
                 return;
@@ -80,7 +103,7 @@ export default {
 
         const scrollToResponders = () => {
             const respondersSection = document.querySelector(
-                "#response-group"
+                "#responses-group"
             ) as HTMLElement;
             window.scrollTo({
                 behavior: "smooth",
@@ -99,16 +122,18 @@ export default {
         };
 
         const adjustMyAvailability = () => {
-            showMyAvailability.value = true;
-            // getUserFromLocalStorage();
-            // if (activeUser.value === "") {
-            // scrollToResponders();
-            // setTimeout(twinkleButtons, 750);
-            // }
-            // else {
-            // showMyAvailability.value = true;
-            // }
+            getUserFromLocalStorage();
+            if (activeUser.value === "") {
+                scrollToResponders();
+                setTimeout(twinkleButtons, 600);
+            } else {
+                showMyAvailability.value = true;
+            }
         };
+
+        const setActiveUser = (event: any) => {
+          localStorage.setItem(meeting.value.meeting_id, event.target.innerText)
+        }
 
         const { meeting } = useGetMeeting();
 
@@ -120,6 +145,7 @@ export default {
             activeUser,
             showMyAvailability,
             adjustMyAvailability,
+            setActiveUser,
             chartData,
         };
     },
@@ -151,42 +177,9 @@ export default {
     max-height: 90vh;
     height: fit-content;
     overflow-y: scroll;
+    overflow-x: none;
     margin-bottom: 2rem;
-    border-radius: 25px;
-}
-
-.availability-table {
-    border-collapse: collapse;
-    width: 100%;
-    margin-bottom: 1.5rem;
-    position: relative;
-}
-.availability-table thead,
-.availability-table tbody tr td:first-child {
-    background-color: var(--green-600);
-    color: whitesmoke;
-    font-weight: bold;
-    text-align: center;
-    border: none;
-    opacity: 1;
-    z-index: 1;
-}
-
-.availability-table td {
-    height: 3rem;
-    width: 2rem;
-}
-
-.availability-table tbody td {
-    color: white;
-    background-color: white;
-    text-align: center;
-    border: 1px solid black;
-}
-
-.sticky-header {
-    position: sticky;
-    top: 0;
+    border-radius: 1rem;
     background-color: var(--green-600);
 }
 
@@ -195,5 +188,13 @@ h1.active-user {
     top: 0;
     margin-top: 1rem;
     color: black;
+}
+
+.response-btn {
+  transition: all 0.5s ease-in-out !important;
+}
+
+.response-btn-lg {
+  transform: scale(1.1);
 }
 </style>
