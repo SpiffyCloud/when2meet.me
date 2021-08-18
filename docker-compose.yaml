@@ -24,7 +24,7 @@ services:
       - postgres
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.backend.rule=(PathPrefix(`/api`) || PathPrefix(`/static`))"
+      - "traefik.http.routers.backend.rule=PathPrefix(`/api`) || PathPrefix(`/static`)"
       - "traefik.http.routers.backend.entrypoints=web"
       - "traefik.http.middlewares.xForwardedProto.headers.customrequestheaders.X-Forwarded-Proto=https"
       - "traefik.http.routers.backend.middlewares=xForwardedProto"
