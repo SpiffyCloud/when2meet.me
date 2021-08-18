@@ -1,37 +1,47 @@
 <template>
-  <div id="root" ref="root" class="p-field p-text-left p-d-flex p-flex-column">
+  <div id="name-group" class="p-field p-text-left p-d-flex p-flex-column">
     <label class="p-text-bold" for="name">What is this meeting for?</label>
     <InputText
       id="name"
       type="text"
+      v-model="title"
       placeholder="The Grandiose Meeting"
-      v-model="value"
-      :class="{ 'p-invalid': this.error }"
+      :class="{ 'p-invalid': error }"
       class="p-shadow-5 p-inputtext-lg"
     />
-    <p v-if="this.error" id="name-help" class="p-error p-text-bold p-mt-2">
-      <i class="pi pi-exclamation-triangle p-mr-1"></i>{{ this.error }}
+    <p v-if="error" id="name-help" class="p-error p-text-bold p-mt-2">
+      <i class="pi pi-exclamation-triangle p-mr-1"></i>{{ error }}
     </p>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { ref, toRefs, watch } from "vue";
+
 import InputText from "primevue/inputtext";
 
-const NameInput = defineComponent({
-  components: { InputText },
+export default {
+  name: "NameInput",
+  components: {
+    InputText,
+  },
+  emits: ["update:title"],
+  props: {
+    error: {
+      type: String,
+      default: "",
+    },
+  },
+  setup(props: any, context: any) {
+    const title = ref(context.attrs.title);
 
-  setup() {
-    const value = ref("");
-    const error = ref("");
+    watch(title, (newVal: string) => {
+      context.emit("update:title", newVal);
+    });
 
     return {
-      value,
-      error,
+      title,
     };
   },
-});
-
-export default NameInput;
+};
 </script>
