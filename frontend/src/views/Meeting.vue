@@ -23,6 +23,8 @@
             <h1 class="active-user">{{ activeUser }}'s availability</h1>
             <AvailabilityTable :chartData="chartData" />
         </Sidebar>
+
+        <h3>Best Windows of Availability</h3>
         <h3 class="p-mb-2 p-pt-4" id="group">Group Availability</h3>
         <div id="group-availability" class="table-wrapper p-shadow-5">
             <AvailabilityTable

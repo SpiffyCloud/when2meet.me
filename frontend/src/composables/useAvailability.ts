@@ -19,7 +19,7 @@ export default function useAvailability(meeting: any)  {
         // CHANGE TO REAL DATE
         const start15MinBlock = 0;
         const end15MinBlock = 480;
-        const groupAvailability = [];
+        const groupAvailability = [] as any;
         for (let i = start15MinBlock; i < end15MinBlock; i++) {
             groupAvailability.push(0);
         }
@@ -35,7 +35,7 @@ export default function useAvailability(meeting: any)  {
         }
         // createa series of data points from the group availability
         for (let y = 0; y < 96; y++) {
-            const rawData = [];
+            const rawData = [] as any;
             for (let x = 0; x < 5; x++) {
                 const data = groupAvailability[y + x * 96];
                 const date = new Date((y + x * 96) * 15 * 60 * 1000);
