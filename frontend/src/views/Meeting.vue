@@ -24,7 +24,10 @@
             <AvailabilityTable :chartData="chartData" />
         </Sidebar>
 
-        <h3>Best Windows of Availability</h3>
+        <h3 class="p-mb-2 window-group">Best Windows of Availability</h3>
+            <Window />
+            <Window />
+            <Window />
         <h3 class="p-mb-2 p-pt-4" id="group">Group Availability</h3>
         <div id="group-availability" class="table-wrapper p-shadow-5">
             <AvailabilityTable
@@ -75,6 +78,7 @@ import Sidebar from "primevue/sidebar";
 // Internal components
 import NewUserForm from "@/components/NewUserForm.vue";
 import AvailabilityTable from "@/components/AvailabilityTable.vue";
+import Window from "@/components/Window.vue";
 // Composables
 import useGetMeeting from "@/composables/useGetMeeting";
 import useCopyUrl from "@/composables/useCopyUrl";
@@ -85,6 +89,7 @@ export default {
     components: {
         AvailabilityTable,
         NewUserForm,
+        Window,
         Button,
         Toast,
         Sidebar,
@@ -199,4 +204,6 @@ h1.active-user {
 .response-btn-lg {
   transform: scale(1.1);
 }
+
+
 </style>
