@@ -45,20 +45,10 @@ export default function useGetMeeting() {
     ];
   };
 
-
-
-
-
-
   const getMeeting = async () => {
     meeting.value = await fetchMeeting(route.params.id as string);
     addFakeData(meeting);
-
-    return meeting
   }
-
-
-
 
   onMounted(getMeeting);
 
