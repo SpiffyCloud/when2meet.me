@@ -12,7 +12,7 @@ export default function useGetMeeting() {
     numPoints: number,
     options: { min: number; max: number }
   ) => {
-    const data = [];
+    const data = [] as any;
     for (let i = 0; i < numPoints; i++) {
       data.push(
         Math.floor(
