@@ -23,11 +23,26 @@
             <h1 class="active-user">{{ activeUser }}'s availability</h1>
             <AvailabilityTable :chartData="chartData" />
         </Sidebar>
-
-        <h3 class="p-mb-2 window-group">Best Windows of Availability</h3>
+        <div class="window-group">
+            <h3 class="p-mb-2">
+                Best Windows of Availability
+                <i
+                    class="pi pi-filter"
+                    @click="showWindowFilter = true"
+                    style="fontsize: 2rem"
+                ></i>
+            </h3>
             <Window />
             <Window />
             <Window />
+            <Dialog
+                header="Best Window Options"
+                v-model:visible="showWindowFilter"
+                :modal="true"
+            >
+                <WindowFilter @apply="updateWindows($event)" :meeting="meeting" />
+            </Dialog>
+        </div>
         <h3 class="p-mb-2 p-pt-4" id="group">Group Availability</h3>
         <div id="group-availability" class="table-wrapper p-shadow-5">
             <AvailabilityTable
@@ -53,7 +68,7 @@
                 >
                 <Button
                     v-for="resp in meeting.availability"
-                    @click="setActiveUser"
+                    @click="setActiveUser($event, meeting)"
                     :key="resp.name"
                     :label="resp.name"
                     class="
@@ -69,20 +84,22 @@
 
 <script lang="tsx">
 import { ref } from "vue";
-import { useRoute } from "vue-router";
 // Third party components
 import Button from "primevue/button";
 import Toast from "primevue/toast";
 import Sidebar from "primevue/sidebar";
+import Dialog from "primevue/dialog";
 
 // Internal components
 import NewUserForm from "@/components/NewUserForm.vue";
 import AvailabilityTable from "@/components/AvailabilityTable.vue";
 import Window from "@/components/Window.vue";
+import WindowFilter from "@/components/WindowFilter.vue";
 // Composables
 import useGetMeeting from "@/composables/useGetMeeting";
 import useCopyUrl from "@/composables/useCopyUrl";
 import useAvailiability from "@/composables/useAvailability";
+import useAdjustAvailiability from "@/composables/useAdjustAvailability";
 
 export default {
     name: "Meeting",
@@ -93,67 +110,26 @@ export default {
         Button,
         Toast,
         Sidebar,
+        WindowFilter,
+        Dialog,
     },
     setup() {
-        const showMyAvailability = ref(false);
-        const activeUser = ref("");
-
-        const route = useRoute();
-        const getUserFromLocalStorage = () => {
-            const meeting_id = route.params.id;
-            const storedUser = localStorage.getItem(`${meeting_id}`);
-            if (storedUser) {
-                activeUser.value = storedUser;
-                return;
-            }
-        };
-
-        const scrollToResponders = () => {
-            const respondersSection = document.querySelector(
-                "#responses-group"
-            ) as HTMLElement;
-            window.scrollTo({
-                behavior: "smooth",
-                top: respondersSection?.offsetTop,
-            });
-        };
-
-        const twinkleButtons = () => {
-            const responseButtons = document.querySelectorAll(".response-btn");
-            responseButtons.forEach((btn) => {
-                btn.classList.add("response-btn-lg");
-                btn.addEventListener("transitionend", () => {
-                    btn.classList.remove("response-btn-lg");
-                });
-            });
-        };
-
-        const adjustMyAvailability = () => {
-            getUserFromLocalStorage();
-            if (activeUser.value === "") {
-                scrollToResponders();
-                setTimeout(twinkleButtons, 600);
-            } else {
-                showMyAvailability.value = true;
-            }
-        };
-
-        const setActiveUser = (event: any) => {
-          localStorage.setItem(meeting.value.meeting_id, event.target.innerText)
-        }
-
         const { meeting } = useGetMeeting();
-
         const { chartData } = useAvailiability(meeting);
+        const showWindowFilter = ref(false);
 
+        const updateWindows = (event: any) => {
+            // Todo: calculate the top 3 windows
+            console.log(event);
+            showWindowFilter.value = false;
+        }
         return {
             ...useGetMeeting(),
             ...useCopyUrl(),
-            activeUser,
-            showMyAvailability,
-            adjustMyAvailability,
-            setActiveUser,
+            ...useAdjustAvailiability(),
             chartData,
+            showWindowFilter,
+            updateWindows,
         };
     },
 };
@@ -198,12 +174,10 @@ h1.active-user {
 }
 
 .response-btn {
-  transition: all 0.5s ease-in-out !important;
+    transition: all 0.5s ease-in-out !important;
 }
 
 .response-btn-lg {
-  transform: scale(1.1);
+    transform: scale(1.1);
 }
-
-
 </style>
