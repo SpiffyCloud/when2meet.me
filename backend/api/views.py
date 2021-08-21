@@ -81,6 +81,7 @@ class GetMeeting(APIView):
 class SubmitAvailability(APIView):
     def post(self, request, *args, **kwargs):
         """
+        api/v1/meetings/<str:id>/availabilities/
         post data:
         {
             "name": "Name",
@@ -99,11 +100,11 @@ class SubmitAvailability(APIView):
         """
         new_data = {
             "name": request.data["name"],
-            "slots": [int(slot) for slot in request.data.getlist("slots", [])],
+            "slots": [int(slot) for slot in request.data.get("slots", [])],
             "meeting": kwargs["id"],
         }
         availability = Availability.objects.filter(
-            meeting=new_data["meeting"], name=new_data["name"]
+            meeting=new_data["meeting"], name__iexact=new_data["name"]
         )
         if availability.exists():
             serializer = AvailabilitySerializer(

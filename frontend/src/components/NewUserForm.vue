@@ -7,27 +7,56 @@
     <InputText
       id="name"
       type="text"
+      v-model="name"
       placeholder="The Brash Baluga"
       class="p-shadow-5 p-inputtext-lg"
+      :class="{ 'p-invalid': nameError?.length > 0 }"
     />
+        <p v-if="nameError?.length > 0" id="name-help" class="p-error p-text-bold p-mt-2">
+      <i class="pi pi-exclamation-triangle p-mr-1"></i>{{ nameError }}
+    </p>
     <Button
       class="p-button-success p-button-lg p-my-4 p-shadow-5"
       label="Add My Availability"
+      @click="addNewUser()"
     />
   </div>
 </template>
 
 <script lang="ts">
+import { ref} from 'vue';
+import { useRoute } from 'vue-router';
 import InputText from "primevue/inputtext";
 import Button from "primevue/button";
+
+import { postNewUser } from '@/api/meeting'
 
 export default {
   components: {
     InputText,
     Button,
   },
-  setup() {
-    return {};
+  setup(props: any, context: any) {
+    const name = ref("");
+    const nameError = ref("")
+
+    const route = useRoute();
+
+    const addNewUser = async () => {
+      if (name.value.trim() === "")  {
+        nameError.value = "Please fill out a name!"
+        return;
+      }
+      nameError.value = "";
+      const response = await postNewUser(route.params.id as string, name.value);
+      context.emit("add-new-user", response.name);
+    }  
+    
+    return {
+      name,
+      nameError,
+      addNewUser,
+    };
   },
 };
 </script>
