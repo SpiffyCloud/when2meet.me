@@ -3,53 +3,56 @@
         <div class="p-d-flex p-my-1 p-jc-between p-align-center">
             <p class="p-mr-1 p-text-bold">Urgency:</p>
             <Dropdown
-                v-model="selectedFilters.Urgency"
+                v-model="selectedUrgency"
                 :options="urgencyOptions"
-                :placeholder="urgencyOptions[selectedFilters.Urgency].name"
+                :placeholder="urgencyOptions[selectedUrgency]"
                 optionLabel="name"
             />
         </div>
         <div class="p-d-flex p-my-1 p-jc-between p-align-center">
             <p class="p-mr-1 p-text-bold">Min. Duration:</p>
             <Dropdown
-                v-model="selectedFilters.Duration"
+                v-model="selectedDuration"
                 :options="durationOptions"
-                :placeholder="durationOptions[selectedFilters.Duration].name"
+                :placeholder="durationOptions[selectedDuration]"
                 optionLabel="name"
             />
         </div>
         <div class="p-d-flex p-my-1 p-jc-between p-align-center">
             <p class="p-mr-1 p-text-bold"># of Available:</p>
             <Dropdown
-                v-model="selectedFilters.Available"
+                v-model="selectedAvailable"
                 :options="availableOptions"
-                :placeholder="availableOptions[selectedFilters.Available]"
+                :placeholder="availableOptions[selectedAvailable]"
             />
+        </div>
+        <div class="p-d-flex p-my-1 p-jc-center p-align-center">
+            <Button label="Apply" @click="applyFilter()" />
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import { computed, reactive, toRefs } from "vue";
+import { computed, reactive, ref, toRefs } from "vue";
 import Dropdown from "primevue/dropdown";
+import Button from "primevue/button"
 
 export default {
     name: "Window Filter",
     components: {
         Dropdown,
+        Button
     },
     props: {
         meeting: {
             type: Object,
         },
     },
-    setup(props: any) {
+    setup(props: any, context: any) {
         const { meeting } = toRefs(props);
-        const selectedFilters = reactive({
-            Urgency: 0,
-            Duration: 0,
-            Available: 0,
-        });
+        const selectedUrgency = ref();
+        const selectedDuration = ref();
+        const selectedAvailable = ref();
         const urgencyOptions = [
             { name: "Soonest", code: 0 },
             { name: "Latest", code: 1 },
@@ -69,11 +72,24 @@ export default {
             );
         });
 
+        const applyFilter = () => {
+            context.emit("apply", {
+                urgency: selectedUrgency.value?.code,
+                duration: selectedDuration.value?.code,
+                available: selectedAvailable.value,
+                urgencyOptions,
+                durationOptions,
+                });
+        };
+
         return {
-            selectedFilters,
+            selectedUrgency,
+            selectedDuration,
+            selectedAvailable,
             urgencyOptions,
             durationOptions,
             availableOptions,
+            applyFilter,
         };
     },
 };

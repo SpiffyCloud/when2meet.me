@@ -40,7 +40,7 @@
                 v-model:visible="showWindowFilter"
                 :modal="true"
             >
-                <WindowFilter :meeting="meeting" />
+                <WindowFilter @apply="updateWindows($event)" :meeting="meeting" />
             </Dialog>
         </div>
         <h3 class="p-mb-2 p-pt-4" id="group">Group Availability</h3>
@@ -117,12 +117,19 @@ export default {
         const { meeting } = useGetMeeting();
         const { chartData } = useAvailiability(meeting);
         const showWindowFilter = ref(false);
+
+        const updateWindows = (event: any) => {
+            // Todo: calculate the top 3 windows
+            console.log(event);
+            showWindowFilter.value = false;
+        }
         return {
             ...useGetMeeting(),
             ...useCopyUrl(),
             ...useAdjustAvailiability(),
             chartData,
             showWindowFilter,
+            updateWindows,
         };
     },
 };
