@@ -11,6 +11,8 @@
       placeholder="The Brash Baluga"
       class="p-shadow-5 p-inputtext-lg"
       :class="{ 'p-invalid': nameError?.length > 0 }"
+      @keydown="handleKeyDown($event)"
+      
     />
         <p v-if="nameError?.length > 0" id="name-help" class="p-error p-text-bold p-mt-2">
       <i class="pi pi-exclamation-triangle p-mr-1"></i>{{ nameError }}
@@ -49,14 +51,20 @@ export default {
       }
       nameError.value = "";
       const response = await postNewUser(route.params.id as string, name.value);
-      console.log(response);
       context.emit("add-new-user", response.name);
     }  
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Enter") {
+        addNewUser();
+      }
+    }
     
     return {
       name,
       nameError,
       addNewUser,
+      handleKeyDown, 
     };
   },
 };
