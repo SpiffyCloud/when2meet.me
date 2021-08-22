@@ -22,7 +22,11 @@
 
         <div v-if="hasResponders">
             <Sidebar v-model:visible="showMyAvailability" position="full">
-                <AvailabilityTable :chartData="chartData" />
+                <AvailabilityTable
+                    @getNext="getNextWeek"
+                    @getPrev="getPrevWeek"
+                    :chartData="chartData"
+                />
             </Sidebar>
             <h3 class="p-mb-2">
                 Best Windows of Availability
@@ -34,7 +38,10 @@
                 ></i>
             </h3>
             <div v-if="windows.length > 0" class="window-group">
-                <Window v-for="(window, index) in windows.slice(3)" :key="index" />
+                <Window
+                    v-for="(window, index) in windows.slice(3)"
+                    :key="index"
+                />
                 <Dialog
                     header="Best Window Options"
                     v-model:visible="showWindowFilter"
@@ -61,8 +68,8 @@
             </div>
 
             <Sidebar position="full" :modal="true" v-model:visible="viewAll">
-                <TabView class="p-mt-1">
-                    <TabPanel header="Best Windows" style="color: white">
+                <TabView class="p-mt-2">
+                    <TabPanel header="Best Windows">
                         <div class="p-d-flex p-jc-start">
                             <p class="p-text-bold p-mx-2">Filter</p>
                             <i
@@ -92,16 +99,11 @@
                         <Window />
                     </TabPanel>
                     <TabPanel header="Heatmap">
-                        <div
-                            id="group-availability"
-                            class="table-wrapper p-shadow-5"
-                        >
-                            <AvailabilityTable
-                                id="group-availability-table"
-                                :chartData="chartData"
-                                disabled
-                            /></div
-                    ></TabPanel>
+                        <AvailabilityTable
+                            id="group-availability-table"
+                            :chartData="chartData"
+                            disabled
+                    /></TabPanel>
                 </TabView>
             </Sidebar>
             <h3 id="responders-title" class="p-text-bold">Responders</h3>
@@ -147,7 +149,7 @@
 </template>
 
 <script lang="tsx">
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 // Third party components
 import Button from "primevue/button";
 import Toast from "primevue/toast";
@@ -166,6 +168,7 @@ import useGetMeeting from "@/composables/useGetMeeting";
 import useCopyUrl from "@/composables/useCopyUrl";
 import useAvailiability from "@/composables/useAvailability";
 import useAdjustAvailiability from "@/composables/useAdjustAvailability";
+import useWindows from "@/composables/useWindows";
 
 export default {
     name: "Meeting",
@@ -183,15 +186,10 @@ export default {
     },
     setup() {
         const { meeting } = useGetMeeting();
-        const { chartData } = useAvailiability(meeting);
-        const showWindowFilter = ref(false);
+        const { chartData, initChartData, updateChartData } =
+            useAvailiability(meeting);
         const viewAll = ref(false);
         const toast = useToast();
-
-        const updateWindows = (event: any) => {
-            // Todo: calculate the windows
-            showWindowFilter.value = false;
-        };
 
         const setNewUser = (event: any) => {
             if (event?.length == 0) return;
@@ -222,23 +220,45 @@ export default {
             () => meeting.value.availability?.length > 0
         );
 
-        const windows = computed(() => {
-            return [] as any;
-        })
+        const getNextWeek = () => {
+            // get last date of in the table
+            const lastDate =
+                chartData.value[0].data[chartData.value[0].data.length - 1].x;
+
+            // get one day after last date
+            const nextWeekStart = new Date(lastDate);
+
+            nextWeekStart.setDate(nextWeekStart.getDate() + 1);
+            const nextWeekEnd = new Date(nextWeekStart);
+            nextWeekEnd.setDate(nextWeekEnd.getDate() + 4);
+            updateChartData(nextWeekStart, nextWeekEnd);
+        };
+        const getPrevWeek = () => {
+            // get first date of in the table
+            const firstDate = chartData.value[0].data[0].x;
+
+            // get one day before first date
+            const prevWeekEnd = new Date(firstDate);
+            prevWeekEnd.setDate(prevWeekEnd.getDate() - 1);
+            const prevWeekStart = new Date(prevWeekEnd);
+            prevWeekStart.setDate(prevWeekEnd.getDate() - 4);
+            updateChartData(prevWeekStart, prevWeekEnd);
+        };
+        onMounted(initChartData);
 
         return {
             meeting,
             ...useCopyUrl(),
             ...useAdjustAvailiability(),
+            ...useWindows(),
             chartData,
-            showWindowFilter,
-            updateWindows,
             setNewUser,
             viewAll,
             selectedViewAll,
             viewAllOptions,
             hasResponders,
-            windows,
+            getNextWeek,
+            getPrevWeek,
         };
     },
 };
@@ -295,5 +315,14 @@ h1.active-user {
     border-radius: 1rem;
     color: var(--primary-color);
     padding: 1rem;
+}
+
+.p-tabview .p-tabview-panels,
+.p-sidebar-content {
+    padding: 0 !important;
+}
+
+.p-sidebar-content {
+    overflow-x: hidden !important;
 }
 </style>

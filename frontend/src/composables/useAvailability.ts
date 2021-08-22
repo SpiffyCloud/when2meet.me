@@ -1,4 +1,4 @@
-import {  ref, watch } from "vue";
+import {  ref, watch, onMounted, } from "vue";
 
 export default function useAvailability(meeting: any)  {
     const chartData = ref([] as any);
@@ -15,10 +15,8 @@ export default function useAvailability(meeting: any)  {
         return `${hours}:${minutes} ${ampm}`
     }
 
-    const initChartData = () => {
-        // CHANGE TO REAL DATE
-        const start15MinBlock = 0;
-        const end15MinBlock = 480;
+    const createChartData = (start15MinBlock, end15MinBlock) => {
+        chartData.value = [];
         const groupAvailability = [] as any;
         for (let i = start15MinBlock; i < end15MinBlock; i++) {
             groupAvailability.push(0);
@@ -38,13 +36,13 @@ export default function useAvailability(meeting: any)  {
             const rawData = [] as any;
             for (let x = 0; x < 5; x++) {
                 const data = groupAvailability[y + x * 96];
-                const date = new Date((y + x * 96) * 15 * 60 * 1000);
+                const date = new Date((start15MinBlock + y + x * 96) * 15 * 60 * 1000);
                 rawData.push({
                     x: `${date.getMonth() + 1}/${date.getDate()}`,
                     y: data,
                 });
             }
-            const day = new Date(y * 15 * 60 * 1000);
+            const day = new Date((start15MinBlock + y) * 15 * 60 * 1000);
             // get time in HH:MM AM format
 
             chartData.value.push({
@@ -52,10 +50,33 @@ export default function useAvailability(meeting: any)  {
                 data: rawData,
             });
         }
+    }
+
+    const initChartData = () => {
+        // CHANGE TO REAL DATE
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const start15MinBlock = today.getTime() / (15 * 60 * 1000);
+        const end15MinBlock = start15MinBlock + 480;
+        createChartData(start15MinBlock, end15MinBlock);
+
+      
     };
 
-    watch(meeting, initChartData);
+    const updateChartData = (startDate: Date, endDate: Date) => {
+        startDate.setHours(0, 0, 0, 0);
+        endDate.setHours(0, 0, 0, 0);
+        const start15MinBlock = startDate.getTime() / (15 * 60 * 1000);
+        const end15MinBlock = endDate.getTime() / (15 * 60 * 1000);
+        createChartData(start15MinBlock, end15MinBlock);
+    };
+    
+
     return {
-        chartData
+        chartData,
+        updateChartData,
+        initChartData,
     }
 }
+
+
