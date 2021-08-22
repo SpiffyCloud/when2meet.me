@@ -20,18 +20,17 @@
         </div>
 
         <Sidebar v-model:visible="showMyAvailability" position="full">
-            <h1 class="active-user">{{ activeUser }}'s availability</h1>
             <AvailabilityTable :chartData="chartData" />
         </Sidebar>
+        <h3 class="p-mb-2">
+            Best Windows of Availability
+            <i
+                class="pi pi-filter"
+                @click="showWindowFilter = true"
+                style="fontsize: 2rem"
+            ></i>
+        </h3>
         <div class="window-group">
-            <h3 class="p-mb-2">
-                Best Windows of Availability
-                <i
-                    class="pi pi-filter"
-                    @click="showWindowFilter = true"
-                    style="fontsize: 2rem"
-                ></i>
-            </h3>
             <Window />
             <Window />
             <Window />
@@ -46,15 +45,57 @@
                 />
             </Dialog>
         </div>
-        <h3 class="p-mb-2 p-pt-4" id="group">Group Availability</h3>
-        <div id="group-availability" class="table-wrapper p-shadow-5">
-            <AvailabilityTable
-                id="group-availability-table"
-                :chartData="chartData"
-                disabled
-            />
+        <div class="p-d-flex p-jc-end">
+            <Button label="View all" class="p-button" @click="viewAll = true" />
         </div>
+        <Sidebar position="full" :modal="true" v-model:visible="viewAll">
+            <TabView class="p-mt-1">
+                <TabPanel header="Best Windows" style="color: white">
+                    <div class="p-d-flex p-jc-start">
+                        <p class="p-text-bold p-mx-2">Filter</p>
+                        <i
+                            class="pi pi-filter"
+                            @click="showWindowFilter = true"
+                            style="fontsize: 2rem"
+                        ></i>
+                    </div>
+
+                    <Dialog
+                        header="Best Window Options"
+                        v-model:visible="showWindowFilter"
+                        :modal="true"
+                    >
+                        <WindowFilter
+                            @apply="updateWindows($event)"
+                            :meeting="meeting"
+                        />
+                    </Dialog>
+                    <Window />
+                    <Window />
+                    <Window />
+                    <Window />
+                    <Window />
+                    <Window />
+                    <Window />
+                    <Window />
+                </TabPanel>
+                <TabPanel header="Heatmap">
+                    <div
+                        id="group-availability"
+                        class="table-wrapper p-shadow-5"
+                    >
+                        <AvailabilityTable
+                            id="group-availability-table"
+                            :chartData="chartData"
+                            disabled
+                        /></div
+                ></TabPanel>
+            </TabView>
+        </Sidebar>
         <h3 id="responders-title" class="p-text-bold">Responders</h3>
+        <small class="p-text-bold p-mb-2"
+            >Click your name below to update your availability</small
+        >
         <div
             id="responses-group"
             class="p-field p-d-flex p-flex-column p-jc-between p-mb-4"
@@ -64,9 +105,6 @@
                 id="responders-group"
                 class="p-d-flex p-jc-start p-flex-wrap"
             >
-                <small class="p-text-bold p-mb-2"
-                    >Click your name below to update your availability</small
-                >
                 <Button
                     v-for="resp in meeting.availability"
                     @click="setActiveUser($event, meeting)"
@@ -91,6 +129,8 @@ import Button from "primevue/button";
 import Toast from "primevue/toast";
 import Sidebar from "primevue/sidebar";
 import Dialog from "primevue/dialog";
+import TabView from "primevue/tabview";
+import TabPanel from "primevue/tabpanel";
 import { useToast } from "primevue/usetoast";
 // Internal components
 import NewUserForm from "@/components/NewUserForm.vue";
@@ -114,11 +154,14 @@ export default {
         Sidebar,
         WindowFilter,
         Dialog,
+        TabView,
+        TabPanel,
     },
     setup() {
         const { meeting } = useGetMeeting();
         const { chartData } = useAvailiability(meeting);
         const showWindowFilter = ref(false);
+        const viewAll = ref(false);
         const toast = useToast();
 
         const updateWindows = (event: any) => {
@@ -129,10 +172,10 @@ export default {
         const setNewUser = (event: any) => {
             if (event?.length == 0) return;
             // check if event in availability
-            const existingUser = meeting.value.availability.filter((user) => {
-                return user.name == event;
-            });
-            if (existingUser.length === 0) {
+            const index = meeting.value.availability.findIndex(
+                (x) => x.name == event
+            );
+            if (index === -1) {
                 meeting.value.availability = [
                     ...meeting.value.availability,
                     { name: event, slots: [] as any },
@@ -148,6 +191,9 @@ export default {
             }
         };
 
+        const selectedViewAll = ref(null);
+        const viewAllOptions = ["Windows", "Heatmap"];
+
         return {
             meeting,
             ...useCopyUrl(),
@@ -156,6 +202,9 @@ export default {
             showWindowFilter,
             updateWindows,
             setNewUser,
+            viewAll,
+            selectedViewAll,
+            viewAllOptions,
         };
     },
 };

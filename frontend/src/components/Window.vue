@@ -38,6 +38,7 @@
   justify-content: space-around;
   align-items: center;
   padding: 0.25rem 0;
+  color: white;
 }
 
 .window-time {
