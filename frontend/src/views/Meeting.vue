@@ -1,11 +1,11 @@
 <template>
-    <div id="meeting" class="p-d-flex p-flex-column p-jc-between p-p-4">
+    <div id="meeting" class="p-d-flex p-flex-column p-p-4">
         <Toast position="bottom-right" group="br" />
 
         <h1 id="heading">{{ meeting.title }}</h1>
         <div
             id="action-group"
-            class="p-mb-5 p-d-flex p-flex-column p-jc-between"
+            class="p-mb-2 p-d-flex p-flex-column p-jc-between"
         >
             <Button
                 label="Copy Meeting URL"
@@ -13,97 +13,106 @@
                 class="p-button-lg p-button-success p-my-3 p-shadow-5"
             />
             <Button
+                v-if="hasResponders"
                 label="Adjust My Availability"
                 @click="adjustMyAvailability"
                 class="p-button-lg p-button-success p-my-3 p-shadow-5"
             />
         </div>
 
-        <Sidebar v-model:visible="showMyAvailability" position="full">
-            <AvailabilityTable :chartData="chartData" />
-        </Sidebar>
-        <h3 class="p-mb-2">
-            Best Windows of Availability
-            <i
-                class="pi pi-filter"
-                @click="showWindowFilter = true"
-                style="fontsize: 2rem"
-            ></i>
-        </h3>
-        <div class="window-group">
-            <Window />
-            <Window />
-            <Window />
-            <Dialog
-                header="Best Window Options"
-                v-model:visible="showWindowFilter"
-                :modal="true"
-            >
-                <WindowFilter
-                    @apply="updateWindows($event)"
-                    :meeting="meeting"
-                />
-            </Dialog>
-        </div>
-        <div class="p-d-flex p-jc-end">
-            <Button label="View all" class="p-button" @click="viewAll = true" />
-        </div>
-        <Sidebar position="full" :modal="true" v-model:visible="viewAll">
-            <TabView class="p-mt-1">
-                <TabPanel header="Best Windows" style="color: white">
-                    <div class="p-d-flex p-jc-start">
-                        <p class="p-text-bold p-mx-2">Filter</p>
-                        <i
-                            class="pi pi-filter"
-                            @click="showWindowFilter = true"
-                            style="fontsize: 2rem"
-                        ></i>
-                    </div>
-
-                    <Dialog
-                        header="Best Window Options"
-                        v-model:visible="showWindowFilter"
-                        :modal="true"
-                    >
-                        <WindowFilter
-                            @apply="updateWindows($event)"
-                            :meeting="meeting"
-                        />
-                    </Dialog>
-                    <Window />
-                    <Window />
-                    <Window />
-                    <Window />
-                    <Window />
-                    <Window />
-                    <Window />
-                    <Window />
-                </TabPanel>
-                <TabPanel header="Heatmap">
-                    <div
-                        id="group-availability"
-                        class="table-wrapper p-shadow-5"
-                    >
-                        <AvailabilityTable
-                            id="group-availability-table"
-                            :chartData="chartData"
-                            disabled
-                        /></div
-                ></TabPanel>
-            </TabView>
-        </Sidebar>
-        <h3 id="responders-title" class="p-text-bold">Responders</h3>
-        <small class="p-text-bold p-mb-2"
-            >Click your name below to update your availability</small
-        >
-        <div
-            id="responses-group"
-            class="p-field p-d-flex p-flex-column p-jc-between p-mb-4"
-        >
+        <div v-if="hasResponders">
+            <Sidebar v-model:visible="showMyAvailability" position="full">
+                <AvailabilityTable :chartData="chartData" />
+            </Sidebar>
+            <h3 class="p-mb-2">
+                Best Windows of Availability
+                <i
+                    v-if="windows.length > 0"
+                    class="pi pi-filter"
+                    @click="showWindowFilter = true"
+                    style="fontsize: 2rem"
+                ></i>
+            </h3>
+            <div v-if="windows.length > 0" class="window-group">
+                <Window v-for="(window, index) in windows.slice(3)" :key="index" />
+                <Dialog
+                    header="Best Window Options"
+                    v-model:visible="showWindowFilter"
+                    :modal="true"
+                >
+                    <WindowFilter
+                        @apply="updateWindows($event)"
+                        :meeting="meeting"
+                    />
+                </Dialog>
+                <div class="p-d-flex p-jc-end">
+                    <Button
+                        label="View all"
+                        class="p-button"
+                        @click="viewAll = true"
+                    />
+                </div>
+            </div>
             <div
-                v-if="meeting.availability?.length > 0"
+                v-else
+                class="p-d-flex p-jc-center empty-message p-shadow-5 p-mb-4"
+            >
+                <h3>No Availability yet! Be the first!</h3>
+            </div>
+
+            <Sidebar position="full" :modal="true" v-model:visible="viewAll">
+                <TabView class="p-mt-1">
+                    <TabPanel header="Best Windows" style="color: white">
+                        <div class="p-d-flex p-jc-start">
+                            <p class="p-text-bold p-mx-2">Filter</p>
+                            <i
+                                class="pi pi-filter"
+                                @click="showWindowFilter = true"
+                                style="fontsize: 2rem"
+                            ></i>
+                        </div>
+
+                        <Dialog
+                            header="Best Window Options"
+                            v-model:visible="showWindowFilter"
+                            :modal="true"
+                        >
+                            <WindowFilter
+                                @apply="updateWindows($event)"
+                                :meeting="meeting"
+                            />
+                        </Dialog>
+                        <Window />
+                        <Window />
+                        <Window />
+                        <Window />
+                        <Window />
+                        <Window />
+                        <Window />
+                        <Window />
+                    </TabPanel>
+                    <TabPanel header="Heatmap">
+                        <div
+                            id="group-availability"
+                            class="table-wrapper p-shadow-5"
+                        >
+                            <AvailabilityTable
+                                id="group-availability-table"
+                                :chartData="chartData"
+                                disabled
+                            /></div
+                    ></TabPanel>
+                </TabView>
+            </Sidebar>
+            <h3 id="responders-title" class="p-text-bold">Responders</h3>
+            <small class="p-text-bold p-mb-1"
+                >Click your name below to update your availability</small
+            >
+
+            <div
+                v-if="hasResponders"
                 id="responders-group"
-                class="p-d-flex p-jc-start p-flex-wrap"
+                class="p-d-flex p-jc-start p-flex-wrap p-mb-2"
             >
                 <Button
                     v-for="resp in meeting.availability"
@@ -116,14 +125,29 @@
                     "
                 />
             </div>
-            <h3 v-else class="p-text-bold p-my-5">No Responses yet!</h3>
+            <div v-else class="p-d-flex p-jc-center p-shadow-5 empty-message">
+                <h3 class="p-text-bold">
+                    No Responders yet! Add your name below.
+                </h3>
+            </div>
+            <h3 id="new-user-title" class="p-text-bold p-mt-2">
+                Can't find your name?
+            </h3>
+
+            <NewUserForm @addNewUser="setNewUser($event)" />
         </div>
-        <NewUserForm @addNewUser="setNewUser($event)" />
+        <div v-else>
+            <h3 id="new-user-title" class="p-text-bold p-mt-2">
+                You're the first one here!
+            </h3>
+
+            <NewUserForm @addNewUser="setNewUser($event)" />
+        </div>
     </div>
 </template>
 
 <script lang="tsx">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 // Third party components
 import Button from "primevue/button";
 import Toast from "primevue/toast";
@@ -165,7 +189,7 @@ export default {
         const toast = useToast();
 
         const updateWindows = (event: any) => {
-            // Todo: calculate the top 3 windows
+            // Todo: calculate the windows
             showWindowFilter.value = false;
         };
 
@@ -194,6 +218,14 @@ export default {
         const selectedViewAll = ref(null);
         const viewAllOptions = ["Windows", "Heatmap"];
 
+        const hasResponders = computed(
+            () => meeting.value.availability?.length > 0
+        );
+
+        const windows = computed(() => {
+            return [] as any;
+        })
+
         return {
             meeting,
             ...useCopyUrl(),
@@ -205,6 +237,8 @@ export default {
             viewAll,
             selectedViewAll,
             viewAllOptions,
+            hasResponders,
+            windows,
         };
     },
 };
@@ -254,5 +288,12 @@ h1.active-user {
 
 .response-btn-lg {
     transform: scale(1.1);
+}
+
+.empty-message {
+    background-color: white;
+    border-radius: 1rem;
+    color: var(--primary-color);
+    padding: 1rem;
 }
 </style>

@@ -1,6 +1,5 @@
 <template>
   <div id="new-user-group" class="p-field p-d-flex p-flex-column p-jc-between">
-    <h3 id="new-user-title" class="p-text-bold p-mt-4">Can't find your name?</h3>
     <small class="p-text-bold p-mb-2"
       >Type your name here to enter your availability</small
     >
