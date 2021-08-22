@@ -160,7 +160,7 @@ class TestApiSerializers(TestCase):
         data = {
             "meeting": meeting.meeting_id,
             "name": "John",
-            "slots": [1, 2, 3],
+            "slots": "[1, 2, 3]",
         }
         response = self.client.post(
             f"/api/v1/meetings/{meeting.meeting_id}/availabilities/", data=data
@@ -175,7 +175,7 @@ class TestApiSerializers(TestCase):
         data = {
             "meeting": "33333333",
             "name": "John",
-            "slots": [1, 2, 3],
+            "slots": "[1, 2, 3]",
         }
         response = self.client.post(
             f"/api/v1/meetings/{data['meeting']}/availabilities/", data=data
