@@ -22,11 +22,16 @@
 
         <div v-if="hasResponders">
             <Sidebar v-model:visible="showMyAvailability" position="full">
-                <AvailabilityTable
-                    @getNext="getNextWeek"
-                    @getPrev="getPrevWeek"
-                    :chartData="chartData"
-                />
+                <TabView>
+                    <TabPanel header="Form"> </TabPanel>
+                    <TabPanel header="Heatmap">
+                        <AvailabilityTable
+                            @getNext="getNextWeek"
+                            @getPrev="getPrevWeek"
+                            :chartData="chartData"
+                        />
+                    </TabPanel>
+                </TabView>
             </Sidebar>
             <h3 class="p-mb-2">
                 Best Windows of Availability

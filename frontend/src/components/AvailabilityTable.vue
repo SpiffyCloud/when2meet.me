@@ -1,10 +1,5 @@
 <template>
-    <table
-        tabindex="0"
-        id="table"
-        class="availability-table"
-        :onfocus="focusIntoView"
-    >
+    <table tabindex="0" id="table" class="availability-table">
         <thead class="sticky-header">
             <tr>
                 <td class="sticky-header"></td>
@@ -18,11 +13,12 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="(series, index) in chartData" :key="series.name">
-                <td>{{ index % 2 == 0 ? series.name : null }}</td>
+            <tr v-for="(series, y) in chartData" :key="series.name">
+                <td>{{ parseInt(y) % 2 == 0 ? series.name : null }}</td>
                 <td
-                    v-for="(dataPoint, index) in series.data"
-                    :key="index"
+                    v-for="(dataPoint, x) in series.data"
+                    :key="{ x, y }"
+                    :id="`${x} ${y}`"
                     :style="
                         dataPoint.y > 0
                             ? {
@@ -30,9 +26,9 @@
                               }
                             : 'white'
                     "
-                >
-                    {{ dataPoint.y }}
-                </td>
+                    @click="initSelectedDate"
+                    @touchmove="selectDate($event, { x, y })"
+                ></td>
             </tr>
         </tbody>
         <!-- add a footer -->
@@ -62,7 +58,7 @@
 
 <script lang="ts">
 import Button from "primevue/button";
-import { computed, toRefs } from "vue";
+import { computed, ref, toRefs } from "vue";
 
 export default {
     name: "AvailabilityTable",
@@ -81,6 +77,27 @@ export default {
     },
     emits: ["getNext", "getPrev"],
     setup(props: any, context: any) {
+        const lastTd = ref(null);
+        const selectDate = (e: any, dataPoint: any) => {
+            if (!e.target.classList.contains("selected")) {
+                return;
+            }
+            e.preventDefault();
+            const td = document.elementFromPoint(
+                e.touches[0].clientX,
+                e.touches[0].clientY
+            ) as any;
+            if (td === lastTd.value) return;
+            lastTd.value = td;
+
+            td.classList.toggle("selected");
+
+            // create a draggable box around the selected td
+        };
+
+        const initSelectedDate = (e: any) => {
+            e.target.classList.toggle("selected");
+        };
         const { chartData } = toRefs(props);
         const focusIntoView = (event) => {
             // const heading = document.querySelector("#table") as HTMLElement;
@@ -135,6 +152,8 @@ export default {
             nextWeekLabel,
             prevWeekLabel,
             dates,
+            selectDate,
+            initSelectedDate,
         };
     },
 };
@@ -188,5 +207,9 @@ td.sticky-header {
 
 .white-text {
     color: white !important;
+}
+
+.selected {
+    background-color: var(--green-600) !important;
 }
 </style>
