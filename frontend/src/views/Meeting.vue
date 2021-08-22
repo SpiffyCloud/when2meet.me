@@ -40,7 +40,10 @@
                 v-model:visible="showWindowFilter"
                 :modal="true"
             >
-                <WindowFilter @apply="updateWindows($event)" :meeting="meeting" />
+                <WindowFilter
+                    @apply="updateWindows($event)"
+                    :meeting="meeting"
+                />
             </Dialog>
         </div>
         <h3 class="p-mb-2 p-pt-4" id="group">Group Availability</h3>
@@ -51,7 +54,7 @@
                 disabled
             />
         </div>
-
+        <h3 id="responders-title" class="p-text-bold">Responders</h3>
         <div
             id="responses-group"
             class="p-field p-d-flex p-flex-column p-jc-between p-mb-4"
@@ -61,8 +64,6 @@
                 id="responders-group"
                 class="p-d-flex p-jc-start p-flex-wrap"
             >
-                <h3 id="responders-title" class="p-text-bold">Responders</h3>
-
                 <small class="p-text-bold p-mb-2"
                     >Click your name below to update your availability</small
                 >
@@ -77,8 +78,9 @@
                     "
                 />
             </div>
+            <h3 v-else class="p-text-bold p-my-5">No Responses yet!</h3>
         </div>
-        <NewUserForm />
+        <NewUserForm @addNewUser="setNewUser($event)" />
     </div>
 </template>
 
@@ -89,7 +91,7 @@ import Button from "primevue/button";
 import Toast from "primevue/toast";
 import Sidebar from "primevue/sidebar";
 import Dialog from "primevue/dialog";
-
+import { useToast } from "primevue/usetoast";
 // Internal components
 import NewUserForm from "@/components/NewUserForm.vue";
 import AvailabilityTable from "@/components/AvailabilityTable.vue";
@@ -117,19 +119,43 @@ export default {
         const { meeting } = useGetMeeting();
         const { chartData } = useAvailiability(meeting);
         const showWindowFilter = ref(false);
+        const toast = useToast();
 
         const updateWindows = (event: any) => {
             // Todo: calculate the top 3 windows
-            console.log(event);
             showWindowFilter.value = false;
-        }
+        };
+
+        const setNewUser = (event: any) => {
+            if (event?.length == 0) return;
+            // check if event in availability
+            const existingUser = meeting.value.availability.filter((user) => {
+                return user.name == event;
+            });
+            if (existingUser.length === 0) {
+                meeting.value.availability = [
+                    ...meeting.value.availability,
+                    { name: event, slots: [] as any },
+                ];
+                localStorage.setItem(meeting.value.meeting_id, event);
+                toast.add({
+                    severity: "success",
+                    summary: "",
+                    detail: `Now Editing As: ${event}`,
+                    group: "br",
+                    life: 3000,
+                });
+            }
+        };
+
         return {
-            ...useGetMeeting(),
+            meeting,
             ...useCopyUrl(),
             ...useAdjustAvailiability(),
             chartData,
             showWindowFilter,
             updateWindows,
+            setNewUser,
         };
     },
 };
