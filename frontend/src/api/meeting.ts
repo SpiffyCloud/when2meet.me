@@ -31,11 +31,10 @@ export const createMeeting = async (title: string, by_end_date: Date) => {
 }
 
 export const postNewUser = async ( meeting_id: string, name: string) => {
-    console.log("hello");
     const requestOptions = {
         method: "POST", 
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: name, slots: [] }),
+        body: JSON.stringify({ name: name }),
     }
     const response = await fetch(`/api/v1/meetings/${meeting_id}/availabilities/`, requestOptions);
     return await response.json();

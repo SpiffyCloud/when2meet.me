@@ -9,6 +9,7 @@ from .serializers import (
     AvailabilitySerializer,
 )
 from .models import Meeting, Availability
+import json
 
 
 class CreateMeeting(APIView):
@@ -100,7 +101,7 @@ class SubmitAvailability(APIView):
         """
         new_data = {
             "name": request.data["name"],
-            "slots": [int(slot) for slot in request.data.get("slots", [])],
+            "slots": [int(slot) for slot in json.loads(request.data.get("slots", "[]"))],
             "meeting": kwargs["id"],
         }
         availability = Availability.objects.filter(

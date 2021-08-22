@@ -49,6 +49,7 @@ export default {
       }
       nameError.value = "";
       const response = await postNewUser(route.params.id as string, name.value);
+      console.log(response);
       context.emit("add-new-user", response.name);
     }  
     
