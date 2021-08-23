@@ -79,9 +79,9 @@ export default {
     setup(props: any, context: any) {
         const lastTd = ref(null);
         const selectDate = (e: any, dataPoint: any) => {
-            if (!e.target.classList.contains("selected")) {
-                return;
-            }
+            // if (!e.target.classList.contains("selected")) {
+            //     return;
+            // }
             e.preventDefault();
             const td = document.elementFromPoint(
                 e.touches[0].clientX,
@@ -90,13 +90,19 @@ export default {
             if (td === lastTd.value) return;
             lastTd.value = td;
 
-            td.classList.toggle("selected");
+            if (e.target.classList.contains("selected")) {
+                td.classList.add("selected");
+            } else {
+                td.classList.remove("selected");
+            }
 
             // create a draggable box around the selected td
         };
 
         const initSelectedDate = (e: any) => {
+            console.log(e);
             e.target.classList.toggle("selected");
+            e.stopPropagation();
         };
         const { chartData } = toRefs(props);
         const focusIntoView = (event) => {
