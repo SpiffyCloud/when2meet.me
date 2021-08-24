@@ -16,6 +16,7 @@
             <tr v-for="(series, y) in chartData" :key="series.name">
                 <td>{{ parseInt(y) % 2 == 0 ? series.name : null }}</td>
                 <td
+                    class="noselect"
                     v-for="(dataPoint, x) in series.data"
                     :key="{ x, y }"
                     :id="`${x} ${y}`"
@@ -26,8 +27,8 @@
                               }
                             : 'white'
                     "
-                    @click="initSelectedDate"
                     @touchmove="selectDate($event, { x, y })"
+                    v-touch:hold="longtapHandler"
                 ></td>
             </tr>
         </tbody>
@@ -101,7 +102,7 @@ export default {
 
         const initSelectedDate = (e: any) => {
             console.log(e);
-            e.target.classList.toggle("selected");
+
             e.stopPropagation();
         };
         const { chartData } = toRefs(props);
@@ -153,6 +154,10 @@ export default {
             return `${prevWeekFormatted}-${lastDateFormatted}`;
         });
 
+        const longtapHandler = (e: any) => {
+            e.target.classList.toggle("selected");
+        };
+
         return {
             focusIntoView,
             nextWeekLabel,
@@ -160,12 +165,24 @@ export default {
             dates,
             selectDate,
             initSelectedDate,
+            longtapHandler,
         };
     },
 };
 </script>
 
 <style>
+td,
+th,
+tr,
+table {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
 .availability-table {
     border-collapse: collapse;
     width: 100%;
