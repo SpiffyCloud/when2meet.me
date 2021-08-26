@@ -1,18 +1,7 @@
 <template>
     <div>
         <Toast />
-        <div class="action-buttons" v-if="selecting">
-            <Button
-                icon="pi pi-minus"
-                class="p-button-rounded p-button-danger p-mx-2"
-                @click="deselectCells"
-            />
-            <Button
-                icon="pi pi-plus"
-                class="p-button-rounded p-mx-2 p-button-success"
-                @click="selectCells"
-            />
-        </div>
+
         <table tabindex="0" id="table" class="availability-table">
             <thead class="sticky-header">
                 <tr>
@@ -29,20 +18,15 @@
                     <td>{{ parseInt(y) % 2 == 0 ? series.name : null }}</td>
                     <td
                         class="noselect"
-                        :class="{ active: activeTds.indexOf(`${x} ${y}`) > -1 }"
+                        :class="{
+                            active: activeTds.indexOf(`${x} ${y}`) > -1,
+                        }"
                         v-for="(dataPoint, x) in series.data"
                         :key="{ x, y }"
                         :id="`${x} ${y}`"
-                        :style="
-                            dataPoint.y > 0
-                                ? {
-                                      backgroundColor: `var(--green-${dataPoint.y}00)`,
-                                  }
-                                : 'white'
-                        "
-                        @touchmove="selectDate($event, { x, y })"
-                        v-touch:hold="longtapHandler"
-                        v-touch:release="releaseHandler"
+                        @mousemove="selectDate($event, { x, y })"
+                        @mousedown="handleMouseDown"
+                        @mouseup="handleMouseUp"
                         @click="handleClick"
                     ></td>
                 </tr>
@@ -77,7 +61,7 @@
 <script lang="ts">
 import Button from "primevue/button";
 import Toast from "primevue/toast";
-import { computed, ref, toRefs } from "vue";
+import { computed, ref, reactive, toRefs } from "vue";
 import { useToast } from "primevue/usetoast";
 
 export default {
@@ -98,33 +82,89 @@ export default {
     },
     emits: ["getNext", "getPrev"],
     setup(props: any, context: any) {
-        const lastTd = ref(null);
-        const dragging = ref(false);
+        const mousedown = ref(false);
         const toast = useToast();
-        const selecting = ref(false);
 
         const selectDate = (e: any, dataPoint: any) => {
-            if (!dragging.value) {
+            if (!mousedown.value) {
                 return;
             }
+
             e.preventDefault();
-            const td = document.elementFromPoint(
-                e.touches[0].clientX,
-                e.touches[0].clientY
-            ) as any;
-            if (td === lastTd.value) return;
-            lastTd.value = td;
+            const td = document.elementFromPoint(e.clientX, e.clientY) as any;
 
-            td.classList.add("selected");
-            td.classList.remove("active");
+            // get all tds
+            const tds = document.querySelectorAll("#table td");
+            // if td is inbetween starting.x and current.x as well as inbetween starting.y and current.y, select it
+            tds.forEach((el: any) => {
+                const box = el.getBoundingClientRect();
+                // if el.clientX is in between e.clientX and startingPos.x
+                if (
+                    (box.left <= e.clientX &&
+                        box.left >= startingBox.left &&
+                        box.top <= e.clientY &&
+                        box.top >= startingBox.top) ||
+                    (box.left <= e.clientX &&
+                        box.left >= startingBox.left &&
+                        box.bottom >= e.clientY &&
+                        box.bottom <= startingBox.bottom) ||
+                    (box.right >= e.clientX &&
+                        box.right <= startingBox.right &&
+                        box.top <= e.clientY &&
+                        box.top >= startingBox.top) ||
+                    (box.right >= e.clientX &&
+                        box.right <= startingBox.right &&
+                        box.bottom >= e.clientY &&
+                        box.bottom <= startingBox.bottom)
+                ) {
+                    if (selecting.value) {
+                        el.classList.add("non-active");
+                    } else {
+                        el.classList.add("active");
+                    }
+                } else {
+                    el.classList.remove("active");
+                    el.classList.remove("non-active");
+                }
+            });
+        };
 
-            // check if any td is selected
-            const selectedTds = document.querySelectorAll(".selected");
-            if (selectedTds.length == 0) {
-                selecting.value = false;
-            }
+        const handleClick = (e: any) => {
+            e.target.classList.toggle("selected");
+        };
 
-            // create a draggable box around the selected td
+        const selecting = ref(false);
+        const startingBox = reactive({
+            top: 0,
+            bottom: 0,
+            right: 0,
+            left: 0,
+        });
+        const handleMouseDown = (e: any) => {
+            mousedown.value = true;
+            selecting.value = e.target.classList.contains("selected");
+            const td = document.elementFromPoint(e.clientX, e.clientY) as any;
+            const box = td.getBoundingClientRect();
+            startingBox.top = box.top;
+            startingBox.bottom = box.bottom;
+            startingBox.right = box.right;
+            startingBox.left = box.left;
+        };
+
+        const handleMouseUp = (e: any) => {
+            mousedown.value = false;
+            // add class "selected" to all tds with class "active"
+            const tds = document.querySelectorAll("#table td.active");
+            tds.forEach((el: any) => {
+                el.classList.remove("active");
+                el.classList.add("selected");
+            });
+            // remove class selected from all tds with class non active
+            const tds2 = document.querySelectorAll("#table td.non-active");
+            tds2.forEach((el: any) => {
+                el.classList.remove("non-active");
+                el.classList.remove("selected");
+            });
         };
 
         const { chartData } = toRefs(props);
@@ -176,55 +216,7 @@ export default {
             return `${prevWeekFormatted}-${lastDateFormatted}`;
         });
 
-        const longtapHandler = (e: any) => {
-            dragging.value = true;
-            selecting.value = true;
-
-            e.target.classList.toggle("selected");
-            e.target.classList.remove("active");
-        };
-
-        const releaseHandler = (_) => {
-            dragging.value = false;
-        };
-
-        const handleClick = (_) => {
-            toast.add({
-                severity: "info",
-                summary: "",
-                detail: "Hold and drag cells to select them",
-                life: 2000,
-            });
-        };
-
         const activeTds = ref([] as any);
-        const selectCells = (_) => {
-            // selecting.value = false;
-            const selectedTds = document.querySelectorAll(".selected");
-            // add class active to all selectedTds
-            selectedTds.forEach((td) => {
-                // if td not already active, add to activeTds
-                if (activeTds.value.indexOf(td.id) == -1) {
-                    activeTds.value.push(td.id);
-                }
-            });
-            selecting.value = false;
-        };
-
-        const deselectCells = (_) => {
-            // deselect all selectedTds
-            const selectedTds = document.querySelectorAll(".selected");
-            selectedTds.forEach((td) => {
-                // remove class active from all selectedTds
-                td.classList.remove("active");
-                // remove from activeTds
-                const index = activeTds.value.indexOf(td.id);
-                if (index > -1) {
-                    activeTds.value.splice(index, 1);
-                }
-            });
-            selecting.value = false;
-        };
 
         return {
             focusIntoView,
@@ -232,13 +224,11 @@ export default {
             prevWeekLabel,
             dates,
             selectDate,
-            longtapHandler,
-            releaseHandler,
-            handleClick,
-            selecting,
-            selectCells,
-            deselectCells,
             activeTds,
+            mousedown,
+            handleMouseDown,
+            handleMouseUp,
+            handleClick,
         };
     },
 };
@@ -315,13 +305,20 @@ thead td {
     color: white !important;
 }
 
-.selected {
-    /* green border */
-    border: 5px solid var(--green-600) !important;
-}
 .active {
     /* green background */
     background-color: var(--green-600) !important;
+}
+
+.selected {
+    /* blue background */
+    background-color: var(--green-600) !important;
+}
+
+.non-active {
+    /* gray background */
+    background-color: white !important;
+    border: 5px solid green;
 }
 
 .p-tabview .p-tabview-nav li .p-tabview-nav-link:not(.p-disabled):focus {
