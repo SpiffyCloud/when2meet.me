@@ -18,15 +18,15 @@
                     <td>{{ parseInt(y) % 2 == 0 ? series.name : null }}</td>
                     <td
                         class="noselect"
-                        :class="{
-                            active: activeTds.indexOf(`${x} ${y}`) > -1,
-                        }"
                         v-for="(dataPoint, x) in series.data"
                         :key="{ x, y }"
                         :id="`${x} ${y}`"
-                        @mousemove="selectDate($event, { x, y })"
+                        @mousemove="selectDate"
                         @mousedown="handleMouseDown"
                         @mouseup="handleMouseUp"
+                        @touchstart="handleTouchStart"
+                        @touchend="handleTouchEnd"
+                        @touchmove="selectDate"
                         @click="handleClick"
                     ></td>
                 </tr>
@@ -83,15 +83,15 @@ export default {
     emits: ["getNext", "getPrev"],
     setup(props: any, context: any) {
         const mousedown = ref(false);
-        const toast = useToast();
 
-        const selectDate = (e: any, dataPoint: any) => {
+        const selectDate = (e: any) => {
             if (!mousedown.value) {
                 return;
             }
 
             e.preventDefault();
-            const td = document.elementFromPoint(e.clientX, e.clientY) as any;
+
+            const event = e.touches ? e.touches[0] : e;
 
             // get all tds
             const tds = document.querySelectorAll("#table td");
@@ -100,21 +100,21 @@ export default {
                 const box = el.getBoundingClientRect();
                 // if el.clientX is in between e.clientX and startingPos.x
                 if (
-                    (box.left <= e.clientX &&
+                    (box.left <= event.clientX &&
                         box.left >= startingBox.left &&
-                        box.top <= e.clientY &&
+                        box.top <= event.clientY &&
                         box.top >= startingBox.top) ||
-                    (box.left <= e.clientX &&
+                    (box.left <= event.clientX &&
                         box.left >= startingBox.left &&
-                        box.bottom >= e.clientY &&
+                        box.bottom >= event.clientY &&
                         box.bottom <= startingBox.bottom) ||
-                    (box.right >= e.clientX &&
+                    (box.right >= event.clientX &&
                         box.right <= startingBox.right &&
-                        box.top <= e.clientY &&
+                        box.top <= event.clientY &&
                         box.top >= startingBox.top) ||
-                    (box.right >= e.clientX &&
+                    (box.right >= event.clientX &&
                         box.right <= startingBox.right &&
-                        box.bottom >= e.clientY &&
+                        box.bottom >= event.clientY &&
                         box.bottom <= startingBox.bottom)
                 ) {
                     if (selecting.value) {
@@ -140,15 +140,19 @@ export default {
             right: 0,
             left: 0,
         });
-        const handleMouseDown = (e: any) => {
-            mousedown.value = true;
-            selecting.value = e.target.classList.contains("selected");
-            const td = document.elementFromPoint(e.clientX, e.clientY) as any;
+
+        const setStartingBox = (td: any) => {
             const box = td.getBoundingClientRect();
             startingBox.top = box.top;
             startingBox.bottom = box.bottom;
             startingBox.right = box.right;
             startingBox.left = box.left;
+        };
+        const handleMouseDown = (e: any) => {
+            mousedown.value = true;
+            selecting.value = e.target.classList.contains("selected");
+            const td = document.elementFromPoint(e.clientX, e.clientY) as any;
+            setStartingBox(td);
         };
 
         const handleMouseUp = (e: any) => {
@@ -216,7 +220,31 @@ export default {
             return `${prevWeekFormatted}-${lastDateFormatted}`;
         });
 
-        const activeTds = ref([] as any);
+        const handleTouchStart = (e: any) => {
+            e.preventDefault();
+            mousedown.value = true;
+            selecting.value = e.target.classList.contains("selected");
+            const td = document.elementFromPoint(
+                e.touches[0].clientX,
+                e.touches[0].clientY
+            ) as any;
+            setStartingBox(td);
+        };
+
+        const handleTouchEnd = (e: any) => {
+            mousedown.value = false;
+            const tds = document.querySelectorAll("#table td.active");
+            tds.forEach((el: any) => {
+                el.classList.remove("active");
+                el.classList.add("selected");
+            });
+            // remove class selected from all tds with class non active
+            const tds2 = document.querySelectorAll("#table td.non-active");
+            tds2.forEach((el: any) => {
+                el.classList.remove("non-active");
+                el.classList.remove("selected");
+            });
+        };
 
         return {
             focusIntoView,
@@ -224,11 +252,12 @@ export default {
             prevWeekLabel,
             dates,
             selectDate,
-            activeTds,
             mousedown,
             handleMouseDown,
             handleMouseUp,
             handleClick,
+            handleTouchStart,
+            handleTouchEnd,
         };
     },
 };
