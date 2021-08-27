@@ -5,17 +5,19 @@
         <table tabindex="0" id="table" class="availability-table">
             <thead class="sticky-header">
                 <tr>
-                    <td>
+                    <th>
                         <i class="pi pi-angle-double-up" />
-                    </td>
-                    <td v-for="(date, index) in dates" :key="index">
+                    </th>
+                    <th v-for="(date, index) in dates" :key="index">
                         {{ date }}
-                    </td>
+                    </th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="(series, y) in chartData" :key="series.name">
-                    <td>{{ parseInt(y) % 2 == 0 ? series.name : null }}</td>
+                    <td class="sticky-column">
+                        {{ parseInt(y) % 2 == 0 ? series.name : null }}
+                    </td>
                     <td
                         class="noselect"
                         v-for="(dataPoint, x) in series.data"
@@ -24,10 +26,10 @@
                         @mousemove="selectDate"
                         @mousedown="handleMouseDown"
                         @mouseup="handleMouseUp"
+                        @click="handleClick"
                         @touchstart="handleTouchStart"
                         @touchend="handleTouchEnd"
                         @touchmove="selectDate"
-                        @click="handleClick"
                     ></td>
                 </tr>
             </tbody>
@@ -35,23 +37,7 @@
             <tfoot class="sticky-footer">
                 <tr>
                     <td><i class="pi pi-angle-double-down" /></td>
-                    <td colspan="5">
-                        <Button
-                            icon="pi pi-chevron-left"
-                            class="p-button-rounded p-button-text white-text"
-                            style="float: left"
-                            @click="$emit('getPrev')"
-                            :label="prevWeekLabel"
-                        />
-                        <Button
-                            icon="pi pi-chevron-right"
-                            iconPos="right"
-                            class="p-button-rounded p-button-text white-text"
-                            :label="nextWeekLabel"
-                            @click="$emit('getNext')"
-                            style="float: right"
-                        />
-                    </td>
+                    <td v-for="(date, index) in dates" :key="index"></td>
                 </tr>
             </tfoot>
         </table>
@@ -62,7 +48,6 @@
 import Button from "primevue/button";
 import Toast from "primevue/toast";
 import { computed, ref, reactive, toRefs } from "vue";
-import { useToast } from "primevue/usetoast";
 
 export default {
     name: "AvailabilityTable",
@@ -84,15 +69,53 @@ export default {
     setup(props: any, context: any) {
         const mousedown = ref(false);
 
+        const sidebarWrapper = document.querySelector(".p-sidebar-content");
+
+        sidebarWrapper?.addEventListener("scroll", () => {
+            setTimeout(() => {
+                if (mousedown.value) {
+                    sidebarWrapper?.scrollBy(
+                        scrollDirection.x,
+                        scrollDirection.y
+                    );
+                }
+            }, 1000);
+        });
+
+        const scrollDirection = reactive({
+            x: 0,
+            y: 0,
+        });
+
         const selectDate = (e: any) => {
             if (!mousedown.value) {
                 return;
             }
 
-            e.preventDefault();
+            // e.preventDefault();
 
             const event = e.touches ? e.touches[0] : e;
 
+            if (window.innerWidth - event.clientX < 20) {
+                scrollDirection.x = 50;
+                scrollDirection.y = 0;
+            } else if (event.clientX < 100) {
+                scrollDirection.x = -50;
+                scrollDirection.y = 0;
+            } else if (event.clientY < 100) {
+                scrollDirection.x = 0;
+                scrollDirection.y = -50;
+            } else if (event.clientY > window.innerHeight - 64) {
+                scrollDirection.x = 0;
+                scrollDirection.y = 50;
+            }
+            // sidebarWrapper?.scrollBy({
+            //     top: scrollDirection.y,
+            //     left: scrollDirection.x,
+            //     behavior: "smooth",
+            // });
+            sidebarWrapper?.scrollBy(scrollDirection.x, scrollDirection.y);
+            e.preventDefault();
             // get all tds
             const tds = document.querySelectorAll("#table td");
             // if td is inbetween starting.x and current.x as well as inbetween starting.y and current.y, select it
@@ -172,56 +195,12 @@ export default {
         };
 
         const { chartData } = toRefs(props);
-        const focusIntoView = (event) => {
-            // const heading = document.querySelector("#table") as HTMLElement;
-            event.target.scrollIntoView();
-        };
 
         const dates = computed(() => {
             return chartData.value[0].data.map((dataPoint) => dataPoint.x);
         });
 
-        const nextWeekLabel = computed((): string => {
-            // get last date of dates
-            const lastDate = dates.value[dates.value.length - 1];
-            // get one day after last date
-            const tomorrow = new Date(lastDate);
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            const day = tomorrow.getDate();
-            const month = tomorrow.getMonth() + 1;
-            const nextWeekStart = `${month}/${day}`;
-
-            // get 5 days from tomorow's date as mm/dd
-            const nextWeekEnd = new Date(tomorrow);
-            nextWeekEnd.setDate(nextWeekEnd.getDate() + 4);
-            const dayEnd = nextWeekEnd.getDate();
-            const monthEnd = nextWeekEnd.getMonth() + 1;
-            const nextWeekEndLabel = `${monthEnd}/${dayEnd}`;
-
-            return `${nextWeekStart}-${nextWeekEndLabel}`;
-        });
-
-        const prevWeekLabel = computed(() => {
-            // get first date of this week
-            const firstDate = dates.value[0];
-            // get 5 days before first date
-            const prevWeek = new Date(firstDate);
-            prevWeek.setDate(prevWeek.getDate() - 5);
-            // format as mm/dd
-            const prevWeekFormatted = `${
-                prevWeek.getMonth() + 1
-            }/${prevWeek.getDate()}`;
-            // get yesterday's date as mm/dd
-            const lastDate = new Date(firstDate);
-            lastDate.setDate(lastDate.getDate() - 1);
-            const lastDateFormatted = `${
-                lastDate.getMonth() + 1
-            }/${lastDate.getDate()}`;
-            return `${prevWeekFormatted}-${lastDateFormatted}`;
-        });
-
         const handleTouchStart = (e: any) => {
-            e.preventDefault();
             mousedown.value = true;
             selecting.value = e.target.classList.contains("selected");
             const td = document.elementFromPoint(
@@ -247,9 +226,6 @@ export default {
         };
 
         return {
-            focusIntoView,
-            nextWeekLabel,
-            prevWeekLabel,
             dates,
             selectDate,
             mousedown,
@@ -289,7 +265,7 @@ div {
     width: 100%;
     position: relative;
 }
-.availability-table thead td,
+.availability-table thead th,
 .availability-table tfoot td,
 .availability-table tbody tr td:first-child {
     background-color: var(--green-600);
@@ -302,13 +278,12 @@ div {
     white-space: nowrap;
 }
 
-thead td {
+thead th {
     padding: 0.5rem;
 }
 
-.availability-table td {
+.availability-table tbody td {
     height: 1.25rem;
-    width: 2.5rem;
 }
 
 .availability-table tbody td {
@@ -347,10 +322,20 @@ thead td {
 .non-active {
     /* gray background */
     background-color: white !important;
-    border: 5px solid green;
+    border: none !important;
 }
 
 .p-tabview .p-tabview-nav li .p-tabview-nav-link:not(.p-disabled):focus {
     box-shadow: none !important;
+}
+
+tfoot td {
+    height: 2rem;
+}
+
+tr td:first-child {
+    position: sticky;
+    left: 0;
+    width: 4rem;
 }
 </style>

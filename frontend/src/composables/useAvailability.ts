@@ -34,7 +34,7 @@ export default function useAvailability(meeting: any)  {
         // createa series of data points from the group availability
         for (let y = 0; y < 96; y++) {
             const rawData = [] as any;
-            for (let x = 0; x < 5; x++) {
+            for (let x = 0; x < 10; x++) {
                 const data = groupAvailability[y + x * 96];
                 const date = new Date((start15MinBlock + y + x * 96) * 15 * 60 * 1000);
                 rawData.push({

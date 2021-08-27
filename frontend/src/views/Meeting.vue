@@ -12,6 +12,7 @@
                 @click="copyMeetingUrl"
                 class="p-button-lg p-button-success p-my-3 p-shadow-5"
             />
+
             <Button
                 v-if="hasResponders"
                 label="Adjust My Availability"
@@ -22,16 +23,11 @@
 
         <div v-if="hasResponders">
             <Sidebar v-model:visible="showMyAvailability" position="full">
-                <TabView>
-                    <TabPanel header="Form"> </TabPanel>
-                    <TabPanel header="Heatmap">
-                        <AvailabilityTable
-                            @getNext="getNextWeek"
-                            @getPrev="getPrevWeek"
-                            :chartData="chartData"
-                        />
-                    </TabPanel>
-                </TabView>
+                <AvailabilityTable
+                    @getNext="getNextWeek"
+                    @getPrev="getPrevWeek"
+                    :chartData="chartData"
+                />
             </Sidebar>
             <h3 class="p-mb-2">
                 Best Windows of Availability
@@ -293,10 +289,9 @@ export default {
 .table-wrapper {
     max-height: 90vh;
     height: fit-content;
+    width: 100vw;
     overflow-y: scroll;
-    overflow-x: none;
-    margin-bottom: 2rem;
-    border-radius: 1rem;
+    overflow-x: scroll;
     background-color: var(--green-600);
 }
 
@@ -325,9 +320,5 @@ h1.active-user {
 .p-tabview .p-tabview-panels,
 .p-sidebar-content {
     padding: 0 !important;
-}
-
-.p-sidebar-content {
-    overflow-x: hidden !important;
 }
 </style>
