@@ -31,7 +31,7 @@ export default {
     const error = ref("");
 
     watch(date, (newVal: Date) => {
-      if (newVal.getDate() < new Date().getDate()) {
+      if (newVal < new Date()) {
         error.value = "End date cannot be in the past";
         context.emit("update:error", error.value);
       } else {
