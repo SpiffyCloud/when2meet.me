@@ -69,19 +69,6 @@ export default {
     setup(props: any, context: any) {
         const mousedown = ref(false);
 
-        const sidebarWrapper = document.querySelector(".p-sidebar-content");
-
-        sidebarWrapper?.addEventListener("scroll", () => {
-            setTimeout(() => {
-                if (mousedown.value) {
-                    sidebarWrapper?.scrollBy(
-                        scrollDirection.x,
-                        scrollDirection.y
-                    );
-                }
-            }, 1000);
-        });
-
         const scrollDirection = reactive({
             x: 0,
             y: 0,
@@ -91,10 +78,23 @@ export default {
             if (!mousedown.value) {
                 return;
             }
+            const sidebarWrapper = document.querySelector(".p-sidebar-content");
 
+            sidebarWrapper?.addEventListener("scroll", () => {
+                setTimeout(() => {
+                    if (mousedown.value) {
+                        sidebarWrapper?.scrollBy(
+                            scrollDirection.x,
+                            scrollDirection.y
+                        );
+                    }
+                });
+            });
             // e.preventDefault();
 
             const event = e.touches ? e.touches[0] : e;
+
+            // log sidebar wrapper scroll offset
 
             if (window.innerWidth - event.clientX < 20) {
                 scrollDirection.x = 50;
@@ -109,18 +109,21 @@ export default {
                 scrollDirection.x = 0;
                 scrollDirection.y = 50;
             }
-            // sidebarWrapper?.scrollBy({
-            //     top: scrollDirection.y,
-            //     left: scrollDirection.x,
-            //     behavior: "smooth",
-            // });
-            sidebarWrapper?.scrollBy(scrollDirection.x, scrollDirection.y);
+
+            sidebarWrapper!.scrollBy(scrollDirection.x, scrollDirection.y);
             e.preventDefault();
+
+            // TODO: Figure out how to get box selection working with the internal scroll
+            console.log(event.clientX, event.clientY);
+            console.log(startingBox.top, startingBox.left);
+            console.log(sidebarWrapper!.scrollLeft, sidebarWrapper!.scrollTop);
+
             // get all tds
             const tds = document.querySelectorAll("#table td");
             // if td is inbetween starting.x and current.x as well as inbetween starting.y and current.y, select it
             tds.forEach((el: any) => {
                 const box = el.getBoundingClientRect();
+                // log the boxes scroll offset
                 // if el.clientX is in between e.clientX and startingPos.x
                 if (
                     (box.left <= event.clientX &&
