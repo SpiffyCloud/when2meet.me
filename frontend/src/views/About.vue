@@ -1,99 +1,106 @@
 <template>
   <div id="about" class="p-d-flex p-flex-column p-jc-between p-p-4">
-    <h1 id="heading" class="p-text-center p-text-bold">When 2 Meet Me</h1>
+    <h1 id="heading" class="p-text-center p-text-bold p-pb-4">
+      When 2 Meet Me
+    </h1>
 
-    <div id="about-group" class="p-field p-text-left p-d-flex p-flex-column">
-      <label for="about" class="p-text-bold">What is When2MeetMe?</label>
-      <p>
-        When2MeetMe is a quick and easy availability survey tool that helps you find the best times you and your group can meet.
+    <div id="what-is" class="p-field p-text-left p-d-flex p-flex-column p-pb-2">
+      <h4 class="p-pb-2">What is When2MeetMe?</h4>
+      <p class="p-pb-2">
+        When2MeetMe is a quick and easy availability survey tool that helps you
+        find the best times you and your group can meet.
       </p>
-      <p>
-        Please read our <Button label="Link" class="p-button-link" @click="openModal">terms and conditions</Button> for details on whta we track and use the data we collect.
+      <p class="p-pb-2">
+        Please read our
+        <a href="#" class="p-underline" @click="openTerms"
+          >terms and conditions</a
+        >
+        for details on whta we track and use the data we collect.
       </p>
     </div>
 
     <Dialog
       header="Terms and Conditions"
-      v-model:visible="displayModal"
+      v-model:visible="displayModalTerms"
       :modal="true"
     >
-      <p>
-        A document that says legal stuff...
-      </p>
+      <p class="">A document that says legal stuff...</p>
     </Dialog>
 
-    <div id="feedback-group" class="p-field p-text-left p-d-flex p-flex-column">
-      <label for="feedback" class="p-text-bold">We'd love your feedback!</label>
-      <p>
-        The good, the bad, and the ugly.
-      </p>
+    <div
+      id="feedback-love-group"
+      class="p-field p-text-left p-d-flex p-flex-column p-pb-2"
+    >
+      <h4 class="p-pb-2">We'd love your feedback!</h4>
+      <p class="p-pb-2">The good, the bad, and the ugly.</p>
 
-      <div id="feedback-love-group" class="p-d-flex p-jc-start p-flex-wrap">   <!-- TODO: This can be change into a more robust solution. -->
+      <div id="feedback-love" class="p-d-flex p-jc-start p-flex-wrap">
         <Button
-          class="p-button p-bg-white p-m-1 p-button-lg p-shadow-2">
-          I love it!
-        </Button>
-        <Button
-          class="p-button p-bg-white p-m-1 p-button-lg p-shadow-2">
-          I hate it!
-        </Button>
-        <Button
-          class="p-button p-bg-white p-m-1 p-button-lg p-shadow-2">
-          Fast
-        </Button>
-        <Button
-          class="p-button p-bg-white p-m-1 p-button-lg p-shadow-2">
-          Great experience
-        </Button>
-        <Button
-          class="p-button p-bg-white p-m-1 p-button-lg p-shadow-2">
-          Easy to use
-        </Button>
-        <Button
-          class="p-button p-bg-white p-m-1 p-button-lg p-shadow-2">
-          It's confusing
-        </Button>
-        <Button
-          class="p-button p-bg-white p-m-1 p-button-lg p-shadow-2">
-          Unintuitive
+          v-for="(item, index) in feedbackMessages"
+          :key="index"
+          @click="selectFeedback"
+          class="p-button p-bg-white p-m-1 p-button-lg p-shadow-2"
+        >
+          {{ item }}
         </Button>
       </div>
     </div>
 
-    <div id="thoughts-group" class="p-field p-text-left p-d-flex p-flex-column">
-      <label for="thoughts" class="p-text-bold">Would you like to say something?</label>
-      <p>
-        Share your thoughts and ideas. <span>optional</span>
-      </p>
-      <Textarea v-model="value" :autoResize="true" rows="5" cols="30" placeholder="This is cool!" />
-
+    <div
+      id="feedback-contact"
+      class="p-field p-text-left p-d-flex p-flex-column p-pb-2"
+    >
+      <h4 class="p-pb-2">Would you like to say something?</h4>
+      <p class="p-pb-2">Share your thoughts and ideas. <span>optional</span></p>
+      <Textarea
+        v-model="contact"
+        :autoResize="true"
+        rows="5"
+        cols="30"
+        placeholder="This is cool!"
+      />
+      <br />
       <Button
         id="submit-feedback"
         label="Submit My Feedback"
-        @click="onSubmitFeedback()"
+        @click="onSubmitFeedback"
         class="p-button-raised p-button-success p-button-lg"
       />
     </div>
 
-    <div id="contact-group" class="p-field p-text-left p-d-flex p-flex-column">
-      <label for="contact" class="p-text-bold">Like our style?</label>
-      <p>
-        When2MeetMe is designed, developed, and maintained by a stellar group of people who love to make great products.
+    <div id="hire-contact" class="p-field p-text-left p-d-flex p-flex-column p-pb-2">
+      <h4 class="p-pb-2">Like our style?</h4>
+      <p class="p-pb-2">
+        When2MeetMe is designed, developed, and maintained by a stellar group of
+        people who love to make great products.
       </p>
-      <p>
+      <p class="">
         If you've got an idea and would like to hire us - just let us know!
       </p>
-      <Textarea v-model="contact" :autoResize="true" rows="5" cols="30" placeholder="You guys rock!" />
-
+      <br />
       <Button
         id="hire-us"
         label="Hire Us"
-        @click="onHireUs()"
+        @click="openHireUs"
         class="p-button-raised p-button-success p-button-lg"
       />
+
+      <Dialog
+        header="Hire Us"
+        v-model:visible="displayModalHireUs"
+        :modal="true"
+      >
+        <Textarea
+          v-model="hireContact"
+          :autoResize="true"
+          rows="5"
+          cols="30"
+          placeholder="You guys rock!"
+        />
+      </Dialog>
     </div>
 
-    <h3 id="footer" class="p-text-center p-text-bold">Home</h3>
+    <h3 id="footer" class="p-text-center p-text-bold p-pt-2">Home</h3>
   </div>
 </template>
 
@@ -102,6 +109,7 @@ import { Options, Vue } from "vue-class-component";
 import Button from "primevue/button";
 import Textarea from "primevue/textarea";
 import Dialog from "primevue/dialog";
+import SelectButton from "primevue/selectbutton";
 
 @Options({
   name: "About",
@@ -109,23 +117,44 @@ import Dialog from "primevue/dialog";
     Button,
     Textarea,
     Dialog,
+    SelectButton,
   },
 
   methods: {
-    async onSubmitFeedback() {
-      console.log("[todo] onSubmitFeedback")
+    onSubmitFeedback() {
+      console.log("[todo] onSubmitFeedback");
     },
-    async onHireUs() {
-      console.log("[todo] onHireUs")
+    onSubmitHireUs() {
+      console.log("[todo] onSubmitHireUs");
     },
   },
 })
-
 export default class About extends Vue {
-  displayModal = false;
+  displayModalTerms = false;
+  displayModalHireUs = false;
 
-  openModal() {
-    this.displayModal = true;
+  feedbackMessages = [
+    "I love it!",
+    "I hate it!",
+    "Fast",
+    "Great experience",
+    "Easy to use",
+    "It's confusing",
+    "Unintuitive",
+  ];
+
+  selectedFeedbackMessages = [];
+
+  openTerms() {
+    this.displayModalTerms = true;
+  }
+
+  openHireUs() {
+    this.displayModalHireUs = true;
+  }
+
+  selectFeedback() {
+    console.log("[todo] selectFeedback");
   }
 }
 </script>
