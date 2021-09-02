@@ -19,10 +19,12 @@
                         {{ parseInt(y) % 2 == 0 ? series.name : null }}
                     </td>
                     <td
-                        class="noselect"
+                        class="noselect data"
                         v-for="(dataPoint, x) in series.data"
                         :key="{ x, y }"
                         :id="`${x} ${y}`"
+                        :data-x="x"
+                        :data-y="y"
                         @mousemove="selectDate"
                         @mousedown="handleMouseDown"
                         @mouseup="handleMouseUp"
@@ -97,52 +99,63 @@ export default {
             // log sidebar wrapper scroll offset
 
             if (window.innerWidth - event.clientX < 20) {
-                scrollDirection.x = 50;
+                scrollDirection.x = 1;
                 scrollDirection.y = 0;
             } else if (event.clientX < 100) {
-                scrollDirection.x = -50;
+                scrollDirection.x = -1;
                 scrollDirection.y = 0;
             } else if (event.clientY < 100) {
                 scrollDirection.x = 0;
-                scrollDirection.y = -50;
+                scrollDirection.y = -1;
             } else if (event.clientY > window.innerHeight - 64) {
                 scrollDirection.x = 0;
-                scrollDirection.y = 50;
+                scrollDirection.y = 1;
             }
 
             sidebarWrapper!.scrollBy(scrollDirection.x, scrollDirection.y);
             e.preventDefault();
 
-            // TODO: Figure out how to get box selection working with the internal scroll
-            console.log(event.clientX, event.clientY);
-            console.log(startingBox.top, startingBox.left);
-            const scrollLeft = sidebarWrapper!.scrollLeft;
-            const scrollTop = sidebarWrapper!.scrollTop;
-
             // get all tds
-            const tds = document.querySelectorAll("#table td");
+            const tds = document.querySelectorAll("#table td.data");
+            const eventTd = document.elementFromPoint(
+                event.clientX,
+                event.clientY
+            ) as any;
+
+            const eventX = parseInt(eventTd.dataset.x);
+            const eventY = parseInt(eventTd.dataset.y);
+            // return if eventX or eventY is NaN
+            if (isNaN(eventX) || isNaN(eventY)) {
+                return;
+            }
             // if td is inbetween starting.x and current.x as well as inbetween starting.y and current.y, select it
             tds.forEach((el: any) => {
-                const box = el.getBoundingClientRect();
+                const x = parseInt(el.dataset.x);
+                const y = parseInt(el.dataset.y);
+                // const box = el.getBoundingClientRect();
                 // log the boxes scroll offset
                 // if el.clientX is in between e.clientX and startingPos.x
                 if (
-                    (box.left <= event.clientX &&
-                        box.left >= startingBox.left - scrollLeft &&
-                        box.top <= event.clientY &&
-                        box.top >= startingBox.top - scrollTop) ||
-                    (box.left <= event.clientX &&
-                        box.left >= startingBox.left - scrollLeft &&
-                        box.bottom >= event.clientY &&
-                        box.bottom <= startingBox.bottom - scrollTop) ||
-                    (box.right >= event.clientX &&
-                        box.right <= startingBox.right - scrollLeft &&
-                        box.top <= event.clientY &&
-                        box.top >= startingBox.top - scrollTop) ||
-                    (box.right >= event.clientX &&
-                        box.right <= startingBox.right - scrollLeft &&
-                        box.bottom >= event.clientY &&
-                        box.bottom <= startingBox.bottom - scrollTop)
+                    // condition 1: Dragging from left to right, top to bottom
+                    (x >= startingBox.x &&
+                        x <= eventX &&
+                        y <= startingBox.y &&
+                        y >= eventY) ||
+                    // condition 2: Dragging from left to right, bottom to top
+                    (x >= startingBox.x &&
+                        x <= eventX &&
+                        y >= startingBox.y &&
+                        y <= eventY) ||
+                    // condition 3: Dragging from right to left, top to bottom
+                    (x <= startingBox.x &&
+                        x >= eventX &&
+                        y <= startingBox.y &&
+                        y >= eventY) ||
+                    // condition 4: Dragging from right to left, bottom to top
+                    (x <= startingBox.x &&
+                        x >= eventX &&
+                        y >= startingBox.y &&
+                        y <= eventY)
                 ) {
                     if (selecting.value) {
                         el.classList.add("non-active");
@@ -162,18 +175,13 @@ export default {
 
         const selecting = ref(false);
         const startingBox = reactive({
-            top: 0,
-            bottom: 0,
-            right: 0,
-            left: 0,
+            x: 0,
+            y: 0,
         });
 
         const setStartingBox = (td: any) => {
-            const box = td.getBoundingClientRect();
-            startingBox.top = box.top;
-            startingBox.bottom = box.bottom;
-            startingBox.right = box.right;
-            startingBox.left = box.left;
+            startingBox.x = parseInt(td.dataset.x);
+            startingBox.y = parseInt(td.dataset.y);
         };
         const handleMouseDown = (e: any) => {
             mousedown.value = true;
@@ -287,7 +295,7 @@ thead th {
 }
 
 .availability-table tbody td {
-    height: 1.25rem;
+    height: 25px;
 }
 
 .availability-table tbody td {
