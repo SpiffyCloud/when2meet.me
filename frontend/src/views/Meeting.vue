@@ -21,7 +21,7 @@
             />
         </div>
 
-        <div v-if="hasResponders">
+        <div>
             <Sidebar v-model:visible="showMyAvailability" position="full">
                 <AvailabilityTable
                     @getNext="getNextWeek"
@@ -139,13 +139,13 @@
 
             <NewUserForm @addNewUser="setNewUser($event)" />
         </div>
-        <div v-else>
+        <!-- <div v-else>
             <h3 id="new-user-title" class="p-text-bold p-mt-2">
                 You're the first one here!
             </h3>
 
             <NewUserForm @addNewUser="setNewUser($event)" />
-        </div>
+        </div> -->
     </div>
 </template>
 

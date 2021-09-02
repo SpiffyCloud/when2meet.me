@@ -116,7 +116,8 @@ export default {
             // TODO: Figure out how to get box selection working with the internal scroll
             console.log(event.clientX, event.clientY);
             console.log(startingBox.top, startingBox.left);
-            console.log(sidebarWrapper!.scrollLeft, sidebarWrapper!.scrollTop);
+            const scrollLeft = sidebarWrapper!.scrollLeft;
+            const scrollTop = sidebarWrapper!.scrollTop;
 
             // get all tds
             const tds = document.querySelectorAll("#table td");
@@ -127,21 +128,21 @@ export default {
                 // if el.clientX is in between e.clientX and startingPos.x
                 if (
                     (box.left <= event.clientX &&
-                        box.left >= startingBox.left &&
+                        box.left >= startingBox.left - scrollLeft &&
                         box.top <= event.clientY &&
-                        box.top >= startingBox.top) ||
+                        box.top >= startingBox.top - scrollTop) ||
                     (box.left <= event.clientX &&
-                        box.left >= startingBox.left &&
+                        box.left >= startingBox.left - scrollLeft &&
                         box.bottom >= event.clientY &&
-                        box.bottom <= startingBox.bottom) ||
+                        box.bottom <= startingBox.bottom - scrollTop) ||
                     (box.right >= event.clientX &&
-                        box.right <= startingBox.right &&
+                        box.right <= startingBox.right - scrollLeft &&
                         box.top <= event.clientY &&
-                        box.top >= startingBox.top) ||
+                        box.top >= startingBox.top - scrollTop) ||
                     (box.right >= event.clientX &&
-                        box.right <= startingBox.right &&
+                        box.right <= startingBox.right - scrollLeft &&
                         box.bottom >= event.clientY &&
-                        box.bottom <= startingBox.bottom)
+                        box.bottom <= startingBox.bottom - scrollTop)
                 ) {
                     if (selecting.value) {
                         el.classList.add("non-active");
