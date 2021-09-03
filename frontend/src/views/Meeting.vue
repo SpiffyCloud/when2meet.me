@@ -167,7 +167,7 @@ import WindowFilter from "@/components/WindowFilter.vue";
 // Composables
 import useGetMeeting from "@/composables/useGetMeeting";
 import useCopyUrl from "@/composables/useCopyUrl";
-import useAvailiability from "@/composables/useAvailability";
+import useChart from "@/composables/useChart";
 import useAdjustAvailiability from "@/composables/useAdjustAvailability";
 import useWindows from "@/composables/useWindows";
 
@@ -186,24 +186,25 @@ export default {
         TabPanel,
     },
     setup() {
-        const { meeting } = useGetMeeting();
-        const { chartData, initChartData, updateChartData } =
-            useAvailiability(meeting);
+        const { meeting, getMeeting } = useGetMeeting();
+        const { chartData, initChartData, updateChartData } = useChart(meeting);
+        // TODO: useBestWindows() feature
+
         const viewAll = ref(false);
         const toast = useToast();
 
         const setNewUser = (event: any) => {
             if (event?.length == 0) return;
             // check if event in availability
-            const index = meeting.value.availability.findIndex(
+            const index = meeting.availability.findIndex(
                 (x) => x.name == event
             );
             if (index === -1) {
-                meeting.value.availability = [
-                    ...meeting.value.availability,
+                meeting.availability = [
+                    ...meeting.availability,
                     { name: event, slots: [] as any },
                 ];
-                localStorage.setItem(meeting.value.meeting_id, event);
+                localStorage.setItem(meeting.meeting_id, event);
                 toast.add({
                     severity: "success",
                     summary: "",
@@ -218,34 +219,14 @@ export default {
         const viewAllOptions = ["Windows", "Heatmap"];
 
         const hasResponders = computed(
-            () => meeting.value.availability?.length > 0
+            () => meeting.availability?.length > 0
         );
 
-        const getNextWeek = () => {
-            // get last date of in the table
-            const lastDate =
-                chartData.value[0].data[chartData.value[0].data.length - 1].x;
 
-            // get one day after last date
-            const nextWeekStart = new Date(lastDate);
-
-            nextWeekStart.setDate(nextWeekStart.getDate() + 1);
-            const nextWeekEnd = new Date(nextWeekStart);
-            nextWeekEnd.setDate(nextWeekEnd.getDate() + 4);
-            updateChartData(nextWeekStart, nextWeekEnd);
-        };
-        const getPrevWeek = () => {
-            // get first date of in the table
-            const firstDate = chartData.value[0].data[0].x;
-
-            // get one day before first date
-            const prevWeekEnd = new Date(firstDate);
-            prevWeekEnd.setDate(prevWeekEnd.getDate() - 1);
-            const prevWeekStart = new Date(prevWeekEnd);
-            prevWeekStart.setDate(prevWeekEnd.getDate() - 4);
-            updateChartData(prevWeekStart, prevWeekEnd);
-        };
-        onMounted(initChartData);
+        onMounted(() => {
+            getMeeting()
+            initChartData()
+        });
 
         return {
             meeting,
@@ -258,8 +239,6 @@ export default {
             selectedViewAll,
             viewAllOptions,
             hasResponders,
-            getNextWeek,
-            getPrevWeek,
         };
     },
 };

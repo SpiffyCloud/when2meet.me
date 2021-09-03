@@ -22,16 +22,21 @@
                         class="noselect data"
                         v-for="(dataPoint, x) in series.data"
                         :key="{ x, y }"
-                        :id="`${x} ${y}`"
                         :data-x="x"
                         :data-y="y"
-                        @mousemove="selectDate"
-                        @mousedown="handleMouseDown"
-                        @mouseup="handleMouseUp"
+
                         @click="handleClick"
-                        @touchstart="handleTouchStart"
-                        @touchend="handleTouchEnd"
-                        @touchmove="selectDate"
+
+                        @mousemove="handleDragging"
+                        @touchmove="handleDragging"
+                     
+                        @touchstart="startDragging"
+                        @mousedown="startDragging"
+
+                        @touchend="endDragging"
+                        @mouseup="endDragging"
+
+
                     ></td>
                 </tr>
             </tbody>
@@ -47,8 +52,13 @@
 </template>
 
 <script lang="ts">
+// Prime Vue Components
 import Button from "primevue/button";
 import Toast from "primevue/toast";
+
+// Composables
+import useDrag from "@/composables/useDrag";
+
 import { computed, ref, reactive, toRefs } from "vue";
 
 export default {
@@ -69,183 +79,18 @@ export default {
     },
     emits: ["getNext", "getPrev"],
     setup(props: any, context: any) {
-        const mousedown = ref(false);
-
-        const scrollDirection = reactive({
-            x: 0,
-            y: 0,
-        });
-
-        const selectDate = (e: any) => {
-            if (!mousedown.value) {
-                return;
-            }
-            const sidebarWrapper = document.querySelector(".p-sidebar-content");
-
-            sidebarWrapper?.addEventListener("scroll", () => {
-                setTimeout(() => {
-                    if (mousedown.value) {
-                        sidebarWrapper?.scrollBy(
-                            scrollDirection.x,
-                            scrollDirection.y
-                        );
-                    }
-                });
-            });
-            // e.preventDefault();
-
-            const event = e.touches ? e.touches[0] : e;
-
-            // log sidebar wrapper scroll offset
-
-            if (window.innerWidth - event.clientX < 20) {
-                scrollDirection.x = 1;
-                scrollDirection.y = 0;
-            } else if (event.clientX < 100) {
-                scrollDirection.x = -1;
-                scrollDirection.y = 0;
-            } else if (event.clientY < 100) {
-                scrollDirection.x = 0;
-                scrollDirection.y = -1;
-            } else if (event.clientY > window.innerHeight - 64) {
-                scrollDirection.x = 0;
-                scrollDirection.y = 1;
-            }
-
-            sidebarWrapper!.scrollBy(scrollDirection.x, scrollDirection.y);
-            e.preventDefault();
-
-            // get all tds
-            const tds = document.querySelectorAll("#table td.data");
-            const eventTd = document.elementFromPoint(
-                event.clientX,
-                event.clientY
-            ) as any;
-
-            const eventX = parseInt(eventTd.dataset.x);
-            const eventY = parseInt(eventTd.dataset.y);
-            // return if eventX or eventY is NaN
-            if (isNaN(eventX) || isNaN(eventY)) {
-                return;
-            }
-            // if td is inbetween starting.x and current.x as well as inbetween starting.y and current.y, select it
-            tds.forEach((el: any) => {
-                const x = parseInt(el.dataset.x);
-                const y = parseInt(el.dataset.y);
-                // const box = el.getBoundingClientRect();
-                // log the boxes scroll offset
-                // if el.clientX is in between e.clientX and startingPos.x
-                if (
-                    // condition 1: Dragging from left to right, top to bottom
-                    (x >= startingBox.x &&
-                        x <= eventX &&
-                        y <= startingBox.y &&
-                        y >= eventY) ||
-                    // condition 2: Dragging from left to right, bottom to top
-                    (x >= startingBox.x &&
-                        x <= eventX &&
-                        y >= startingBox.y &&
-                        y <= eventY) ||
-                    // condition 3: Dragging from right to left, top to bottom
-                    (x <= startingBox.x &&
-                        x >= eventX &&
-                        y <= startingBox.y &&
-                        y >= eventY) ||
-                    // condition 4: Dragging from right to left, bottom to top
-                    (x <= startingBox.x &&
-                        x >= eventX &&
-                        y >= startingBox.y &&
-                        y <= eventY)
-                ) {
-                    if (selecting.value) {
-                        el.classList.add("non-active");
-                    } else {
-                        el.classList.add("active");
-                    }
-                } else {
-                    el.classList.remove("active");
-                    el.classList.remove("non-active");
-                }
-            });
-        };
-
         const handleClick = (e: any) => {
             e.target.classList.toggle("selected");
         };
-
-        const selecting = ref(false);
-        const startingBox = reactive({
-            x: 0,
-            y: 0,
-        });
-
-        const setStartingBox = (td: any) => {
-            startingBox.x = parseInt(td.dataset.x);
-            startingBox.y = parseInt(td.dataset.y);
-        };
-        const handleMouseDown = (e: any) => {
-            mousedown.value = true;
-            selecting.value = e.target.classList.contains("selected");
-            const td = document.elementFromPoint(e.clientX, e.clientY) as any;
-            setStartingBox(td);
-        };
-
-        const handleMouseUp = (e: any) => {
-            mousedown.value = false;
-            // add class "selected" to all tds with class "active"
-            const tds = document.querySelectorAll("#table td.active");
-            tds.forEach((el: any) => {
-                el.classList.remove("active");
-                el.classList.add("selected");
-            });
-            // remove class selected from all tds with class non active
-            const tds2 = document.querySelectorAll("#table td.non-active");
-            tds2.forEach((el: any) => {
-                el.classList.remove("non-active");
-                el.classList.remove("selected");
-            });
-        };
-
         const { chartData } = toRefs(props);
-
         const dates = computed(() => {
             return chartData.value[0].data.map((dataPoint) => dataPoint.x);
         });
 
-        const handleTouchStart = (e: any) => {
-            mousedown.value = true;
-            selecting.value = e.target.classList.contains("selected");
-            const td = document.elementFromPoint(
-                e.touches[0].clientX,
-                e.touches[0].clientY
-            ) as any;
-            setStartingBox(td);
-        };
-
-        const handleTouchEnd = (e: any) => {
-            mousedown.value = false;
-            const tds = document.querySelectorAll("#table td.active");
-            tds.forEach((el: any) => {
-                el.classList.remove("active");
-                el.classList.add("selected");
-            });
-            // remove class selected from all tds with class non active
-            const tds2 = document.querySelectorAll("#table td.non-active");
-            tds2.forEach((el: any) => {
-                el.classList.remove("non-active");
-                el.classList.remove("selected");
-            });
-        };
-
         return {
             dates,
-            selectDate,
-            mousedown,
-            handleMouseDown,
-            handleMouseUp,
             handleClick,
-            handleTouchStart,
-            handleTouchEnd,
+            ...useDrag(),
         };
     },
 };
