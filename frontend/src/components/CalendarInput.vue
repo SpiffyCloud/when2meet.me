@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { ref, toRefs, watch } from "vue";
+import { ref, watch } from "vue";
 
 import Calendar from "primevue/calendar";
 
@@ -26,12 +26,12 @@ export default {
     Calendar,
   },
 
-  setup(props: any, context: any) {
+  setup(_, context: any) {
     const date = ref(new Date());
     const error = ref("");
 
     watch(date, (newVal: Date) => {
-      if (newVal.getDate() < new Date().getDate()) {
+      if (newVal < new Date()) {
         error.value = "End date cannot be in the past";
         context.emit("update:error", error.value);
       } else {

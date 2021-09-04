@@ -1,59 +1,25 @@
 import { useRoute } from "vue-router";
-import { ref, onMounted, watch } from "vue";
+import { ref, reactive } from "vue";
 import { meeting, fetchMeeting } from "../api/meeting";
 
-
-
 export default function useGetMeeting() {
-  const route = useRoute();
+    const route = useRoute();
 
-  const meeting = ref({} as meeting);
-  const generateData = (
-    numPoints: number,
-    options: { min: number; max: number }
-  ) => {
-    const data = [] as any;
-    for (let i = 0; i < numPoints; i++) {
-      data.push(
-        Math.floor(
-          Math.random() * (options.max - options.min) +
-          options.min
-        )
-      );
-    }
-    return data;
-  };
+    const meeting = reactive({} as meeting);
 
-  const addFakeData = (meeting: any) => {
-    meeting.value.availability = [
-      {
-        name: "Jack",
-        slots: generateData(100, { min: 0, max: 480 }),
-      },
-      {
-        name: "Jill",
-        slots: generateData(100, { min: 0, max: 480 }),
-      },
-      {
-        name: "Jim",
-        slots: generateData(100, { min: 0, max: 480 }),
-      },
-      {
-        name: "Jen",
-        slots: generateData(100, { min: 0, max: 480 }),
-      },
-    ];
-  };
+    const getMeeting = async () => {
+        const { title, availability, by_end_date, meeting_id } =
+            await fetchMeeting(route.params.id as string);
 
-  const getMeeting = async () => {
-    meeting.value = await fetchMeeting(route.params.id as string);
-  }
+        meeting.title = title;
+        meeting.availability = availability;
+        meeting.by_end_date = by_end_date;
+        meeting.meeting_id = meeting_id;
+        console.log(meeting)
+    };
 
-  onMounted(getMeeting);
-
-  watch(() => route.params.id, getMeeting);
-
-  return {
-    meeting,
-  }
+    return {
+        meeting,
+        getMeeting,
+    };
 }

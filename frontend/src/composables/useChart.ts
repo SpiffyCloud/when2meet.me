@@ -1,6 +1,8 @@
-import {  ref, watch, onMounted, } from "vue";
+import { availability } from "@/api/meeting";
+import {  ref, } from "vue";
 
-export default function useAvailability(meeting: any)  {
+export default function useChart({ availability, by_end_date})  {
+    // Create a 2d array to represent a list of availabilities 
     const chartData = ref([] as any);
 
 
@@ -21,11 +23,10 @@ export default function useAvailability(meeting: any)  {
         for (let i = start15MinBlock; i < end15MinBlock; i++) {
             groupAvailability.push(0);
         }
-        const availabilites = meeting.value.availability;
-        for (let i = 0; i < availabilites?.length; i++) {
-            const availability = availabilites[i];
-            for (let j = 0; j < availability.slots.length; j++) {
-                const slot = availability.slots[j];
+        for (let i = 0; i < availability?.length; i++) {
+            const individualAvailability = availability[i];
+            for (let j = 0; j < individualAvailability.slots.length; j++) {
+                const slot = individualAvailability.slots[j];
                 if (slot >= start15MinBlock && slot <= end15MinBlock) {
                     groupAvailability[slot - start15MinBlock] += 1;
                 }
@@ -34,7 +35,7 @@ export default function useAvailability(meeting: any)  {
         // createa series of data points from the group availability
         for (let y = 0; y < 96; y++) {
             const rawData = [] as any;
-            for (let x = 0; x < 5; x++) {
+            for (let x = 0; x < 10; x++) {
                 const data = groupAvailability[y + x * 96];
                 const date = new Date((start15MinBlock + y + x * 96) * 15 * 60 * 1000);
                 rawData.push({
@@ -54,14 +55,30 @@ export default function useAvailability(meeting: any)  {
 
     const initChartData = () => {
         // CHANGE TO REAL DATE
+        const { today, endDate } = getStartAndEndDate()
+
+        const start15MinBlock = get15MinuteBlock(today);
+        const end15MinBlock = get15MinuteBlock(endDate);
+
+        createChartData(start15MinBlock, end15MinBlock);
+    };
+
+    const getStartAndEndDate = () => {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        const start15MinBlock = today.getTime() / (15 * 60 * 1000);
-        const end15MinBlock = start15MinBlock + 480;
-        createChartData(start15MinBlock, end15MinBlock);
 
-      
-    };
+        const endDate = new Date(by_end_date);
+        endDate.setDate(endDate.getDate() + 1); // check if this jumps to the next month
+        endDate.setHours(0,0,0,0);
+
+        return { 
+            today, endDate
+        }
+    }
+
+    const get15MinuteBlock = (date: Date) => {
+        return date.getTime() / (15 * 60 * 1000);
+    }
 
     const updateChartData = (startDate: Date, endDate: Date) => {
         startDate.setHours(0, 0, 0, 0);

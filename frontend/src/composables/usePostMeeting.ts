@@ -5,7 +5,7 @@ import { createMeeting } from "../api/meeting";
 export default function usePostMeeting() {
     const title = ref("The Grandiose Meeting");
     const titleError = ref("");
-    const by_end_date = ref(new Date());
+    const by_end_date = ref(new Date())
     const dateError = ref("");
 
     const router = useRouter();

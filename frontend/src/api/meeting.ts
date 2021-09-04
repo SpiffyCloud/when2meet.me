@@ -1,8 +1,13 @@
 export interface meeting {
     title: string,
-    availability: any[],
+    availability: availability[],
     by_end_date: string,
     meeting_id: string,
+}
+
+export interface availability {
+    name: string,
+    slots: number[]
 }
 
 export const fetchMeeting = async (id: string) => {
