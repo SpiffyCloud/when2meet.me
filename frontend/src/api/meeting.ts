@@ -44,3 +44,13 @@ export const postNewUser = async ( meeting_id: string, name: string) => {
     const response = await fetch(`/api/v1/meetings/${meeting_id}/availabilities/`, requestOptions);
     return await response.json();
 }
+
+export const postAvailability = async ( meeting_id: string, name: string, slots: number[]) => {
+    const requestOptions = {
+        method: "POST", 
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: name, slots: `[${slots}]` }),
+    }
+    const response = await fetch(`/api/v1/meetings/${meeting_id}/availabilities/`, requestOptions);
+    return await response.json();
+}

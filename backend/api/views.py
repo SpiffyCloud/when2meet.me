@@ -116,5 +116,7 @@ class SubmitAvailability(APIView):
 
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            meeting = Meeting.objects.get(meeting_id=kwargs["id"])
+            meeting_serializer = MeetingSerializer(meeting)
+            return Response(meeting_serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

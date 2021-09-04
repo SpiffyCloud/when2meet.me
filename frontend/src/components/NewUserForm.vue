@@ -23,7 +23,7 @@
     <Button
       class="p-button-success p-button-lg p-my-4 p-shadow-5"
       label="Add My Availability"
-      @click="addNewUser()"
+      @click="addNewUser"
     />
   </div>
 </template>

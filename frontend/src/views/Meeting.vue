@@ -2,8 +2,12 @@
   <div id="meeting" class="p-d-flex p-flex-column p-p-4">
     <Toast position="bottom-right" group="br" />
     <Header :title="meeting.title" />
-    <Details v-if="isIdentified" />
-    <Preview v-else @user-identified="identifyUser($event)" />
+    <Details v-if="isIdentified" :meeting="meeting" />
+    <Preview
+      v-else
+      @user-identified="identifyUser($event)"
+      :responders="meeting.availability"
+    />
   </div>
 </template>
 
@@ -18,7 +22,6 @@ import Details from "@/components/Details.vue";
 // Composables
 import useGetMeeting from "@/composables/useGetMeeting";
 import useAuth from "@/composables/useAuth";
-import useChart from "@/composables/useChart";
 
 export default {
   name: "Meeting",
@@ -30,19 +33,16 @@ export default {
   },
   setup() {
     const { meeting, getMeeting } = useGetMeeting();
-    const { chartData, initChartData, updateChartData } = useChart(meeting);
     const { isIdentified, identifyUser, initUser } = useAuth(meeting);
     // TODO: useBestWindows() feature
 
     onMounted(async () => {
       await getMeeting();
       initUser();
-      initChartData();
     });
 
     return {
       meeting,
-      chartData,
       isIdentified,
       identifyUser,
     };
@@ -69,15 +69,6 @@ export default {
 
 .p-toast {
   width: fit-content !important;
-}
-
-.table-wrapper {
-  max-height: 90vh;
-  height: fit-content;
-  width: 100vw;
-  overflow-y: scroll;
-  overflow-x: scroll;
-  background-color: var(--green-600);
 }
 
 h1.active-user {

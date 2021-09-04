@@ -8,7 +8,7 @@
           <th>
             <i class="pi pi-angle-double-up" />
           </th>
-          <th v-for="(date, index) in dates" :key="index">
+          <th v-for="(date, index) in dates" :key="index" class="header">
             {{ date }}
           </th>
         </tr>
@@ -24,6 +24,7 @@
             :key="{ x, y }"
             :data-x="x"
             :data-y="y"
+            :data-slot="dataPoint.slot"
             @click="handleClick"
             @mousemove="handleDragging"
             @touchmove="handleDragging"
@@ -38,7 +39,7 @@
       <tfoot class="sticky-footer">
         <tr>
           <td><i class="pi pi-angle-double-down" /></td>
-          <td v-for="(date, index) in dates" :key="index"></td>
+          <td v-for="(date, index) in dates" :key="index" class="footer"></td>
         </tr>
       </tfoot>
     </table>
@@ -53,7 +54,7 @@ import Toast from "primevue/toast";
 // Composables
 import useDrag from "@/composables/useDrag";
 
-import { computed, ref, reactive, toRefs } from "vue";
+import { computed, toRefs } from "vue";
 
 export default {
   name: "AvailabilityTable",
@@ -71,19 +72,22 @@ export default {
       default: false,
     },
   },
-  setup(props: any, context: any) {
+  emits: ["submit-availability"],
+  setup(props: any, { emit }) {
     const handleClick = (e: any) => {
       e.target.classList.toggle("selected");
     };
     const { chartData } = toRefs(props);
     const dates = computed(() => {
-      return chartData.value[0].data.map((dataPoint) => dataPoint.x);
+      return chartData.value.length > 0
+        ? chartData.value[0].data.map((dataPoint) => dataPoint.x)
+        : [];
     });
 
     return {
       dates,
       handleClick,
-      ...useDrag(),
+      ...useDrag(emit),
     };
   },
 };

@@ -27,14 +27,11 @@ export default function useAuth(meeting) {
     }
     const setUserInLocalStorage = (name: string) => {
         localStorage.setItem(`${meeting.meeting_id}`, name);
-        const user = localStorage.getItem(`${meeting.meeting_id}`);
         
     }
 
    
     const initUser = () => {
-        console.log("init user")
-
         const user = localStorage.getItem(`${meeting.meeting_id}`);
 
         if (user) {

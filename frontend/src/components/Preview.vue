@@ -6,8 +6,12 @@
     class="p-button-lg p-button-success p-my-3 p-shadow-5"
   />
   <BestWindows />
-  <Responders ref="respondersElement" />
-  <NewUserForm @add-new-user="handleNewUser" />
+  <Responders
+    @select-user="setNewUser"
+    ref="respondersElement"
+    :responders="responders"
+  />
+  <NewUserForm @add-new-user="setNewUser" />
 </template>
 
 <script lang="ts">
@@ -29,6 +33,13 @@ export default {
     Responders,
     NewUserForm,
   },
+  props: {
+    responders: {
+      type: Array,
+      required: true,
+      default: () => [],
+    },
+  },
   emits: ["user-identified"],
   setup(_, { emit }) {
     const respondersElement: any = ref(null);
@@ -39,13 +50,13 @@ export default {
       });
     };
 
-    const handleNewUser = (name: string) => {
+    const setNewUser = (name: string) => {
       emit("user-identified", name);
     };
 
     return {
       scrollToResponders,
-      handleNewUser,
+      setNewUser,
     };
   },
 };

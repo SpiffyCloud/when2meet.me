@@ -15,7 +15,6 @@ export default function useGetMeeting() {
         meeting.availability = availability;
         meeting.by_end_date = by_end_date;
         meeting.meeting_id = meeting_id;
-        console.log(meeting)
     };
 
     return {
