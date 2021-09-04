@@ -1,0 +1,54 @@
+// TODO Meeting preview before auth
+<template>
+  <Button
+    label="Adjust My Availability"
+    @click="scrollToResponders"
+    class="p-button-lg p-button-success p-my-3 p-shadow-5"
+  />
+  <BestWindows />
+  <Responders ref="respondersElement" />
+  <NewUserForm @add-new-user="handleNewUser" />
+</template>
+
+<script lang="ts">
+import { ref } from "vue";
+
+// PrimeVue Components
+import Button from "primevue/button";
+
+// Internal Components
+import BestWindows from "@/components/BestWindows.vue";
+import Responders from "@/components/Responders.vue";
+import NewUserForm from "@/components/NewUserForm.vue";
+
+export default {
+  name: "Preview",
+  components: {
+    Button,
+    BestWindows,
+    Responders,
+    NewUserForm,
+  },
+  emits: ["user-identified"],
+  setup(_, { emit }) {
+    const respondersElement: any = ref(null);
+
+    const scrollToResponders = () => {
+      respondersElement.value?.scrollIntoView({
+        behavior: "smooth",
+      });
+    };
+
+    const handleNewUser = (name: string) => {
+      emit("user-identified", name);
+    };
+
+    return {
+      scrollToResponders,
+      handleNewUser,
+    };
+  },
+};
+</script>
+
+<style scoped></style>

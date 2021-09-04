@@ -3,7 +3,7 @@ import { computed, ref } from 'vue';
 export default function useWindows() {
     const showWindowFilter = ref(false);
 
-    const updateWindows = (event: any) => {
+    const updateWindows = () => {
         // Todo: calculate the windows
         showWindowFilter.value = false;
     };

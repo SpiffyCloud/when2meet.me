@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { ref, toRefs, watch } from "vue";
+import { ref, watch } from "vue";
 
 import Calendar from "primevue/calendar";
 
@@ -26,7 +26,7 @@ export default {
     Calendar,
   },
 
-  setup(props: any, context: any) {
+  setup(_, context: any) {
     const date = ref(new Date());
     const error = ref("");
 
