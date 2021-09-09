@@ -1,48 +1,68 @@
 <template>
-  <div ref="table-wrapper" class="table-wrapper">
+  <UserSummary v-if="isIdentified" @show-adjust="isAdjusting = true" />
+  <NewUserForm v-else @new-user-added="handleNewUser" />
+  <div class="page" v-if="isAdjusting">
     <AvailabilityTable
       :chartData="chartData"
-      @submit-availability="handleSubmit"
+      @submit-availability="submitAvailability"
     />
   </div>
 </template>
 
 <script lang="ts">
+import { ref, toRefs } from "vue";
+
 import AvailabilityTable from "@/components/AvailabilityTable.vue";
-import { toRefs } from "vue";
+import UserSummary from "@/components/UserSummary.vue";
+import NewUserForm from "@/components/NewUserForm.vue";
+
 import useChart from "@/composables/useChart";
 import usePostAvailability from "@/composables/usePostAvailability";
+
+import { availability } from "@/api/meeting";
+
+import Button from "primevue/button";
 
 export default {
   name: "MyAvailability",
   components: {
     AvailabilityTable,
+    UserSummary,
+    NewUserForm,
+    Button,
   },
   props: {
-    meeting: {
-      type: Object,
+    availability: {
+      type: Array as () => availability[],
       required: true,
     },
+    by_end_date: {
+      type: String,
+      required: true,
+    },
+    isIdentified: {
+      type: Boolean,
+      default: false,
+    },
   },
-  setup(props: any) {
-    const { meeting } = toRefs(props);
+  emits: ["user-identified", "updated-availability"],
+  setup(props: any, { emit }) {
+    const { availability, by_end_date } = toRefs(props);
+    const isAdjusting = ref(false);
+
+    const handleNewUser = (name: string) => {
+      isAdjusting.value = true;
+      emit("user-identified", name);
+    };
 
     return {
-      ...useChart(meeting.value), // This loses reactivity but I'm not sure we need to keep it
-      ...usePostAvailability(meeting),
+      ...useChart(availability, by_end_date, isAdjusting),
+      ...usePostAvailability(emit, isAdjusting),
+      isAdjusting,
+      handleNewUser,
     };
   },
 };
 </script>
 
-<style>
-.table-wrapper {
-  margin-left: -1.5rem;
-  max-height: 90vh;
-  height: fit-content;
-  width: 100vw;
-  overflow-y: scroll;
-  overflow-x: scroll;
-  background-color: var(--green-600);
-}
-</style>
+<style></style>

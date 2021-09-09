@@ -14,7 +14,9 @@ export default function usePostNewUser(emit: any) {
         }
         nameError.value = "";
         const response = await postNewUser(route.params.id as string, name.value);
-        emit("add-new-user", response.name);
+        if (response.meeting_id) {
+          emit("new-user-added", name.value);
+        }
       };
 
     const handleKeyDown = (event: KeyboardEvent) => {

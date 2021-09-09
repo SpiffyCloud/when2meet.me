@@ -1,8 +1,10 @@
-import {  onMounted, ref, toRefs, } from "vue";
+import {  onMounted, Ref, ref, toRefs, watch, } from "vue";
+import { availability } from "@/api/meeting"
 
-export default function useChart({ availability, by_end_date })  {
+export default function useChart(availability: Ref<availability[]>, by_end_date: Ref<string>, isAdjusting: Ref<boolean>)  {
     // Create a 2d array to represent a list of availabilities 
     const chartData = ref([] as any);
+
 
 
     const formatAMPMTime = (date: Date) => {
@@ -19,31 +21,21 @@ export default function useChart({ availability, by_end_date })  {
     const createChartData = (start15MinBlock, end15MinBlock) => {
         chartData.value = [];
         // create an array of 0s for each 15 min block
-        const groupAvailability = Array(end15MinBlock - start15MinBlock).fill(0);
-        console.log(start15MinBlock, end15MinBlock)
+        const groupAvailability = Array(480).fill(0); // TODO FIX THIS
 
-        availability.forEach(user => {
+        availability.value.forEach(user => {
             // console.log(user.slots)
            user.slots.forEach(slot => {
             //    console.log(slot);
                 if (slot >= start15MinBlock && slot <= end15MinBlock) {
-                    console.log("Valid Slot");
-                }
-                else {
-                    console.log("invalid slot")
-                }
-           })
-        })
-        for (let i = 0; i < availability?.length; i++) {
-            const individualAvailability = availability[i];
-            for (let j = 0; j < individualAvailability.slots.length; j++) {
-                const slot = individualAvailability.slots[j];
-                if (slot >= start15MinBlock && slot <= end15MinBlock) {
                     groupAvailability[slot - start15MinBlock] += 1;
                 }
-            }
-        }
-        // createa series of data points from the group availability
+                
+           })
+        })
+
+       
+        // createa series of data points from the group availability.value
         for (let y = 0; y < 96; y++) {
             const rawData = [] as any;
             for (let x = 0; x < 10; x++) {
@@ -78,10 +70,8 @@ export default function useChart({ availability, by_end_date })  {
     const getStartAndEndDate = () => {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        console.log(by_end_date);
-        const endDate = new Date(by_end_date.concat("T00:00:00.000Z"));
+        const endDate = new Date(by_end_date.value.concat("T00:00:00.000Z"));
 
-        console.log(today, endDate); // TODO: End date is returning -4 hours from the actual end date. Timezones :/ 
 
         // increase day by 1
         endDate.setDate(endDate.getDate() + 1);
@@ -100,6 +90,12 @@ export default function useChart({ availability, by_end_date })  {
 
 
     onMounted(initChartData)
+
+    watch(isAdjusting, () => {
+        if (isAdjusting.value) {
+            initChartData();
+        }
+    })
     
 
     return {

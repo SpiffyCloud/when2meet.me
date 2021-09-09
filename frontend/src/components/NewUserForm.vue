@@ -1,9 +1,7 @@
 <template>
   <div id="new-user-group" class="p-d-flex p-flex-column">
-    <h3>Can't find your name?</h3>
-    <small class="p-text-bold p-mb-2"
-      >Type your name here to enter your availability</small
-    >
+    <h3>Who are you?</h3>
+    <i class="">Type your name here to enter your availability</i>
     <InputText
       id="name"
       type="text"
@@ -39,6 +37,7 @@ export default {
     InputText,
     Button,
   },
+  emits: ["new-user-added"],
   setup(_, { emit }) {
     return {
       ...usePostNewUser(emit),

@@ -1,11 +1,16 @@
 import { useRoute } from "vue-router";
-import { ref, reactive } from "vue";
-import { meeting, fetchMeeting } from "../api/meeting";
+import { reactive,  } from "vue";
+import { meeting, availability, fetchMeeting } from "../api/meeting";
 
 export default function useGetMeeting() {
     const route = useRoute();
 
-    const meeting = reactive({} as meeting);
+    const meeting = reactive({
+        title: "",
+        availability: [] as availability[],
+        by_end_date: "",
+        meeting_id: "",
+    });
 
     const getMeeting = async () => {
         const { title, availability, by_end_date, meeting_id } =
@@ -17,8 +22,11 @@ export default function useGetMeeting() {
         meeting.meeting_id = meeting_id;
     };
 
+    
+
     return {
         meeting,
         getMeeting,
+        
     };
 }

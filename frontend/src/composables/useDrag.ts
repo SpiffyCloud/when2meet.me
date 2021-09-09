@@ -1,4 +1,4 @@
-import { ref, reactive } from "vue";
+import { ref, reactive, onMounted } from "vue";
 
 export default function useDrag(emit: any) {
   const mousedown = ref(false);
@@ -7,6 +7,7 @@ export default function useDrag(emit: any) {
     x: 0,
     y: 0,
   });
+  const selectedSlots = ref([] as number[])
 
   const scrollDirection = reactive({
     x: 0,
@@ -40,10 +41,9 @@ export default function useDrag(emit: any) {
 
 
     const selectedTds = Array.from(document.querySelectorAll("#table td.selected"));
-    const selectedSlots = selectedTds.map((el: any) => {
+    selectedSlots.value = selectedTds.map((el: any) => {
       return el.dataset.slot;
     });
-    emit("submit-availability", selectedSlots);
   };
 
   const handleDragging = (e: any) => {
@@ -149,9 +149,22 @@ export default function useDrag(emit: any) {
     el.classList.remove("non-active");
   };
 
+  const handleDoneButton = () => {
+    emit("submit-availability", selectedSlots.value);
+  };
+
+  onMounted(() => {
+    const selectedTds = Array.from(document.querySelectorAll("#table td.selected"));
+    selectedSlots.value = selectedTds.map((el: any) => {
+      return el.dataset.slot;
+    })
+  });
+
+
   return {
     startDragging,
     endDragging,
     handleDragging,
+    handleDoneButton,
   };
 }

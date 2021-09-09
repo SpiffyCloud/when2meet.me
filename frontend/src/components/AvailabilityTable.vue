@@ -1,7 +1,9 @@
 <template>
-  <div>
-    <Toast />
-
+  <div class="heading p-p-3">
+    <i>Click & drag over the times that you are available</i>
+    <Button label="Done" @click="handleDoneButton" />
+  </div>
+  <div ref="table-wrapper" class="table-wrapper">
     <table tabindex="0" id="table" class="availability-table">
       <thead class="sticky-header">
         <tr>
@@ -20,6 +22,7 @@
           </td>
           <td
             class="noselect data"
+            :class="{ selected: dataPoint.y > 0 }"
             v-for="(dataPoint, x) in series.data"
             :key="{ x, y }"
             :data-x="x"
@@ -49,7 +52,6 @@
 <script lang="ts">
 // Prime Vue Components
 import Button from "primevue/button";
-import Toast from "primevue/toast";
 
 // Composables
 import useDrag from "@/composables/useDrag";
@@ -60,7 +62,6 @@ export default {
   name: "AvailabilityTable",
   components: {
     Button,
-    Toast,
   },
   props: {
     chartData: {
@@ -103,17 +104,19 @@ div {
   user-select: none;
 }
 
-.action-buttons {
-  position: fixed;
-  width: 100%;
-  z-index: 1;
-  top: 0;
-  height: 4rem;
-  align-items: center;
-  right: 5rem;
+.heading {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  height: 4rem;
 }
+.table-wrapper {
+  height: 100%;
+  width: 100vw;
+  overflow-y: scroll;
+  overflow-x: scroll;
+  background-color: var(--green-600);
+}
+
 .availability-table {
   border-collapse: collapse;
   width: 100%;

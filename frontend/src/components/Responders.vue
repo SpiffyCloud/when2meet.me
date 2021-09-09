@@ -8,10 +8,10 @@
       Click your name below to update your availability
     </p>
     <Button
-      v-for="resp in responders"
-      @click="selectUser(resp.name)"
-      :key="resp.name"
-      :label="resp.name"
+      v-for="name in responders"
+      @click="selectUser(name)"
+      :key="name"
+      :label="name"
       class="p-button p-bg-white p-m-1 p-button-lg p-shadow-2 response-btn"
     />
   </div>
@@ -21,6 +21,8 @@
 <script lang="ts">
 // Primevue Components
 import Button from "primevue/button";
+import { computed } from "vue";
+import { availability } from "@/api/meeting";
 
 export default {
   name: "Responders",
@@ -28,8 +30,8 @@ export default {
     Button,
   },
   props: {
-    responders: {
-      type: Array,
+    availability: {
+      type: Array as () => availability[],
       required: false,
       default: () => [],
     },
@@ -39,13 +41,18 @@ export default {
       default: false,
     },
   },
-  emits: ["select-user"],
-  setup(_, { emit }) {
+  emits: ["user-clicked"],
+  setup(props, { emit }) {
     const selectUser = (name: string) => {
-      emit("select-user", name);
+      emit("user-clicked", name);
     };
 
+    const responders = computed(() => {
+      return props.availability.map((resp) => resp.name);
+    });
+
     return {
+      responders,
       selectUser,
     };
   },

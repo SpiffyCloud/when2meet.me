@@ -22,9 +22,9 @@ export const fetchMeeting = async (id: string) => {
     throw new Error("Bad response from server");
 }
 
-export const createMeeting = async (title: string, by_end_date: Date) => {
+export const createMeeting = async (title: string, by_end_date: string) => {
     // convert date to a string in the format YYYY-MM-DD
-    const date = by_end_date.toISOString().substring(0, 10);
+    const date = new Date(by_end_date).toISOString().substring(0, 10);
     const body = JSON.stringify({ title: title, by_end_date: date });
     const requestOptions = {
         method: "POST", 
