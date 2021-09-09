@@ -1,11 +1,11 @@
-import { onMounted, ref } from "vue";
+import { availability } from "@/api/meeting";
+import { ref } from "vue";
 
 export default function useAuth(meeting) {
     // TODO figure out where to use this
     const isIdentified = ref(false);
 
-    const identifyUser = (name: any) => {
-
+    const onUserIdentified = (name: any) => {
         if (name?.length == 0) return;
         if (isNewUser(name)) {
             addUserToAvailabilty(name);
@@ -15,26 +15,23 @@ export default function useAuth(meeting) {
       };
 
     const isNewUser = (name: string) => {
-        return meeting.availability.find((x) => x.name == name) === -1;
+       return meeting.availability.findIndex((user) => user.name === name) === -1;
     }
 
     const addUserToAvailabilty = (name: string) => {
-
         meeting.availability = [
             ...meeting.availability,
-            { name: event, slots: [] as any },
+            { name: name, slots: [] as any },
           ];
+
     }
     const setUserInLocalStorage = (name: string) => {
         localStorage.setItem(`${meeting.meeting_id}`, name);
-        const user = localStorage.getItem(`${meeting.meeting_id}`);
         
     }
 
    
     const initUser = () => {
-        console.log("init user")
-
         const user = localStorage.getItem(`${meeting.meeting_id}`);
 
         if (user) {
@@ -47,7 +44,7 @@ export default function useAuth(meeting) {
 
     return {
         isIdentified,
-        identifyUser,
+        onUserIdentified,
         initUser,
     }
 

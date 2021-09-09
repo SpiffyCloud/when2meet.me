@@ -1,14 +1,16 @@
 <template>
-  <div>
-    <Toast />
-
+  <div class="heading p-p-3">
+    <i>Click & drag over the times that you are available</i>
+    <Button label="Done" @click="handleDoneButton" />
+  </div>
+  <div ref="table-wrapper" class="table-wrapper">
     <table tabindex="0" id="table" class="availability-table">
       <thead class="sticky-header">
         <tr>
           <th>
             <i class="pi pi-angle-double-up" />
           </th>
-          <th v-for="(date, index) in dates" :key="index">
+          <th v-for="(date, index) in dates" :key="index" class="header">
             {{ date }}
           </th>
         </tr>
@@ -20,10 +22,12 @@
           </td>
           <td
             class="noselect data"
+            :class="{ selected: dataPoint.y > 0 }"
             v-for="(dataPoint, x) in series.data"
             :key="{ x, y }"
             :data-x="x"
             :data-y="y"
+            :data-slot="dataPoint.slot"
             @click="handleClick"
             @mousemove="handleDragging"
             @touchmove="handleDragging"
@@ -38,7 +42,7 @@
       <tfoot class="sticky-footer">
         <tr>
           <td><i class="pi pi-angle-double-down" /></td>
-          <td v-for="(date, index) in dates" :key="index"></td>
+          <td v-for="(date, index) in dates" :key="index" class="footer"></td>
         </tr>
       </tfoot>
     </table>
@@ -48,18 +52,16 @@
 <script lang="ts">
 // Prime Vue Components
 import Button from "primevue/button";
-import Toast from "primevue/toast";
 
 // Composables
 import useDrag from "@/composables/useDrag";
 
-import { computed, ref, reactive, toRefs } from "vue";
+import { computed, toRefs } from "vue";
 
 export default {
   name: "AvailabilityTable",
   components: {
     Button,
-    Toast,
   },
   props: {
     chartData: {
@@ -71,19 +73,22 @@ export default {
       default: false,
     },
   },
-  setup(props: any, context: any) {
+  emits: ["submit-availability"],
+  setup(props: any, { emit }) {
     const handleClick = (e: any) => {
       e.target.classList.toggle("selected");
     };
     const { chartData } = toRefs(props);
     const dates = computed(() => {
-      return chartData.value[0].data.map((dataPoint) => dataPoint.x);
+      return chartData.value.length > 0
+        ? chartData.value[0].data.map((dataPoint) => dataPoint.x)
+        : [];
     });
 
     return {
       dates,
       handleClick,
-      ...useDrag(),
+      ...useDrag(emit),
     };
   },
 };
@@ -99,17 +104,19 @@ div {
   user-select: none;
 }
 
-.action-buttons {
-  position: fixed;
-  width: 100%;
-  z-index: 1;
-  top: 0;
-  height: 4rem;
-  align-items: center;
-  right: 5rem;
+.heading {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  height: 4rem;
 }
+.table-wrapper {
+  height: 100%;
+  width: 100vw;
+  overflow-y: scroll;
+  overflow-x: scroll;
+  background-color: var(--green-600);
+}
+
 .availability-table {
   border-collapse: collapse;
   width: 100%;

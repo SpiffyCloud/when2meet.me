@@ -1,12 +1,13 @@
-import { ref, reactive } from "vue";
+import { ref, reactive, onMounted } from "vue";
 
-export default function useDrag() {
+export default function useDrag(emit: any) {
   const mousedown = ref(false);
   const isSelecting = ref(false);
   const startingBox = reactive({
     x: 0,
     y: 0,
   });
+  const selectedSlots = ref([] as number[])
 
   const scrollDirection = reactive({
     x: 0,
@@ -37,18 +38,24 @@ export default function useDrag() {
       el.classList.remove("non-active");
       el.classList.remove("selected");
     });
+
+
+    const selectedTds = Array.from(document.querySelectorAll("#table td.selected"));
+    selectedSlots.value = selectedTds.map((el: any) => {
+      return el.dataset.slot;
+    });
   };
 
   const handleDragging = (e: any) => {
     if (!mousedown.value) {
       return;
     }
-    const sidebarWrapper = document.querySelector(".p-sidebar-content");
+    const wrapper = document.querySelector(".table-wrapper");
 
-    sidebarWrapper?.addEventListener("scroll", () => {
+    wrapper?.addEventListener("scroll", () => {
       setTimeout(() => {
         if (mousedown.value) {
-          sidebarWrapper?.scrollBy(
+          wrapper?.scrollBy(
             scrollDirection.x,
             scrollDirection.y
           );
@@ -60,30 +67,30 @@ export default function useDrag() {
     const event = e.touches ? e.touches[0] : e;
 
     // log sidebar wrapper scroll offset
-
+    const eventTd = document.elementFromPoint(
+      event.clientX,
+      event.clientY
+    ) as any;
     if (window.innerWidth - event.clientX < 20) {
       scrollDirection.x = 1;
       scrollDirection.y = 0;
     } else if (event.clientX < 100) {
       scrollDirection.x = -1;
       scrollDirection.y = 0;
-    } else if (event.clientY < 100) {
+    } else if (eventTd.classList.contains("header")) {
       scrollDirection.x = 0;
       scrollDirection.y = -1;
-    } else if (event.clientY > window.innerHeight - 64) {
+    } else if (eventTd.classList.contains("footer")) {
       scrollDirection.x = 0;
       scrollDirection.y = 1;
     }
 
-    sidebarWrapper!.scrollBy(scrollDirection.x, scrollDirection.y);
+    wrapper!.scrollBy(scrollDirection.x, scrollDirection.y);
     e.preventDefault();
 
     // get all tds
     const tds = document.querySelectorAll("#table td.data");
-    const eventTd = document.elementFromPoint(
-      event.clientX,
-      event.clientY
-    ) as any;
+
 
     const eventX = parseInt(eventTd?.dataset.x);
     const eventY = parseInt(eventTd?.dataset.y);
@@ -142,9 +149,22 @@ export default function useDrag() {
     el.classList.remove("non-active");
   };
 
+  const handleDoneButton = () => {
+    emit("submit-availability", selectedSlots.value);
+  };
+
+  onMounted(() => {
+    const selectedTds = Array.from(document.querySelectorAll("#table td.selected"));
+    selectedSlots.value = selectedTds.map((el: any) => {
+      return el.dataset.slot;
+    })
+  });
+
+
   return {
     startDragging,
     endDragging,
     handleDragging,
+    handleDoneButton,
   };
 }

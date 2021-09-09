@@ -21,9 +21,7 @@
       <Button label="View all" class="p-button" @click="viewAll = true" />
     </div>
   </div>
-  <div v-else class="p-d-flex p-jc-center empty-message p-shadow-5 p-mb-4">
-    <h3>No Availability yet! Be the first!</h3>
-  </div>
+  <i v-else>No Availability yet! Be the first!</i>
 </template>
 
 <script lang="ts">
@@ -37,9 +35,15 @@ import WindowFilter from "@/components/WindowFilter.vue";
 
 // Composables
 import useWindows from "@/composables/useWindows";
+import { availability } from "@/api/meeting";
 
 export default {
   name: "BestWindows",
+  props: {
+    availability: {
+      type: Array as () => availability[],
+    },
+  },
   components: {
     Dialog,
     Button,

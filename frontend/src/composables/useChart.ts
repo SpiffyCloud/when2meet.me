@@ -1,9 +1,10 @@
-import { availability } from "@/api/meeting";
-import {  ref, } from "vue";
+import {  onMounted, Ref, ref, toRefs, watch, } from "vue";
+import { availability } from "@/api/meeting"
 
-export default function useChart({ availability, by_end_date})  {
+export default function useChart(availability: Ref<availability[]>, by_end_date: Ref<string>, isAdjusting: Ref<boolean>)  {
     // Create a 2d array to represent a list of availabilities 
     const chartData = ref([] as any);
+
 
 
     const formatAMPMTime = (date: Date) => {
@@ -19,20 +20,22 @@ export default function useChart({ availability, by_end_date})  {
 
     const createChartData = (start15MinBlock, end15MinBlock) => {
         chartData.value = [];
-        const groupAvailability = [] as any;
-        for (let i = start15MinBlock; i < end15MinBlock; i++) {
-            groupAvailability.push(0);
-        }
-        for (let i = 0; i < availability?.length; i++) {
-            const individualAvailability = availability[i];
-            for (let j = 0; j < individualAvailability.slots.length; j++) {
-                const slot = individualAvailability.slots[j];
+        // create an array of 0s for each 15 min block
+        const groupAvailability = Array(480).fill(0); // TODO FIX THIS
+
+        availability.value.forEach(user => {
+            // console.log(user.slots)
+           user.slots.forEach(slot => {
+            //    console.log(slot);
                 if (slot >= start15MinBlock && slot <= end15MinBlock) {
                     groupAvailability[slot - start15MinBlock] += 1;
                 }
-            }
-        }
-        // createa series of data points from the group availability
+                
+           })
+        })
+
+       
+        // createa series of data points from the group availability.value
         for (let y = 0; y < 96; y++) {
             const rawData = [] as any;
             for (let x = 0; x < 10; x++) {
@@ -41,6 +44,7 @@ export default function useChart({ availability, by_end_date})  {
                 rawData.push({
                     x: `${date.getMonth() + 1}/${date.getDate()}`,
                     y: data,
+                    slot: start15MinBlock + y + x * 96
                 });
             }
             const day = new Date((start15MinBlock + y) * 15 * 60 * 1000);
@@ -56,9 +60,9 @@ export default function useChart({ availability, by_end_date})  {
     const initChartData = () => {
         // CHANGE TO REAL DATE
         const { today, endDate } = getStartAndEndDate()
-
         const start15MinBlock = get15MinuteBlock(today);
         const end15MinBlock = get15MinuteBlock(endDate);
+
 
         createChartData(start15MinBlock, end15MinBlock);
     };
@@ -66,10 +70,13 @@ export default function useChart({ availability, by_end_date})  {
     const getStartAndEndDate = () => {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
+        const endDate = new Date(by_end_date.value.concat("T00:00:00.000Z"));
 
-        const endDate = new Date(by_end_date);
-        endDate.setDate(endDate.getDate() + 1); // check if this jumps to the next month
-        endDate.setHours(0,0,0,0);
+
+        // increase day by 1
+        endDate.setDate(endDate.getDate() + 1);
+        endDate.setHours(0, 0, 0, 0);
+
 
         return { 
             today, endDate
@@ -80,18 +87,19 @@ export default function useChart({ availability, by_end_date})  {
         return date.getTime() / (15 * 60 * 1000);
     }
 
-    const updateChartData = (startDate: Date, endDate: Date) => {
-        startDate.setHours(0, 0, 0, 0);
-        endDate.setHours(0, 0, 0, 0);
-        const start15MinBlock = startDate.getTime() / (15 * 60 * 1000);
-        const end15MinBlock = endDate.getTime() / (15 * 60 * 1000);
-        createChartData(start15MinBlock, end15MinBlock);
-    };
+
+
+    onMounted(initChartData)
+
+    watch(isAdjusting, () => {
+        if (isAdjusting.value) {
+            initChartData();
+        }
+    })
     
 
     return {
         chartData,
-        updateChartData,
         initChartData,
     }
 }

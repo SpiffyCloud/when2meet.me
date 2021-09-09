@@ -32,7 +32,7 @@ export default {
       default: "",
     },
   },
-  setup(props: any, context: any) {
+  setup(_, context: any) {
     const title = ref(context.attrs.title);
 
     watch(title, (newVal: string) => {
