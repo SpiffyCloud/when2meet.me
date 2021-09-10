@@ -8,6 +8,8 @@
       :inline="true"
       :class="{ 'p-invalid': error }"
       class="p-shadow-5 p-inputtext-lg"
+      :selectOtherMonths="true"
+      :minDate="new Date()"
     />
     <p v-if="error" id="date-help" class="p-error p-text-bold p-mt-2">
       <i class="pi pi-exclamation-triangle p-mr-1"></i>{{ error }}
@@ -16,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { ref, toRefs, watch } from "vue";
+import { ref, watch } from "vue";
 
 import Calendar from "primevue/calendar";
 
@@ -25,18 +27,15 @@ export default {
   components: {
     Calendar,
   },
-
-  setup(props: any, context: any) {
+  setup(_, context: any) {
     const date = ref(new Date());
     const error = ref("");
 
     watch(date, (newVal: Date) => {
-      if (newVal.getDate() < new Date().getDate()) {
+      if (newVal < new Date()) {
         error.value = "End date cannot be in the past";
-        context.emit("update:error", error.value);
       } else {
         error.value = "";
-        context.emit("update:error", error.value);
         context.emit("update:date", newVal);
       }
     });

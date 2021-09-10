@@ -1,328 +1,154 @@
 <template>
-    <div id="meeting" class="p-d-flex p-flex-column p-p-4">
-        <Toast position="bottom-right" group="br" />
-
-        <h1 id="heading">{{ meeting.title }}</h1>
-        <div
-            id="action-group"
-            class="p-mb-2 p-d-flex p-flex-column p-jc-between"
-        >
-            <Button
-                label="Copy Meeting URL"
-                @click="copyMeetingUrl"
-                class="p-button-lg p-button-success p-my-3 p-shadow-5"
-            />
-            <Button
-                v-if="hasResponders"
-                label="Adjust My Availability"
-                @click="adjustMyAvailability"
-                class="p-button-lg p-button-success p-my-3 p-shadow-5"
-            />
-        </div>
-
-        <div v-if="hasResponders">
-            <Sidebar v-model:visible="showMyAvailability" position="full">
-                <AvailabilityTable
-                    @getNext="getNextWeek"
-                    @getPrev="getPrevWeek"
-                    :chartData="chartData"
-                />
-            </Sidebar>
-            <h3 class="p-mb-2">
-                Best Windows of Availability
-                <i
-                    v-if="windows.length > 0"
-                    class="pi pi-filter"
-                    @click="showWindowFilter = true"
-                    style="fontsize: 2rem"
-                ></i>
-            </h3>
-            <div v-if="windows.length > 0" class="window-group">
-                <Window
-                    v-for="(window, index) in windows.slice(3)"
-                    :key="index"
-                />
-                <Dialog
-                    header="Best Window Options"
-                    v-model:visible="showWindowFilter"
-                    :modal="true"
-                >
-                    <WindowFilter
-                        @apply="updateWindows($event)"
-                        :meeting="meeting"
-                    />
-                </Dialog>
-                <div class="p-d-flex p-jc-end">
-                    <Button
-                        label="View all"
-                        class="p-button"
-                        @click="viewAll = true"
-                    />
-                </div>
-            </div>
-            <div
-                v-else
-                class="p-d-flex p-jc-center empty-message p-shadow-5 p-mb-4"
-            >
-                <h3>No Availability yet! Be the first!</h3>
-            </div>
-
-            <Sidebar position="full" :modal="true" v-model:visible="viewAll">
-                <TabView class="p-mt-2">
-                    <TabPanel header="Best Windows">
-                        <div class="p-d-flex p-jc-start">
-                            <p class="p-text-bold p-mx-2">Filter</p>
-                            <i
-                                class="pi pi-filter"
-                                @click="showWindowFilter = true"
-                                style="fontsize: 2rem"
-                            ></i>
-                        </div>
-
-                        <Dialog
-                            header="Best Window Options"
-                            v-model:visible="showWindowFilter"
-                            :modal="true"
-                        >
-                            <WindowFilter
-                                @apply="updateWindows($event)"
-                                :meeting="meeting"
-                            />
-                        </Dialog>
-                        <Window />
-                        <Window />
-                        <Window />
-                        <Window />
-                        <Window />
-                        <Window />
-                        <Window />
-                        <Window />
-                    </TabPanel>
-                    <TabPanel header="Heatmap">
-                        <AvailabilityTable
-                            id="group-availability-table"
-                            :chartData="chartData"
-                            disabled
-                    /></TabPanel>
-                </TabView>
-            </Sidebar>
-            <h3 id="responders-title" class="p-text-bold">Responders</h3>
-            <small class="p-text-bold p-mb-1"
-                >Click your name below to update your availability</small
-            >
-
-            <div
-                v-if="hasResponders"
-                id="responders-group"
-                class="p-d-flex p-jc-start p-flex-wrap p-mb-2"
-            >
-                <Button
-                    v-for="resp in meeting.availability"
-                    @click="setActiveUser($event, meeting)"
-                    :key="resp.name"
-                    :label="resp.name"
-                    class="
-                        p-button p-bg-white p-m-1 p-button-lg p-shadow-2
-                        response-btn
-                    "
-                />
-            </div>
-            <div v-else class="p-d-flex p-jc-center p-shadow-5 empty-message">
-                <h3 class="p-text-bold">
-                    No Responders yet! Add your name below.
-                </h3>
-            </div>
-            <h3 id="new-user-title" class="p-text-bold p-mt-2">
-                Can't find your name?
-            </h3>
-
-            <NewUserForm @addNewUser="setNewUser($event)" />
-        </div>
-        <div v-else>
-            <h3 id="new-user-title" class="p-text-bold p-mt-2">
-                You're the first one here!
-            </h3>
-
-            <NewUserForm @addNewUser="setNewUser($event)" />
-        </div>
+  <div id="meeting" class="p-d-flex p-flex-column p-p-4">
+    <Toast position="bottom-right" group="br" />
+    <Header :title="title" />
+    <TabMenu
+      :model="items"
+      v-model:activeIndex="active"
+      @tab-change="handleTabChange"
+    />
+    <div id="tabs">
+      <AllAvailability
+        v-if="active === 0"
+        :availability="availability"
+        :by_end_date="by_end_date"
+      />
+      <MyAvailability
+        v-if="active === 1"
+        :availability="availability"
+        :by_end_date="by_end_date"
+        :isIdentified="isIdentified"
+        @user-identified="onUserIdentified"
+        @updated-availability="onUpdatedAvailabilty"
+      />
     </div>
+  </div>
 </template>
 
 <script lang="tsx">
-import { computed, onMounted, ref } from "vue";
-// Third party components
-import Button from "primevue/button";
+import { onMounted, toRefs } from "vue";
+// Prime Vue components
 import Toast from "primevue/toast";
-import Sidebar from "primevue/sidebar";
-import Dialog from "primevue/dialog";
-import TabView from "primevue/tabview";
-import TabPanel from "primevue/tabpanel";
-import { useToast } from "primevue/usetoast";
+import TabMenu from "primevue/tabmenu";
 // Internal components
-import NewUserForm from "@/components/NewUserForm.vue";
-import AvailabilityTable from "@/components/AvailabilityTable.vue";
-import Window from "@/components/Window.vue";
-import WindowFilter from "@/components/WindowFilter.vue";
+import Header from "@/components/Header.vue";
+import AllAvailability from "@/components/AllAvailability.vue";
+import MyAvailability from "@/components/MyAvailability.vue";
 // Composables
 import useGetMeeting from "@/composables/useGetMeeting";
-import useCopyUrl from "@/composables/useCopyUrl";
-import useAvailiability from "@/composables/useAvailability";
-import useAdjustAvailiability from "@/composables/useAdjustAvailability";
-import useWindows from "@/composables/useWindows";
+import useAuth from "@/composables/useAuth";
+import useTabMenu from "@/composables/useTabMenu";
+
+import { availability } from "@/api/meeting";
 
 export default {
-    name: "Meeting",
-    components: {
-        AvailabilityTable,
-        NewUserForm,
-        Window,
-        Button,
-        Toast,
-        Sidebar,
-        WindowFilter,
-        Dialog,
-        TabView,
-        TabPanel,
-    },
-    setup() {
-        const { meeting } = useGetMeeting();
-        const { chartData, initChartData, updateChartData } =
-            useAvailiability(meeting);
-        const viewAll = ref(false);
-        const toast = useToast();
+  name: "Meeting",
+  components: {
+    Header,
+    AllAvailability,
+    MyAvailability,
+    TabMenu,
+    Toast,
+  },
+  setup() {
+    const { meeting, getMeeting } = useGetMeeting();
+    const { isIdentified, onUserIdentified, initUser } = useAuth(meeting);
+    // TODO: useBestWindows() feature
 
-        const setNewUser = (event: any) => {
-            if (event?.length == 0) return;
-            // check if event in availability
-            const index = meeting.value.availability.findIndex(
-                (x) => x.name == event
-            );
-            if (index === -1) {
-                meeting.value.availability = [
-                    ...meeting.value.availability,
-                    { name: event, slots: [] as any },
-                ];
-                localStorage.setItem(meeting.value.meeting_id, event);
-                toast.add({
-                    severity: "success",
-                    summary: "",
-                    detail: `Now Editing As: ${event}`,
-                    group: "br",
-                    life: 3000,
-                });
-            }
-        };
+    onMounted(async () => {
+      await getMeeting();
+      console.log(meeting.availability);
+      initUser();
+    });
 
-        const selectedViewAll = ref(null);
-        const viewAllOptions = ["Windows", "Heatmap"];
+    const onUpdatedAvailabilty = (availability: availability[]) => {
+      meeting.availability = [...availability];
+    };
 
-        const hasResponders = computed(
-            () => meeting.value.availability?.length > 0
-        );
-
-        const getNextWeek = () => {
-            // get last date of in the table
-            const lastDate =
-                chartData.value[0].data[chartData.value[0].data.length - 1].x;
-
-            // get one day after last date
-            const nextWeekStart = new Date(lastDate);
-
-            nextWeekStart.setDate(nextWeekStart.getDate() + 1);
-            const nextWeekEnd = new Date(nextWeekStart);
-            nextWeekEnd.setDate(nextWeekEnd.getDate() + 4);
-            updateChartData(nextWeekStart, nextWeekEnd);
-        };
-        const getPrevWeek = () => {
-            // get first date of in the table
-            const firstDate = chartData.value[0].data[0].x;
-
-            // get one day before first date
-            const prevWeekEnd = new Date(firstDate);
-            prevWeekEnd.setDate(prevWeekEnd.getDate() - 1);
-            const prevWeekStart = new Date(prevWeekEnd);
-            prevWeekStart.setDate(prevWeekEnd.getDate() - 4);
-            updateChartData(prevWeekStart, prevWeekEnd);
-        };
-        onMounted(initChartData);
-
-        return {
-            meeting,
-            ...useCopyUrl(),
-            ...useAdjustAvailiability(),
-            ...useWindows(),
-            chartData,
-            setNewUser,
-            viewAll,
-            selectedViewAll,
-            viewAllOptions,
-            hasResponders,
-            getNextWeek,
-            getPrevWeek,
-        };
-    },
+    return {
+      ...toRefs(meeting),
+      isIdentified,
+      onUserIdentified,
+      onUpdatedAvailabilty,
+      ...useTabMenu(),
+    };
+  },
 };
 </script>
 
 <style>
 #meeting {
-    background-color: var(--primary-color);
-    color: var(--primary-color-text);
-    font-family: var(--font-family);
-    min-height: 100%;
+  background-color: var(--primary-color);
+  color: var(--primary-color-text);
+  font-family: var(--font-family);
+  min-height: 100%;
+}
+.page {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  z-index: 1;
+  background: var(--primary-color);
+  transition: left 0.5s ease-in-out;
+}
+
+.p-tabmenu.p-component {
+  width: 100vw;
+  margin-left: -1.5rem;
+}
+
+.p-tabmenu-nav.p-reset {
+  display: flex;
+  justify-content: space-evenly;
+}
+.p-tabmenuitem {
+  width: 50%;
+  text-align: center;
+}
+
+.p-menuitem-text {
+  width: 100%;
+  font-size: 1rem;
 }
 
 .p-button.p-bg-white {
-    background-color: white !important;
-    color: var(--primary-color) !important;
+  background-color: white !important;
+  color: var(--primary-color) !important;
 }
 
 .settings-icon {
-    font-size: 2rem !important;
+  font-size: 2rem !important;
 }
 
 .p-toast {
-    width: fit-content !important;
-}
-
-.table-wrapper {
-    max-height: 90vh;
-    height: fit-content;
-    overflow-y: scroll;
-    overflow-x: none;
-    margin-bottom: 2rem;
-    border-radius: 1rem;
-    background-color: var(--green-600);
+  width: fit-content !important;
 }
 
 h1.active-user {
-    position: fixed;
-    top: 0;
-    margin-top: 1rem;
-    color: black;
+  position: fixed;
+  top: 0;
+  margin-top: 1rem;
+  color: black;
 }
 
 .response-btn {
-    transition: all 0.5s ease-in-out !important;
+  transition: all 0.5s ease-in-out !important;
 }
 
 .response-btn-lg {
-    transform: scale(1.1);
+  transform: scale(1.1);
 }
 
 .empty-message {
-    background-color: white;
-    border-radius: 1rem;
-    color: var(--primary-color);
-    padding: 1rem;
+  background-color: white;
+  border-radius: 1rem;
+  color: var(--primary-color);
+  padding: 1rem;
 }
 
 .p-tabview .p-tabview-panels,
 .p-sidebar-content {
-    padding: 0 !important;
-}
-
-.p-sidebar-content {
-    overflow-x: hidden !important;
+  padding: 0 !important;
 }
 </style>
