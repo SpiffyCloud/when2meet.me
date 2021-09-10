@@ -1,7 +1,7 @@
 import {  onMounted, Ref, ref, toRefs, watch, } from "vue";
 import { availability } from "@/api/meeting"
 
-export default function useChart(availability: Ref<availability[]>, by_end_date: Ref<string>, isAdjusting: Ref<boolean>)  {
+export default function useChart(availability: Ref<availability[]>, by_end_date: Ref<string>, showTable: Ref<boolean>)  {
     // Create a 2d array to represent a list of availabilities 
     const chartData = ref([] as any);
 
@@ -89,8 +89,8 @@ export default function useChart(availability: Ref<availability[]>, by_end_date:
 
 
 
-    watch(isAdjusting, () => {
-        if (isAdjusting.value) {
+    watch(showTable, () => {
+        if (showTable.value) {
             initChartData();
         }
     })

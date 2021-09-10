@@ -5,6 +5,11 @@
     @click="copyMeetingUrl"
     class="p-button-lg p-button-success p-my-3 p-shadow-5"
   />
+  <Button
+    label="View All Availability"
+    @click="viewAllAvailability"
+    class="p-button-lg p-button-success p-my-3 p-shadow-5"
+  />
 </template>
 
 <script>
@@ -24,8 +29,14 @@ export default defineComponent({
   props: {
     title: String,
   },
-  setup() {
+  emit: ["view-all"],
+  setup(_, { emit }) {
+
+    const viewAllAvailability = () => {
+      emit("view-all")
+    }
     return {
+      viewAllAvailability,
       ...useCopyUrl(),
     };
   },
