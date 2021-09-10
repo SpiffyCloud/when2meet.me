@@ -1,6 +1,6 @@
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, Ref } from "vue";
 
-export default function useDrag(emit: any) {
+export default function useDrag(emit: any, isDisabled: Ref<boolean>) {
   const mousedown = ref(false);
   const isSelecting = ref(false);
   const startingBox = reactive({
@@ -44,7 +44,7 @@ export default function useDrag(emit: any) {
   };
 
   const handleDragging = (e: any) => {
-    if (!mousedown.value) {
+    if (!mousedown.value || isDisabled.value) {
       return;
     }
     const wrapper = document.querySelector(".table-wrapper");
@@ -147,6 +147,9 @@ export default function useDrag(emit: any) {
   };
 
   const handleDoneButton = () => {
+    if (isDisabled.value) {
+      return;
+    }
     const selectedTds = Array.from(document.querySelectorAll("#table td.selected"));
     selectedSlots.value = selectedTds.map((el: any) => {
       return el.dataset.slot;

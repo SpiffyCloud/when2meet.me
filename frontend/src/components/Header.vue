@@ -35,6 +35,7 @@ export default defineComponent({
     const viewAllAvailability = () => {
       emit("view-all")
     }
+
     return {
       viewAllAvailability,
       ...useCopyUrl(),

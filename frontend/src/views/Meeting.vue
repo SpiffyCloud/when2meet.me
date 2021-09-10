@@ -1,7 +1,8 @@
 <template>
   <div id="meeting" class="p-d-flex p-flex-column p-p-4">
     <Toast position="bottom-right" group="br" />
-    <Header :title="title"  @view-all="onViewAll" />
+    <Header :title="title" @view-all="onViewAll" />
+    <h3>Active User: {{ activeUser }}</h3>
     <TabMenu
       :model="items"
       v-model:activeIndex="active"
@@ -25,16 +26,18 @@
     </div>
 
     <div class="page" v-if="showTable">
-        <AvailabilityTable
-          :chartData="chartData"
-          @submit-availability="submitAvailability"
-        />
+      <AvailabilityTable
+        :disabled="!isEnabled"
+        :user="users.length === 1 ? users[0] : 'All Availabilities'"
+        :chartData="chartData"
+        @submit-availability="submitAvailability"
+      />
   </div>
   </div>
 </template>
 
 <script lang="tsx">
-import { onMounted, ref, toRefs } from "vue";
+import { computed, onMounted, ref, toRefs } from "vue";
 // Prime Vue components
 import Toast from "primevue/toast";
 import TabMenu from "primevue/tabmenu";
@@ -64,12 +67,14 @@ export default {
   },
   setup(_, { emit }) {
     const { meeting, getMeeting } = useGetMeeting();
-    const { isIdentified, onUserIdentified, initUser } = useAuth(meeting);
+    const { isIdentified, onUserIdentified, initUser, getUserFromLocalStorage } = useAuth(meeting);
     // TODO: useBestWindows() feature
+
+    const activeUser = ref("")
 
     onMounted(async () => {
       await getMeeting();
-      initUser();
+      initUser(activeUser);
     });
 
     const onUpdatedAvailabilty = (availability: availability[]) => {
@@ -77,28 +82,40 @@ export default {
     };
 
     const showTable = ref(false);
+    const users = ref([] as string[])
 
 
     const onUserClicked = (user: string) => {
       // show disabled table with only the clicked users availability
+      users.value = [user];
       showTable.value = true;
     }
 
     const onNewUserAdded = (user: string) => {
       // show enabled table with only your avialability
       onUserIdentified(user);
+      users.value = [user];
       showTable.value = true;
     }
 
     const onAdjustMyAvailability = () => {
       // show enabled table with only your availability
+      users.value = [getUserFromLocalStorage() as string]
       showTable.value = true;
     }
 
     const onViewAll = () => {
       // Show disabled table with all responders
+      users.value = availability.value.map(user => user.name)
       showTable.value = true;
     }
+
+    const isEnabled = computed(() => {
+      return users.value.length === 1 && users.value.includes(activeUser.value);
+    })
+
+
+
 
 
     const { title, availability, by_end_date } = toRefs(meeting);
@@ -112,13 +129,16 @@ export default {
       onUserIdentified,
       onUpdatedAvailabilty,
       ...useTabMenu(),
-      ...useChart(availability, by_end_date, showTable),
-      ...usePostAvailability(emit, showTable),
+      ...useChart(availability, by_end_date, showTable, users),
+      ...usePostAvailability(emit, showTable, meeting),
       onUserClicked,
       onNewUserAdded, 
       onViewAll, 
       onAdjustMyAvailability,
       showTable, 
+      activeUser,
+      isEnabled,
+      users
     };
   },
 };
