@@ -21,8 +21,8 @@ export default function useChart(availability: Ref<availability[]>, by_end_date:
     const createChartData = (start15MinBlock, end15MinBlock) => {
         chartData.value = [];
         // create an array of 0s for each 15 min block
-        const groupAvailability = Array(480).fill(0); // TODO FIX THIS
-
+        console.log("blocks", start15MinBlock, end15MinBlock)
+        const groupAvailability = Array(end15MinBlock - start15MinBlock).fill(0); // TODO FIX THIS
         availability.value.forEach(user => {
             // console.log(user.slots)
            user.slots.forEach(slot => {
@@ -30,7 +30,7 @@ export default function useChart(availability: Ref<availability[]>, by_end_date:
                 if (slot >= start15MinBlock && slot <= end15MinBlock) {
                     groupAvailability[slot - start15MinBlock] += 1;
                 }
-                
+              
            })
         })
 
@@ -70,12 +70,11 @@ export default function useChart(availability: Ref<availability[]>, by_end_date:
     const getStartAndEndDate = () => {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        const endDate = new Date(by_end_date.value.concat("T00:00:00.000Z"));
-
-
-        // increase day by 1
+        const formattedDate = by_end_date.value.concat("T00:00:00").replace(/-/g, '/').replace(/T.+/, '')
+        const endDate = new Date(formattedDate);
+        console.log(endDate);
         endDate.setDate(endDate.getDate() + 1);
-        endDate.setHours(0, 0, 0, 0);
+
 
 
         return { 
@@ -89,7 +88,6 @@ export default function useChart(availability: Ref<availability[]>, by_end_date:
 
 
 
-    onMounted(initChartData)
 
     watch(isAdjusting, () => {
         if (isAdjusting.value) {

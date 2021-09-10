@@ -40,10 +40,7 @@ export default function useDrag(emit: any) {
     });
 
 
-    const selectedTds = Array.from(document.querySelectorAll("#table td.selected"));
-    selectedSlots.value = selectedTds.map((el: any) => {
-      return el.dataset.slot;
-    });
+    
   };
 
   const handleDragging = (e: any) => {
@@ -150,15 +147,13 @@ export default function useDrag(emit: any) {
   };
 
   const handleDoneButton = () => {
-    emit("submit-availability", selectedSlots.value);
-  };
-
-  onMounted(() => {
     const selectedTds = Array.from(document.querySelectorAll("#table td.selected"));
     selectedSlots.value = selectedTds.map((el: any) => {
       return el.dataset.slot;
     })
-  });
+    emit("submit-availability", selectedSlots.value);
+  };
+
 
 
   return {
