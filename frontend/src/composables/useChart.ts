@@ -1,4 +1,4 @@
-import { onMounted, Ref, ref, toRefs, watch, } from "vue";
+import { onMounted, Ref, ref, watch, } from "vue";
 import { availability } from "@/api/meeting"
 
 export default function useChart(availability: Ref<availability[]>, by_end_date: Ref<string>, showTable: Ref<boolean>, users: Ref<string[]>) {
@@ -24,9 +24,7 @@ export default function useChart(availability: Ref<availability[]>, by_end_date:
         const groupAvailability = Array(end15MinBlock - start15MinBlock).fill(0);
         availability.value.forEach(user => {
             if (users.value.includes(user.name)) {
-                // console.log(user.slots)
                 user.slots.forEach(slot => {
-                    //    console.log(slot);
                     if (slot >= start15MinBlock && slot <= end15MinBlock) {
                         groupAvailability[slot - start15MinBlock] += 1;
                     }
@@ -38,9 +36,11 @@ export default function useChart(availability: Ref<availability[]>, by_end_date:
 
 
         // createa series of data points from the group availability.value
+        const { endDate } = getStartAndEndDate()
+        const days = dateDiffInDays(new Date(), endDate);
         for (let y = 0; y < 96; y++) {
             const rawData = [] as any;
-            for (let x = 0; x < 10; x++) {
+            for (let x = 0; x < days ; x++) {
                 const data = groupAvailability[y + x * 96];
                 const date = new Date((start15MinBlock + y + x * 96) * 15 * 60 * 1000);
                 rawData.push({
@@ -50,7 +50,6 @@ export default function useChart(availability: Ref<availability[]>, by_end_date:
                 });
             }
             const day = new Date((start15MinBlock + y) * 15 * 60 * 1000);
-            // get time in HH:MM AM format
 
             chartData.value.push({
                 name: formatAMPMTime(day),
@@ -74,7 +73,6 @@ export default function useChart(availability: Ref<availability[]>, by_end_date:
         today.setHours(0, 0, 0, 0);
         const formattedDate = by_end_date.value.concat("T00:00:00").replace(/-/g, '/').replace(/T.+/, '')
         const endDate = new Date(formattedDate);
-        console.log(endDate);
         endDate.setDate(endDate.getDate() + 1);
 
 
@@ -88,6 +86,15 @@ export default function useChart(availability: Ref<availability[]>, by_end_date:
         return date.getTime() / (15 * 60 * 1000);
     }
 
+    const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+
+    const dateDiffInDays = (a, b) => {
+        const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+        const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+
+        return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+    }
+
 
 
 
@@ -95,7 +102,10 @@ export default function useChart(availability: Ref<availability[]>, by_end_date:
         if (showTable.value) {
             initChartData();
         }
+      
     })
+
+ 
 
 
     return {

@@ -29,7 +29,7 @@ export default defineComponent({
   props: {
     title: String,
   },
-  emit: ["view-all"],
+  emits: ["view-all"],
   setup(_, { emit }) {
 
     const viewAllAvailability = () => {
