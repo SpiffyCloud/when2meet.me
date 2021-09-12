@@ -1,7 +1,8 @@
 <template>
   <div id="meeting" class="p-d-flex p-flex-column p-p-4">
     <Toast position="bottom-right" group="br" />
-    <Header :title="title" />
+    <Header :title="title" @view-all="onViewAll" />
+    <h3>Active User: {{ activeUser }}</h3>
     <TabMenu
       :model="items"
       v-model:activeIndex="active"
@@ -12,21 +13,31 @@
         v-if="active === 0"
         :availability="availability"
         :by_end_date="by_end_date"
+        @user-clicked="onUserClicked"
       />
       <MyAvailability
         v-if="active === 1"
         :availability="availability"
         :by_end_date="by_end_date"
         :isIdentified="isIdentified"
-        @user-identified="onUserIdentified"
-        @updated-availability="onUpdatedAvailabilty"
+        @user-identified="onNewUserAdded"
+        @adjust-my-availability="onAdjustMyAvailability"
       />
     </div>
+
+    <div class="page" v-if="showTable">
+      <AvailabilityTable
+        :disabled="!isEnabled"
+        :user="users.length === 1 ? users[0] : 'All Availabilities'"
+        :chartData="chartData"
+        @submit-availability="submitAvailability"
+      />
+  </div>
   </div>
 </template>
 
 <script lang="tsx">
-import { onMounted, toRefs } from "vue";
+import { computed, onMounted, ref, toRefs } from "vue";
 // Prime Vue components
 import Toast from "primevue/toast";
 import TabMenu from "primevue/tabmenu";
@@ -34,10 +45,13 @@ import TabMenu from "primevue/tabmenu";
 import Header from "@/components/Header.vue";
 import AllAvailability from "@/components/AllAvailability.vue";
 import MyAvailability from "@/components/MyAvailability.vue";
+import AvailabilityTable from "@/components/AvailabilityTable.vue"
 // Composables
 import useGetMeeting from "@/composables/useGetMeeting";
 import useAuth from "@/composables/useAuth";
 import useTabMenu from "@/composables/useTabMenu";
+import useChart from "@/composables/useChart";
+import usePostAvailability from "@/composables/usePostAvailability";
 
 import { availability } from "@/api/meeting";
 
@@ -47,30 +61,84 @@ export default {
     Header,
     AllAvailability,
     MyAvailability,
+    AvailabilityTable,
     TabMenu,
     Toast,
   },
-  setup() {
+  setup(_, { emit }) {
     const { meeting, getMeeting } = useGetMeeting();
-    const { isIdentified, onUserIdentified, initUser } = useAuth(meeting);
+    const { isIdentified, onUserIdentified, initUser, getUserFromLocalStorage } = useAuth(meeting);
     // TODO: useBestWindows() feature
+
+    const activeUser = ref("")
 
     onMounted(async () => {
       await getMeeting();
-      console.log(meeting.availability);
-      initUser();
+      initUser(activeUser);
     });
 
     const onUpdatedAvailabilty = (availability: availability[]) => {
       meeting.availability = [...availability];
     };
 
+    const showTable = ref(false);
+    const users = ref([] as string[])
+
+
+    const onUserClicked = (user: string) => {
+      // show disabled table with only the clicked users availability
+      users.value = [user];
+      showTable.value = true;
+    }
+
+    const onNewUserAdded = (user: string) => {
+      // show enabled table with only your avialability
+      onUserIdentified(user);
+      users.value = [user];
+      showTable.value = true;
+    }
+
+    const onAdjustMyAvailability = () => {
+      // show enabled table with only your availability
+      users.value = [getUserFromLocalStorage() as string]
+      showTable.value = true;
+    }
+
+    const onViewAll = () => {
+      // Show disabled table with all responders
+      users.value = availability.value.map(user => user.name)
+      showTable.value = true;
+    }
+
+    const isEnabled = computed(() => {
+      return users.value.length === 1 && users.value.includes(activeUser.value);
+    })
+
+
+
+
+
+    const { title, availability, by_end_date } = toRefs(meeting);
+
+
     return {
-      ...toRefs(meeting),
+      title, 
+      availability, 
+      by_end_date,
       isIdentified,
       onUserIdentified,
       onUpdatedAvailabilty,
       ...useTabMenu(),
+      ...useChart(availability, by_end_date, showTable, users),
+      ...usePostAvailability(emit, showTable, meeting),
+      onUserClicked,
+      onNewUserAdded, 
+      onViewAll, 
+      onAdjustMyAvailability,
+      showTable, 
+      activeUser,
+      isEnabled,
+      users
     };
   },
 };

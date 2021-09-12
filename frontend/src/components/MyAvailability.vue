@@ -1,12 +1,7 @@
 <template>
-  <UserSummary v-if="isIdentified" @show-adjust="isAdjusting = true" />
+  <UserSummary v-if="isIdentified" @show-adjust="onAdjustMyAvailability" />
   <NewUserForm v-else @new-user-added="handleNewUser" />
-  <div class="page" v-if="isAdjusting">
-    <AvailabilityTable
-      :chartData="chartData"
-      @submit-availability="submitAvailability"
-    />
-  </div>
+
 </template>
 
 <script lang="ts">
@@ -16,8 +11,7 @@ import AvailabilityTable from "@/components/AvailabilityTable.vue";
 import UserSummary from "@/components/UserSummary.vue";
 import NewUserForm from "@/components/NewUserForm.vue";
 
-import useChart from "@/composables/useChart";
-import usePostAvailability from "@/composables/usePostAvailability";
+
 
 import { availability } from "@/api/meeting";
 
@@ -45,21 +39,19 @@ export default {
       default: false,
     },
   },
-  emits: ["user-identified", "updated-availability"],
+  emits: ["user-identified", "adjust-my-availability"],
   setup(props: any, { emit }) {
-    const { availability, by_end_date } = toRefs(props);
-    const isAdjusting = ref(false);
-
     const handleNewUser = (name: string) => {
-      isAdjusting.value = true;
       emit("user-identified", name);
     };
 
+    const onAdjustMyAvailability = () => {
+      emit("adjust-my-availability");
+    }
+
     return {
-      ...useChart(availability, by_end_date, isAdjusting),
-      ...usePostAvailability(emit, isAdjusting),
-      isAdjusting,
       handleNewUser,
+      onAdjustMyAvailability,
     };
   },
 };

@@ -6,12 +6,6 @@
       is-identified
       @user-clicked="onUserClicked"
     />
-    <div class="page" v-if="isAdjusting">
-      <AvailabilityTable
-        :chartData="chartData"
-        @submit-availability="isAdjusting = false"
-      />
-    </div>
   </div>
 </template>
 
@@ -41,17 +35,13 @@ export default defineComponent({
       type: String,
     },
   },
-  setup(props: any) {
-    const isAdjusting = ref(false);
-    const { availability, by_end_date } = toRefs(props);
-
-    const onUserClicked = () => {
-      isAdjusting.value = true;
+  emit: ["user-clicked"],
+  setup(props: any,  { emit }) {
+    const onUserClicked = (name: string) => {
+      emit("user-clicked", name)
     };
 
     return {
-      ...useChart(availability, by_end_date, isAdjusting),
-      isAdjusting,
       onUserClicked,
     };
   },

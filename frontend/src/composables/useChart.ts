@@ -1,7 +1,7 @@
-import {  onMounted, Ref, ref, toRefs, watch, } from "vue";
+import { onMounted, Ref, ref, toRefs, watch, } from "vue";
 import { availability } from "@/api/meeting"
 
-export default function useChart(availability: Ref<availability[]>, by_end_date: Ref<string>, isAdjusting: Ref<boolean>)  {
+export default function useChart(availability: Ref<availability[]>, by_end_date: Ref<string>, showTable: Ref<boolean>, users: Ref<string[]>) {
     // Create a 2d array to represent a list of availabilities 
     const chartData = ref([] as any);
 
@@ -21,20 +21,22 @@ export default function useChart(availability: Ref<availability[]>, by_end_date:
     const createChartData = (start15MinBlock, end15MinBlock) => {
         chartData.value = [];
         // create an array of 0s for each 15 min block
-        const groupAvailability = Array(480).fill(0); // TODO FIX THIS
-
+        const groupAvailability = Array(end15MinBlock - start15MinBlock).fill(0);
         availability.value.forEach(user => {
-            // console.log(user.slots)
-           user.slots.forEach(slot => {
-            //    console.log(slot);
-                if (slot >= start15MinBlock && slot <= end15MinBlock) {
-                    groupAvailability[slot - start15MinBlock] += 1;
-                }
-                
-           })
+            if (users.value.includes(user.name)) {
+                // console.log(user.slots)
+                user.slots.forEach(slot => {
+                    //    console.log(slot);
+                    if (slot >= start15MinBlock && slot <= end15MinBlock) {
+                        groupAvailability[slot - start15MinBlock] += 1;
+                    }
+
+                })
+            }
+          
         })
 
-       
+
         // createa series of data points from the group availability.value
         for (let y = 0; y < 96; y++) {
             const rawData = [] as any;
@@ -70,15 +72,14 @@ export default function useChart(availability: Ref<availability[]>, by_end_date:
     const getStartAndEndDate = () => {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        const endDate = new Date(by_end_date.value.concat("T00:00:00.000Z"));
-
-
-        // increase day by 1
+        const formattedDate = by_end_date.value.concat("T00:00:00").replace(/-/g, '/').replace(/T.+/, '')
+        const endDate = new Date(formattedDate);
+        console.log(endDate);
         endDate.setDate(endDate.getDate() + 1);
-        endDate.setHours(0, 0, 0, 0);
 
 
-        return { 
+
+        return {
             today, endDate
         }
     }
@@ -89,14 +90,13 @@ export default function useChart(availability: Ref<availability[]>, by_end_date:
 
 
 
-    onMounted(initChartData)
 
-    watch(isAdjusting, () => {
-        if (isAdjusting.value) {
+    watch(showTable, () => {
+        if (showTable.value) {
             initChartData();
         }
     })
-    
+
 
     return {
         chartData,
