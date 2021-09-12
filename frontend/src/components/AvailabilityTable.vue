@@ -1,65 +1,67 @@
 <template>
-    <div class="heading p-p-3">
-        <template v-if="!disabled">
-            <i>Click & drag over the times that you are available</i>
-            <Button label="Done" @click="handleDoneButton" />
-        </template>
-        <template v-else>
-            <i>{{ user }}</i>
-             <Button label="Exit" />
-        </template>
-    </div>
-    <div ref="table-wrapper" class="table-wrapper">
-        <table tabindex="0" id="table" class="availability-table">
-            <thead class="sticky-header">
-                <tr>
-                    <th>
-                        <i class="pi pi-angle-double-up" />
-                    </th>
-                    <th
-                        v-for="(date, index) in dates"
-                        :key="index"
-                        class="header"
-                    >
-                        {{ date }}
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(series, y) in chartData" :key="series.name">
-                    <td class="sticky-column">
-                        {{ parseInt(y) % 2 == 0 ? series.name : null }}
-                    </td>
-                    <td
-                        class="noselect data"
-                        :class="{ selected: dataPoint.y > 0 }"
-                        v-for="(dataPoint, x) in series.data"
-                        :key="{ x, y }"
-                        :data-x="x"
-                        :data-y="y"
-                        :data-slot="dataPoint.slot"
-                        @click="handleClick"
-                        @mousemove="handleDragging"
-                        @touchmove="handleDragging"
-                        @touchstart="startDragging"
-                        @mousedown="startDragging"
-                        @touchend="endDragging"
-                        @mouseup="endDragging"
-                    ></td>
-                </tr>
-            </tbody>
-            <!-- add a footer -->
-            <tfoot class="sticky-footer">
-                <tr>
-                    <td><i class="pi pi-angle-double-down" /></td>
-                    <td
-                        v-for="(date, index) in dates"
-                        :key="index"
-                        class="footer"
-                    ></td>
-                </tr>
-            </tfoot>
-        </table>
+    <div class="page">
+        <div class="heading p-p-3">
+            <template v-if="!disabled">
+                <i>Click & drag over the times that you are available</i>
+                <Button label="Done" @click="handleDoneButton" />
+            </template>
+            <template v-else>
+                <i>{{ user }}</i>
+                <Button @click="handleExitButton" label="Exit" />
+            </template>
+        </div>
+        <div ref="table-wrapper" class="table-wrapper">
+            <table tabindex="0" id="table" class="availability-table">
+                <thead class="sticky-header">
+                    <tr>
+                        <th>
+                            <i class="pi pi-angle-double-up" />
+                        </th>
+                        <th
+                            v-for="(date, index) in dates"
+                            :key="index"
+                            class="header"
+                        >
+                            {{ date }}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(series, y) in chartData" :key="series.name">
+                        <td class="sticky-column" :data-time="series.name === '8:45 AM' ? 'start' : series.name">
+                            {{ parseInt(y) % 2 == 0 ? series.name : null }}
+                        </td>
+                        <td
+                            class="noselect data"
+                            :class="{ selected: dataPoint.y > 0 }"
+                            v-for="(dataPoint, x) in series.data"
+                            :key="{ x, y }"
+                            :data-x="x"
+                            :data-y="y"
+                            :data-slot="dataPoint.slot"
+                            @click="handleClick"
+                            @mousemove="handleDragging"
+                            @touchmove="handleDragging"
+                            @touchstart="startDragging"
+                            @mousedown="startDragging"
+                            @touchend="endDragging"
+                            @mouseup="endDragging"
+                        ></td>
+                    </tr>
+                </tbody>
+                <!-- add a footer -->
+                <tfoot class="sticky-footer">
+                    <tr>
+                        <td><i class="pi pi-angle-double-down" /></td>
+                        <td
+                            v-for="(date, index) in dates"
+                            :key="index"
+                            class="footer"
+                        ></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
     </div>
 </template>
 
@@ -70,7 +72,7 @@ import Button from "primevue/button";
 // Composables
 import useDrag from "@/composables/useDrag";
 
-import { computed, toRefs } from "vue";
+import { computed, onMounted, toRefs } from "vue";
 
 export default {
     name: "AvailabilityTable",
@@ -88,9 +90,9 @@ export default {
         },
         user: {
             type: String,
-        }
+        },
     },
-    emits: ["submit-availability"],
+    emits: ["submit-availability", "exit"],
     setup(props: any, { emit }) {
         const { chartData } = toRefs(props);
         const dates = computed(() => {
@@ -106,9 +108,22 @@ export default {
             e.target.classList.toggle("selected");
         };
 
+        const handleExitButton = () => {
+            emit("exit");
+        };
+
+        onMounted(() => {
+            console.log("mounted");
+            const wrapper = document.querySelector(".table-wrapper");
+            const start = document.querySelector("[data-time=start]") as HTMLElement;
+            wrapper?.scrollTo(0, start.offsetTop);
+        })
+
+   
         return {
             dates,
             handleClick,
+            handleExitButton,
             ...useDrag(emit, disabled),
         };
     },
