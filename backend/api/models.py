@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 
-# Create your models here.
+
 class Meeting(models.Model):
     title = models.CharField(max_length=255)
     by_end_date = models.DateField()

@@ -15,7 +15,7 @@
         <a href="#" class="p-underline" @click="openTerms"
           >terms and conditions</a
         >
-        for details on whta we track and use the data we collect.
+        for details on what we track and use the data we collect.
       </p>
     </div>
 
@@ -28,17 +28,17 @@
     </Dialog>
 
     <div
-      id="feedback-love-group"
+      id="quick-feedback-group"
       class="p-field p-text-left p-d-flex p-flex-column p-pb-2"
     >
       <h4 class="p-pb-2">We'd love your feedback!</h4>
       <p class="p-pb-2">The good, the bad, and the ugly.</p>
 
-      <div id="feedback-love" class="p-d-flex p-jc-start p-flex-wrap">
+      <div id="quick-feedback" class="p-d-flex p-jc-start p-flex-wrap">
         <Button
-          v-for="(item, index) in feedbackMessages"
+          v-for="(item, index) in quickFeedback"
           :key="index"
-          @click="selectFeedback"
+          @click="selectQuickFeedback"
           class="p-button p-bg-white p-m-1 p-button-lg p-shadow-2"
         >
           {{ item }}
@@ -47,13 +47,13 @@
     </div>
 
     <div
-      id="feedback-contact"
+      id="feedback-message"
       class="p-field p-text-left p-d-flex p-flex-column p-pb-2"
     >
       <h4 class="p-pb-2">Would you like to say something?</h4>
       <p class="p-pb-2">Share your thoughts and ideas. <span>optional</span></p>
       <Textarea
-        v-model="contact"
+        v-model="feedbackMessage"
         :autoResize="true"
         rows="5"
         cols="30"
@@ -91,11 +91,18 @@
         :modal="true"
       >
         <Textarea
-          v-model="hireContact"
+          v-model="hireContactMessage"
           :autoResize="true"
           rows="5"
           cols="30"
           placeholder="You guys rock!"
+        />
+
+        <Button
+          id="submit-hire-contact"
+          label="Hire Us"
+          @click="onSubmitHireUs"
+          class="p-button-raised p-button-success p-button-lg"
         />
       </Dialog>
     </div>
@@ -133,7 +140,7 @@ export default class About extends Vue {
   displayModalTerms = false;
   displayModalHireUs = false;
 
-  feedbackMessages = [
+  quickFeedback = [
     "I love it!",
     "I hate it!",
     "Fast",
@@ -143,7 +150,11 @@ export default class About extends Vue {
     "Unintuitive",
   ];
 
-  selectedFeedbackMessages = [];
+  selectedQuickFeedback = [];
+
+  feedbackMessage = "";
+
+  hireContactMessage = "";
 
   openTerms() {
     this.displayModalTerms = true;
@@ -153,8 +164,8 @@ export default class About extends Vue {
     this.displayModalHireUs = true;
   }
 
-  selectFeedback() {
-    console.log("[todo] selectFeedback");
+  selectQuickFeedback() {
+    console.log("[todo] selectQuickFeedback");
   }
 }
 </script>

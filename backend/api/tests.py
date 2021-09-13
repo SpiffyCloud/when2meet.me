@@ -92,9 +92,7 @@ class TestApiSerializers(TestCase):
         data = {"missing_title": "Test Meeting"}
         response = self.client.post("/api/v1/meetings/", data=data)
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(
-            response.json(), {"title": ["This field is required."]}
-        )
+        self.assertEqual(response.json(), {"title": ["This field is required."]})
 
     def test_invalid_meeting_date(self):
         date = "1970-01-01"
