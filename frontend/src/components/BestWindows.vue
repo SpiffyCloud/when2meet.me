@@ -9,22 +9,29 @@
     ></i>
   </h3>
   <div v-if="windows.length > 0" class="window-group">
-    <Window v-for="(window, index) in windows.slice(3)" :key="index" />
+    <Window
+      v-for="(window, index) in windows"
+      :time="window.start"
+      :duration="window.windowLength"
+      :key="index"
+    />
     <Dialog
       header="Best Window Options"
       v-model:visible="showWindowFilter"
       :modal="true"
     >
-      <WindowFilter @apply="updateWindows($event)" :meeting="meeting" />
+      <WindowFilter
+        @apply="updateWindows($event)"
+        :availability="availability"
+        :defaults="defaults"
+      />
     </Dialog>
-    <div class="p-d-flex p-jc-end">
-      <Button label="View all" class="p-button" @click="viewAll = true" />
-    </div>
   </div>
   <i v-else>No Availability yet! Be the first!</i>
 </template>
 
 <script lang="ts">
+import { computed, inject, toRefs } from "vue";
 // PrimeVue Components
 import Dialog from "primevue/dialog";
 import Button from "primevue/button";
@@ -35,15 +42,11 @@ import WindowFilter from "@/components/WindowFilter.vue";
 
 // Composables
 import useWindows from "@/composables/useWindows";
-import { availability } from "@/api/meeting";
+import { meeting } from "@/api/meeting";
 
 export default {
   name: "BestWindows",
-  props: {
-    availability: {
-      type: Array as () => availability[],
-    },
-  },
+
   components: {
     Dialog,
     Button,
@@ -51,8 +54,20 @@ export default {
     WindowFilter,
   },
   setup() {
+    const meeting = inject("meeting") as meeting;
+    const numAvailable = computed(() => {
+      return meeting.availability.length;
+    });
+    const defaults = computed(() => {
+      return {
+        urgency: 1,
+        duration: 4,
+        available: numAvailable.value,
+      };
+    });
     return {
-      ...useWindows(),
+      ...useWindows(meeting.availability, defaults),
+      defaults,
     };
   },
 };

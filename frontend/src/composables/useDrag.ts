@@ -154,7 +154,7 @@ export default function useDrag(emit: any, isDisabled: Ref<boolean>) {
     selectedSlots.value = selectedTds.map((el: any) => {
       return el.dataset.slot;
     })
-    emit("submit-availability", selectedSlots.value);
+    return selectedSlots.value;
   };
 
 

@@ -1,7 +1,7 @@
 import { onMounted, Ref, ref, watch, } from "vue";
 import { availability } from "@/api/meeting"
 
-export default function useChart(availability: Ref<availability[]>, by_end_date: Ref<string>, showTable: Ref<boolean>, users: Ref<string[]>) {
+export default function useChart(availability: availability[], by_end_date: string, showTable: Ref<boolean>, users: Ref<string[]>) {
     // Create a 2d array to represent a list of availabilities 
     const chartData = ref([] as any);
 
@@ -22,7 +22,7 @@ export default function useChart(availability: Ref<availability[]>, by_end_date:
         chartData.value = [];
         // create an array of 0s for each 15 min block
         const groupAvailability = Array(end15MinBlock - start15MinBlock).fill(0);
-        availability.value.forEach(user => {
+        availability.forEach(user => {
             if (users.value.includes(user.name)) {
                 user.slots.forEach(slot => {
                     if (slot >= start15MinBlock && slot <= end15MinBlock) {
@@ -71,7 +71,7 @@ export default function useChart(availability: Ref<availability[]>, by_end_date:
     const getStartAndEndDate = () => {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        const formattedDate = by_end_date.value.concat("T00:00:00").replace(/-/g, '/').replace(/T.+/, '')
+        const formattedDate = by_end_date.concat("T00:00:00").replace(/-/g, '/').replace(/T.+/, '')
         const endDate = new Date(formattedDate);
         endDate.setDate(endDate.getDate() + 1);
 

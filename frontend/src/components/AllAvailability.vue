@@ -1,6 +1,6 @@
 <template>
   <div class="p-mt-5">
-    <BestWindows :availability="availability" />
+    <BestWindows />
     <Responders
       :availability="availability"
       is-identified
@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, toRefs } from "vue";
+import { defineComponent, inject, toRefs } from "vue";
 
 // Internal Components
 import BestWindows from "@/components/BestWindows.vue";
@@ -18,7 +18,6 @@ import Responders from "@/components/Responders.vue";
 import AvailabilityTable from "@/components/AvailabilityTable.vue";
 
 import { availability } from "@/api/meeting";
-import useChart from "@/composables/useChart";
 
 export default defineComponent({
   name: "AllAvailability",
@@ -27,18 +26,11 @@ export default defineComponent({
     Responders,
     AvailabilityTable,
   },
-  props: {
-    availability: {
-      type: Array as () => availability[],
-    },
-    by_end_date: {
-      type: String,
-    },
-  },
+  props: {},
   emit: ["user-clicked"],
-  setup(props: any,  { emit }) {
+  setup(props: any, { emit }) {
     const onUserClicked = (name: string) => {
-      emit("user-clicked", name)
+      emit("user-clicked", name);
     };
 
     return {
