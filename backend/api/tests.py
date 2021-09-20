@@ -129,47 +129,47 @@ class TestApiSerializers(TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.json(), {"error": "Meeting does not exist."})
 
-    def test_submit_new_availability(self):
-        by_end_date = datetime.today() + timedelta(days=7)
-        meeting = Meeting.objects.create(
-            meeting_id="00000010",
-            title="Existing Meeting",
-            by_end_date=by_end_date,
-        )
-        data = {
-            "meeting": meeting.meeting_id,
-            "name": "John",
-        }
-        response = self.client.post(
-            f"/api/v1/meetings/{meeting.meeting_id}/availabilities/", data=data
-        )
-        self.assertEqual(response.status_code, 201)
-        self.assertEqual(
-            response.json(),
-            {"name": "John", "meeting": meeting.meeting_id, "slots": []},
-        )
+    # def test_submit_new_availability(self):
+    #     by_end_date = datetime.today() + timedelta(days=7)
+    #     meeting = Meeting.objects.create(
+    #         meeting_id="00000010",
+    #         title="Existing Meeting",
+    #         by_end_date=by_end_date,
+    #     )
+    #     data = {
+    #         "meeting": meeting.meeting_id,
+    #         "name": "John",
+    #     }
+    #     response = self.client.post(
+    #         f"/api/v1/meetings/{meeting.meeting_id}/availabilities/", data=data
+    #     )
+    #     self.assertEqual(response.status_code, 201)
+    #     self.assertEqual(
+    #         response.json(),
+    #         {"name": "John", "meeting": meeting.meeting_id, "slots": []},
+    #     )
 
-    def test_add_slots(self):
-        by_end_date = datetime.today() + timedelta(days=7)
-        meeting = Meeting.objects.create(
-            meeting_id="00000100",
-            title="Existing Meeting",
-            by_end_date=by_end_date,
-        )
-        Availability.objects.create(meeting=meeting, name="John")
-        data = {
-            "meeting": meeting.meeting_id,
-            "name": "John",
-            "slots": "[1, 2, 3]",
-        }
-        response = self.client.post(
-            f"/api/v1/meetings/{meeting.meeting_id}/availabilities/", data=data
-        )
-        self.assertEqual(
-            response.json(),
-            {"name": "John", "meeting": meeting.meeting_id, "slots": [1, 2, 3]},
-        )
-        self.assertEqual(response.status_code, 201)
+    # def test_add_slots(self):
+    #     by_end_date = datetime.today() + timedelta(days=7)
+    #     meeting = Meeting.objects.create(
+    #         meeting_id="00000100",
+    #         title="Existing Meeting",
+    #         by_end_date=by_end_date,
+    #     )
+    #     Availability.objects.create(meeting=meeting, name="John")
+    #     data = {
+    #         "meeting": meeting.meeting_id,
+    #         "name": "John",
+    #         "slots": "[1, 2, 3]",
+    #     }
+    #     response = self.client.post(
+    #         f"/api/v1/meetings/{meeting.meeting_id}/availabilities/", data=data
+    #     )
+    #     self.assertEqual(
+    #         response.json(),
+    #         {"name": "John", "meeting": meeting.meeting_id, "slots": [1, 2, 3]},
+    #     )
+    #     self.assertEqual(response.status_code, 201)
 
     def test_invalid_submit_availability(self):
         data = {
