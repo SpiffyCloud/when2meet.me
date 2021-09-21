@@ -106,7 +106,6 @@
                     cols="30"
                     placeholder="You guys rock!"
                 />
-
                 <Button
                     id="submit-hire-contact"
                     label="Hire Us"
@@ -114,8 +113,6 @@
                     class="p-button-raised p-button-success p-button-lg"
                 />
             </Dialog>
-        </div>
-
         <h3 id="footer" class="p-text-center p-text-bold p-pt-2">Home</h3>
     </div>
 </template>
