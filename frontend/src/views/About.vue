@@ -41,7 +41,7 @@
                 <Button
                     v-for="(message, index) in quickFeedback"
                     :key="index"
-                    @click="selectQuickFeedback"
+                    @click="selectQuickFeedback(message)"
                     class="p-button p-bg-white p-m-1 p-button-lg p-shadow-2"
                     :label="message"
                 >
@@ -113,6 +113,7 @@
                     class="p-button-raised p-button-success p-button-lg"
                 />
             </Dialog>
+        </div>
         <h3 id="footer" class="p-text-center p-text-bold p-pt-2">Home</h3>
     </div>
 </template>
@@ -161,12 +162,11 @@ export default class About extends Vue {
         this.displayModalHireUs = true;
     }
 
-    selectQuickFeedback(event) {
-        console.log(event.target);
-        if (this.selectedQuickFeedback.has("OK")) {
-            this.selectedQuickFeedback.delete("OK");
+    selectQuickFeedback(message) {
+        if (this.selectedQuickFeedback.has(message)) {
+            this.selectedQuickFeedback.delete(message);
         } else {
-            this.selectedQuickFeedback.add("OK");
+            this.selectedQuickFeedback.add(message);
         }
     }
 
