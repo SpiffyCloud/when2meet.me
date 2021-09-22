@@ -11,18 +11,9 @@ export default function useTabMenu() {
       },
     ]);
 
-    const handleTabChange = async ({ index }) => {
-      if (index === 1) {
-        const tabs = await document.querySelector("#tabs"); // it says it has no effect but it does ¯\_(ツ)_/¯
-        tabs?.scrollIntoView({ behavior: "smooth" });
-      } else {
-        window.scroll({ top: 0, behavior: "smooth" });
-      }
-    };
-
+    
     return {
       active,
       items,
-      handleTabChange,
     };
 }

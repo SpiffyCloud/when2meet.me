@@ -1,38 +1,25 @@
 <template>
   <div id="meeting" class="p-d-flex p-flex-column p-p-4">
     <Toast position="bottom-right" group="br" />
-    <Header :title="title" @view-all="onViewAll" />
-    <h3>Active User: {{ activeUser }}</h3>
-    <TabMenu
-      :model="items"
-      v-model:activeIndex="active"
-      @tab-change="handleTabChange"
-    />
+    <Header :title="meeting.title" @view-all="onViewAll" />
+    <TabMenu :model="items" v-model:activeIndex="active" />
     <div id="tabs">
-      <AllAvailability v-if="active === 0" @user-clicked="onUserClicked" />
-      <MyAvailability
-        v-if="active === 1"
-        :isIdentified="isIdentified"
-        @user-identified="onNewUserAdded"
-        @adjust-my-availability="onAdjustMyAvailability"
-      />
+      <AllAvailability v-if="active === 0" />
+      <MyAvailability v-if="active === 1" />
     </div>
 
     <transition name="slide">
       <AvailabilityTable
-        v-if="showTable"
-        :disabled="!isEnabled"
-        :user="users.length === 1 ? users[0] : 'All Availabilities'"
-        :chartData="chartData"
-        @submit-availability="submitAvailability"
-        @exit="showTable = false"
+        v-model:visible="showTable"
+        :user="tableUser"
+        :disabled="tableUser !== activeUser"
       />
     </transition>
   </div>
 </template>
 
 <script lang="tsx">
-import { computed, onMounted, provide, readonly, ref, toRefs } from "vue";
+import { onMounted, provide, ref } from "vue";
 // Prime Vue components
 import Toast from "primevue/toast";
 import TabMenu from "primevue/tabmenu";
@@ -42,13 +29,10 @@ import AllAvailability from "@/components/AllAvailability.vue";
 import MyAvailability from "@/components/MyAvailability.vue";
 import AvailabilityTable from "@/components/AvailabilityTable.vue";
 // Composables
-import useGetMeeting from "@/composables/useGetMeeting";
-import useAuth from "@/composables/useAuth";
 import useTabMenu from "@/composables/useTabMenu";
-import useChart from "@/composables/useChart";
-import usePostAvailability from "@/composables/usePostAvailability";
+import useMeeting from "@/composables/useMeeting";
+import useAuth from "@/composables/useAuth";
 
-import { availability } from "@/api/meeting";
 
 export default {
   name: "Meeting",
@@ -60,91 +44,38 @@ export default {
     TabMenu,
     Toast,
   },
-  setup(_, { emit }) {
-    const { meeting, getMeeting } = useGetMeeting();
-    const {
-      isIdentified,
-      onUserIdentified,
-      initUser,
-      getUserFromLocalStorage,
-    } = useAuth(meeting);
-    // TODO: useBestWindows() feature
-
-    const activeUser = ref("");
-
-    onMounted(async () => {
-      await getMeeting();
-      initUser(activeUser);
-    });
-
-    const onUpdatedAvailabilty = (availability: availability[]) => {
-      meeting.availability = [...availability];
-    };
+  setup() {
+    const { getMeeting, meeting } = useMeeting();
+    const { activeUser } = useAuth();
+    onMounted(getMeeting);
 
     const showTable = ref(false);
-    const users = ref([] as string[]);
+    const tableUser = ref("");
 
-    const onUserClicked = (user: string) => {
-      // show disabled table with only the clicked users availability
-      users.value = [user];
-      showTable.value = true;
-    };
-
-    const onNewUserAdded = (user: string) => {
-      // show enabled table with only your avialability
-      onUserIdentified(user);
-      users.value = [user];
-      showTable.value = true;
-    };
-
-    const onAdjustMyAvailability = () => {
-      // show enabled table with only your availability
-      users.value = [getUserFromLocalStorage() as string];
-      showTable.value = true;
-    };
+    const updateShowTable = (show: boolean, user: string) => {
+      showTable.value = show;
+      tableUser.value = user;
+    }
+    provide("updateShowTable", updateShowTable);
 
     const onViewAll = () => {
-      // Show disabled table with all responders
-      users.value = meeting.availability.map((user) => user.name);
-      showTable.value = true;
+      updateShowTable(true, "All");
     };
 
-    const isEnabled = computed(() => {
-      return users.value.length === 1 && users.value.includes(activeUser.value);
-    });
-
-    provide("meeting", readonly(meeting));
-    provide("updateAvailabiity", onUpdatedAvailabilty);
-
     return {
-      ...meeting,
-      isIdentified,
-      onUserIdentified,
-      onUpdatedAvailabilty,
-      ...useTabMenu(),
-      ...useChart(meeting.availability, meeting.by_end_date, showTable, users),
-      ...usePostAvailability(emit, showTable, meeting),
-      onUserClicked,
-      onNewUserAdded,
-      onViewAll,
-      onAdjustMyAvailability,
-      showTable,
+      meeting,
       activeUser,
-      isEnabled,
-      users,
+      ...useTabMenu(),
+      // Showing the table features
+      showTable,
+      tableUser,
+      onViewAll,
     };
   },
 };
 </script>
 
 <style>
-#meeting {
-  background-color: var(--primary-color);
-  color: var(--primary-color-text);
-  font-family: var(--font-family);
-  min-height: 100%;
-}
-
 .slide-enter-active,
 .slide-leave-active {
   transition: all 1s;

@@ -1,13 +1,13 @@
 <template>
-  <div class="page">
+  <div v-if="visible" class="page">
     <div class="heading p-p-3">
       <template v-if="!disabled">
         <i>Click & drag over the times that you are available</i>
-        <Button label="Done" @click="handleDoneButton" />
+        <Button label="Done" @click="onDone" />
       </template>
       <template v-else>
-        <i>{{ user }}</i>
-        <Button @click="handleExitButton" label="Exit" />
+        <i>{{ header }}</i>
+        <Button @click="onExit" label="Exit" />
       </template>
     </div>
     <div ref="table-wrapper" class="table-wrapper">
@@ -38,7 +38,7 @@
               :data-x="x"
               :data-y="y"
               :data-slot="dataPoint.slot"
-              @click="handleClick"
+              @click="onClick"
               @mousemove="handleDragging"
               @touchmove="handleDragging"
               @touchstart="startDragging"
@@ -66,8 +66,11 @@ import Button from "primevue/button";
 
 // Composables
 import useDrag from "@/composables/useDrag";
+import useChart from "@/composables/useChart";
+import usePostAvailability from "@/composables/usePostAvailability";
 
-import { computed, onMounted, toRefs } from "vue";
+import { computed, inject, onMounted, toRefs } from "vue";
+import { meeting } from "@/api/meeting";
 
 export default {
   name: "AvailabilityTable",
@@ -75,9 +78,9 @@ export default {
     Button,
   },
   props: {
-    chartData: {
-      type: Object,
-      required: true,
+    visible: {
+      type: Boolean,
+      default: false,
     },
     disabled: {
       type: Boolean,
@@ -87,24 +90,35 @@ export default {
       type: String,
     },
   },
-  emits: ["submit-availability", "exit"],
+  emits: ["submit-availability", "exit", "update:visible"],
   setup(props: any, { emit }) {
-    const { chartData } = toRefs(props);
-    const dates = computed(() => {
-      return chartData.value.length > 0
-        ? chartData.value[0].data.map((dataPoint) => dataPoint.x)
-        : [];
-    });
-
     const { disabled } = toRefs(props);
+    const { submitAvailability } = usePostAvailability();
 
-    const handleClick = (e: any) => {
+    const updateMeeting = inject("updateMeeting") as (
+      updatedMeeting: meeting
+    ) => void;
+
+    const onClick = (e: any) => {
       if (disabled.value) return;
       e.target.classList.toggle("selected");
     };
+    const onDone = async () => {
+      emit("update:visible", false);
 
-    const handleExitButton = () => {
-      emit("exit");
+      const slots = Array.from(
+        document.querySelectorAll("#table td.selected")
+      ).map((el: any) => {
+        return el.dataset.slot;
+      });
+      const updatedMeeting = (await submitAvailability(slots)) as meeting;
+      if (updatedMeeting) {
+        updateMeeting(updatedMeeting);
+      }
+    };
+
+    const onExit = () => {
+      emit("update:visible", false);
     };
 
     onMounted(() => {
@@ -113,11 +127,21 @@ export default {
       wrapper?.scrollTo(0, start.offsetTop);
     });
 
+    const header = computed(() => {
+      if (props.user === "All") {
+        return "Viewing all availability";
+      } else {
+        return `Viewing availability for ${props.user}`;
+      }
+    });
+
     return {
-      dates,
-      handleClick,
-      handleExitButton,
+      onClick,
+      onDone,
+      onExit,
+      header,
       ...useDrag(emit, disabled),
+      ...useChart(),
     };
   },
 };

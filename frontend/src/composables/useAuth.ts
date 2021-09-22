@@ -1,56 +1,20 @@
-import { availability } from "@/api/meeting";
-import { Ref, ref } from "vue";
+import { readonly, ref, provide, onMounted } from "vue";
+import { useRoute } from "vue-router";
 
-export default function useAuth(meeting) {
-    // TODO figure out where to use this
-    const isIdentified = ref(false);
-
-    const onUserIdentified = (name: any) => {
-        if (name?.length == 0) return;
-        if (isNewUser(name)) {
-            addUserToAvailabilty(name);
-        }
-        setUserInLocalStorage(name);
-        isIdentified.value = true;
-    };
-
-    const isNewUser = (name: string) => {
-        return meeting.availability.findIndex((user) => user.name === name) === -1;
+export default function useAuth() {
+    const route = useRoute();
+    const activeUser = ref("");
+    const setActiveUser = () => {
+        activeUser.value = localStorage.getItem(`${route.params.id}`) as string;
     }
 
-    const addUserToAvailabilty = (name: string) => {
-        meeting.availability = [
-            ...meeting.availability,
-            { name: name, slots: [] as any },
-        ];
+    provide("activeUser", readonly(activeUser));
+    provide("setActiveUser", setActiveUser);
 
-    }
-    const setUserInLocalStorage = (name: string) => {
-        localStorage.setItem(`${meeting.meeting_id}`, name);
-
-    }
-
-    const getUserFromLocalStorage = () => {
-        return localStorage.getItem(`${meeting.meeting_id}`);
-    }
-
-
-    const initUser = (activeUser: Ref<string>) => {
-        activeUser.value = localStorage.getItem(`${meeting.meeting_id}`) as string;
-
-        if (activeUser.value) { // todo check this logic
-            isIdentified.value = true;
-        }
-    }
-
-
-
+    onMounted(setActiveUser);
 
     return {
-        isIdentified,
-        onUserIdentified,
-        getUserFromLocalStorage,
-        initUser,
+        activeUser
     }
 
 }

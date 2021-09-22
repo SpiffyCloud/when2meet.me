@@ -146,23 +146,10 @@ export default function useDrag(emit: any, isDisabled: Ref<boolean>) {
     el.classList.remove("non-active");
   };
 
-  const handleDoneButton = () => {
-    if (isDisabled.value) {
-      return;
-    }
-    const selectedTds = Array.from(document.querySelectorAll("#table td.selected"));
-    selectedSlots.value = selectedTds.map((el: any) => {
-      return el.dataset.slot;
-    })
-    return selectedSlots.value;
-  };
-
-
 
   return {
     startDragging,
     endDragging,
     handleDragging,
-    handleDoneButton,
   };
 }

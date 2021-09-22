@@ -11,19 +11,12 @@ export default function useWindows(availability: availability[], defaults: any) 
     };
 
     const intersection = (arr1: any[], arr2: any[]) => {
-       const res = [] as any;
-       for(let i = 0; i < arr1.length; i++){
-          if(!arr2.includes(arr1[i])){
-             continue;
-          }
-          res.push(arr1[i]);
-       }
-       return res;
+       return arr1.filter(item => arr2.includes(item));
     };
     const intersectMany = (...arrs) => {
        let res = arrs[0]?.slice();
-       for(let i = 1; i < arrs.length; i++){
-          res = intersection(res, arrs[i]);
+       for(const arr of arrs){
+          res = intersection(res, arr);
        }
        return res;
     };
