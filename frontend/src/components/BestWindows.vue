@@ -2,26 +2,35 @@
   <h3 class="p-mb-2">
     Best Windows of Availability
     <i
-      v-if="windows.length > 0"
       class="pi pi-filter"
-      @click="showWindowFilter = true"
+      @click="updateWindowFilter(true)"
       style="fontsize: 2rem"
     ></i>
   </h3>
   <div v-if="windows.length > 0" class="window-group">
-    <Window v-for="(window, index) in windows.slice(3)" :key="index" />
-    <Dialog
-      header="Best Window Options"
-      v-model:visible="showWindowFilter"
-      :modal="true"
-    >
-      <WindowFilter @apply="updateWindows($event)" :meeting="meeting" />
-    </Dialog>
-    <div class="p-d-flex p-jc-end">
-      <Button label="View all" class="p-button" @click="viewAll = true" />
-    </div>
+    <Window
+      v-for="(window, index) in windows"
+      :time="window.start"
+      :duration="window.windowLength"
+      :key="index"
+    />
   </div>
-  <i v-else>No Availability yet! Be the first!</i>
+  <i v-else-if="meeting.availability.length > 0"
+    >No meetings match those filters!</i
+  >
+  <i v-else>No availability yet! Be the first!</i>
+
+  <Dialog
+    header="Best Window Options"
+    v-model:visible="showWindowFilter"
+    :modal="true"
+  >
+    <WindowFilter
+      :urgencyOptions="urgencyOptions"
+      :durationOptions="durationOptions"
+      :availableOptions="availableOptions"
+    />
+  </Dialog>
 </template>
 
 <script lang="ts">
@@ -35,15 +44,13 @@ import WindowFilter from "@/components/WindowFilter.vue";
 
 // Composables
 import useWindows from "@/composables/useWindows";
-import { availability } from "@/api/meeting";
+import { inject } from "vue";
+
+import { meeting } from "@/api/meeting";
 
 export default {
   name: "BestWindows",
-  props: {
-    availability: {
-      type: Array as () => availability[],
-    },
-  },
+
   components: {
     Dialog,
     Button,
@@ -51,7 +58,9 @@ export default {
     WindowFilter,
   },
   setup() {
+    const meeting = inject("meeting") as meeting;
     return {
+      meeting,
       ...useWindows(),
     };
   },

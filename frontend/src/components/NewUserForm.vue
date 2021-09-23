@@ -37,10 +37,9 @@ export default {
     InputText,
     Button,
   },
-  emits: ["new-user-added"],
-  setup(_, { emit }) {
+  setup() {
     return {
-      ...usePostNewUser(emit),
+      ...usePostNewUser(),
     };
   },
 };

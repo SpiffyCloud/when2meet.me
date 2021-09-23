@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, inject, Ref } from "vue";
 
 import Button from "primevue/button";
 
@@ -23,9 +23,13 @@ export default defineComponent({
     Button,
   },
   emits: ["show-adjust"],
-  setup(_, { emit }) {
+  setup() {
+
+    const updateShowTable = inject("updateShowTable") as (show: boolean, user: string) => void;
+    const activeUser = inject("activeUser") as Ref<string>;
+
     const handleAdjustBtn = () => {
-      emit("show-adjust");
+      updateShowTable(true, activeUser.value)
     };
 
     return {
