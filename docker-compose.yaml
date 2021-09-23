@@ -55,7 +55,6 @@ services:
       - "traefik.http.routers.frontend.rule=PathPrefix(`/`)"
       - "traefik.http.routers.frontend.entrypoints=web"
     volumes:
-      - node_modules:/app/node_modules
       - ./frontend:/app
 
   ingress:
@@ -101,4 +100,3 @@ services:
 
 volumes:
   postgres-data:
-  node_modules:

@@ -170,9 +170,20 @@ export default class About extends Vue {
         }
     }
 
-    onSubmitFeedback() {
-        console.log("[todo] onSubmitFeedback");
-        console.log(this.selectedQuickFeedback);
+    async onSubmitFeedback() {
+        console.log("[debug] onSubmitFeedback");
+
+        const requestOptions = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                feedback_message: this.feedbackMessage,
+                feedback_quick: Array.from(this.selectedQuickFeedback),
+            }),
+        };
+        const response = await fetch(`/api/v1/feedback/`, requestOptions);
+        console.log(await response.json());
+        return await response.json();
     }
 
     onSubmitHireUs() {

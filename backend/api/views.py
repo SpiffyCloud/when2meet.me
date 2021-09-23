@@ -138,10 +138,16 @@ class SubmitFeedback(APIView):
         {
         }
         """
+        if not "feedback_message" in request.data:
+            return Response(
+                {"error": "Missing feedback message"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         feedback_data = {
             "feedback_message": request.data["feedback_message"],
             "feedback_quick": request.data.get("feedback_quick", "[]"),
         }
 
         send_feedback_email(feedback_data)
-        return Response(status=status.HTTP_202_ACCEPTED)
+        return Response({}, status=status.HTTP_202_ACCEPTED)
