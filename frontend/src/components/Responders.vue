@@ -9,7 +9,7 @@
     </p>
     <Button
       v-for="name in responders"
-      @click="onClick"
+      @click="onClick(name)"
       :key="name"
       :label="name"
       class="p-button p-bg-white p-m-1 p-button-lg p-shadow-2 response-btn"
@@ -30,16 +30,19 @@ export default {
   },
   setup() {
     const meeting = inject("meeting") as any; // todo change name of "meeting" to "meetingType" or something to prevent conflicts
-    const activeUser = inject("activeUser") as string;
-    const updateShowTable = inject("updateShowTable") as (show: boolean, user: string) => void;
+    const activeUser = inject("activeUser") as any;
+    const updateShowTable = inject("updateShowTable") as (
+      show: boolean,
+      user: string
+    ) => void;
 
     const responders = computed(() => {
       return meeting.availability.map((resp) => resp.name);
     });
 
-    const onClick = (name: string) => {
+    const onClick = (name) => {
       updateShowTable(true, name);
-    }
+    };
 
     return {
       activeUser,

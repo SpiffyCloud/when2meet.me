@@ -1,17 +1,23 @@
-import { ref, watch, computed, inject, onMounted } from "vue";
+import { ref, watch, computed, inject, onMounted, Ref } from "vue";
 import { meeting } from "@/api/meeting";
 
 export default function useChart() {
   // Create a 2d array to represent a list of availabilities
   const chartData = ref([] as any);
-  const tableUser = ref("");
-
+  const tableUser = inject("tableUser") as Ref<string>;
   const meeting = inject("meeting") as meeting;
+
+  watch(tableUser, () => {
+    if (tableUser.value) {
+      initChartData();
+    }
+  })
   watch(meeting, () => {
     if (meeting.meeting_id) {
       initChartData();
     }
-  });
+  })
+
 
   const formatAMPMTime = (date: Date) => {
     let hours: number = date.getHours();
@@ -29,7 +35,7 @@ export default function useChart() {
     // create an array of 0s for each 15 min block
     const groupAvailability = Array(end15MinBlock - start15MinBlock).fill(0);
     meeting.availability.forEach((user) => {
-      if (user.name === "All" || user.name === tableUser.value) {
+      if (tableUser.value === "All" || user.name === tableUser.value) {
         user.slots.forEach((slot) => {
           if (slot >= start15MinBlock && slot <= end15MinBlock) {
             groupAvailability[slot - start15MinBlock] += 1;
@@ -72,8 +78,9 @@ export default function useChart() {
     const { today, endDate } = getStartAndEndDate();
     const start15MinBlock = get15MinuteBlock(today);
     const end15MinBlock = get15MinuteBlock(endDate);
-
-    createChartData(start15MinBlock, end15MinBlock);
+    if (!isNaN(end15MinBlock)) {
+      createChartData(start15MinBlock, end15MinBlock);
+    }
   };
 
   const getStartAndEndDate = () => {

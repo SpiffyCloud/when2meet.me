@@ -7,12 +7,12 @@
     </div>
     <div class="window-time">
       <div class="time">
-        <span>at</span>
-        <span class="p-text-bold">{{ timeString }}</span>
+        <span>from</span>
+        <span class="p-text-bold">{{ startTimeString }}</span>
       </div>
       <div class="duration">
-        <span>for</span>
-        <span class="p-text-bold">{{ durationInMinutes }} minutes</span>
+        <span>to</span>
+        <span class="p-text-bold">{{ endTimeString }}</span>
       </div>
     </div>
   </div>
@@ -32,13 +32,19 @@ export default {
   },
   setup(props: any) {
     const { time, duration } = toRefs(props);
-    console.log(time.value, duration.value);
     // convert time to a date
     const date = new Date(time.value * 15 * 60 * 1000);
+    const endDate = new Date(
+      (time.value + duration.value + 1) * 15 * 60 * 1000
+    );
     const month = date.toLocaleString("en-us", { month: "short" });
     const day = date.getDate();
     const weekDay = date.toLocaleString("en-us", { weekday: "short" });
-    const timeString = date.toLocaleString("en-us", {
+    const startTimeString = date.toLocaleString("en-us", {
+      hour: "numeric",
+      minute: "numeric",
+    });
+    const endTimeString = endDate.toLocaleString("en-us", {
       hour: "numeric",
       minute: "numeric",
     });
@@ -47,7 +53,8 @@ export default {
       month,
       day,
       weekDay,
-      timeString,
+      startTimeString,
+      endTimeString,
       durationInMinutes,
     };
   },

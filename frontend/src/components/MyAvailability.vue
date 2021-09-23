@@ -8,7 +8,7 @@ import UserSummary from "@/components/UserSummary.vue";
 import NewUserForm from "@/components/NewUserForm.vue";
 
 import Button from "primevue/button";
-import { inject } from 'vue';
+import { inject } from "vue";
 
 export default {
   name: "MyAvailability",
@@ -17,17 +17,11 @@ export default {
     NewUserForm,
     Button,
   },
-  props: {
-    by_end_date: {
-      type: String,
-      required: true,
-    },
-  },
   setup() {
     const activeUser = inject("activeUser") as string;
     return {
-      activeUser
-    }
+      activeUser,
+    };
   },
 };
 </script>

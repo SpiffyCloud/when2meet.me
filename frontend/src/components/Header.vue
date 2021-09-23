@@ -7,13 +7,13 @@
   />
   <Button
     label="View All Availability"
-    @click="viewAllAvailability"
+    @click="updateShowTable(true, 'All')"
     class="p-button-lg p-button-success p-my-3 p-shadow-5"
   />
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script lang="ts">
+import { defineComponent, inject } from "vue";
 
 // Primevue components
 import Button from "primevue/button";
@@ -29,15 +29,14 @@ export default defineComponent({
   props: {
     title: String,
   },
-  emits: ["view-all"],
-  setup(_, { emit }) {
-
-    const viewAllAvailability = () => {
-      emit("view-all")
-    }
+  setup() {
+    const updateShowTable = inject("updateShowTable") as (
+      show: boolean,
+      user: string
+    ) => void;
 
     return {
-      viewAllAvailability,
+      updateShowTable,
       ...useCopyUrl(),
     };
   },

@@ -69,7 +69,7 @@ import useDrag from "@/composables/useDrag";
 import useChart from "@/composables/useChart";
 import usePostAvailability from "@/composables/usePostAvailability";
 
-import { computed, inject, onMounted, toRefs } from "vue";
+import { computed, inject, onMounted, toRefs, watch } from "vue";
 import { meeting } from "@/api/meeting";
 
 export default {
@@ -121,17 +121,23 @@ export default {
       emit("update:visible", false);
     };
 
-    onMounted(() => {
-      const wrapper = document.querySelector(".table-wrapper");
-      const start = document.querySelector("[data-time=start]") as HTMLElement;
-      wrapper?.scrollTo(0, start.offsetTop);
-    });
-
     const header = computed(() => {
       if (props.user === "All") {
         return "Viewing all availability";
       } else {
         return `Viewing availability for ${props.user}`;
+      }
+    });
+
+    const { visible } = toRefs(props);
+    watch(visible, () => {
+      if (visible) {
+        const wrapper = document.querySelector(".table-wrapper");
+        const start = document.querySelector(
+          "[data-time=start]"
+        ) as HTMLElement;
+        console.log(wrapper);
+        wrapper?.scrollTo(0, start.offsetTop);
       }
     });
 

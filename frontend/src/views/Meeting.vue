@@ -1,7 +1,7 @@
 <template>
   <div id="meeting" class="p-d-flex p-flex-column p-p-4">
     <Toast position="bottom-right" group="br" />
-    <Header :title="meeting.title" @view-all="onViewAll" />
+    <Header :title="meeting.title" />
     <TabMenu :model="items" v-model:activeIndex="active" />
     <div id="tabs">
       <AllAvailability v-if="active === 0" />
@@ -19,7 +19,7 @@
 </template>
 
 <script lang="tsx">
-import { onMounted, provide, ref } from "vue";
+import { onMounted, provide, readonly, ref } from "vue";
 // Prime Vue components
 import Toast from "primevue/toast";
 import TabMenu from "primevue/tabmenu";
@@ -32,7 +32,6 @@ import AvailabilityTable from "@/components/AvailabilityTable.vue";
 import useTabMenu from "@/composables/useTabMenu";
 import useMeeting from "@/composables/useMeeting";
 import useAuth from "@/composables/useAuth";
-
 
 export default {
   name: "Meeting",
@@ -55,12 +54,9 @@ export default {
     const updateShowTable = (show: boolean, user: string) => {
       showTable.value = show;
       tableUser.value = user;
-    }
-    provide("updateShowTable", updateShowTable);
-
-    const onViewAll = () => {
-      updateShowTable(true, "All");
     };
+    provide("updateShowTable", updateShowTable);
+    provide("tableUser", readonly(tableUser));
 
     return {
       meeting,
@@ -69,7 +65,6 @@ export default {
       // Showing the table features
       showTable,
       tableUser,
-      onViewAll,
     };
   },
 };

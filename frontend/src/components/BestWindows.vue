@@ -2,9 +2,8 @@
   <h3 class="p-mb-2">
     Best Windows of Availability
     <i
-      v-if="windows.length > 0"
       class="pi pi-filter"
-      @click="showWindowFilter = true"
+      @click="updateWindowFilter(true)"
       style="fontsize: 2rem"
     ></i>
   </h3>
@@ -15,23 +14,26 @@
       :duration="window.windowLength"
       :key="index"
     />
-    <Dialog
-      header="Best Window Options"
-      v-model:visible="showWindowFilter"
-      :modal="true"
-    >
-      <WindowFilter
-        @apply="updateWindows($event)"
-        :availability="availability"
-        :defaults="defaults"
-      />
-    </Dialog>
   </div>
-  <i v-else>No Availability yet! Be the first!</i>
+  <i v-else-if="meeting.availability.length > 0"
+    >No meetings match those filters!</i
+  >
+  <i v-else>No availability yet! Be the first!</i>
+
+  <Dialog
+    header="Best Window Options"
+    v-model:visible="showWindowFilter"
+    :modal="true"
+  >
+    <WindowFilter
+      :urgencyOptions="urgencyOptions"
+      :durationOptions="durationOptions"
+      :availableOptions="availableOptions"
+    />
+  </Dialog>
 </template>
 
 <script lang="ts">
-import { computed, inject, toRefs } from "vue";
 // PrimeVue Components
 import Dialog from "primevue/dialog";
 import Button from "primevue/button";
@@ -42,6 +44,8 @@ import WindowFilter from "@/components/WindowFilter.vue";
 
 // Composables
 import useWindows from "@/composables/useWindows";
+import { inject } from "vue";
+
 import { meeting } from "@/api/meeting";
 
 export default {
@@ -55,19 +59,9 @@ export default {
   },
   setup() {
     const meeting = inject("meeting") as meeting;
-    const numAvailable = computed(() => {
-      return meeting.availability.length;
-    });
-    const defaults = computed(() => {
-      return {
-        urgency: 1,
-        duration: 4,
-        available: numAvailable.value,
-      };
-    });
     return {
-      ...useWindows(meeting.availability, defaults),
-      defaults,
+      meeting,
+      ...useWindows(),
     };
   },
 };
