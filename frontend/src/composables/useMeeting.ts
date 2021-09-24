@@ -1,5 +1,5 @@
 import { useRoute, useRouter } from "vue-router";
-import { reactive, provide, readonly, ref  } from "vue";
+import { reactive, provide, readonly, ref } from "vue";
 import { meeting, availability, fetchMeeting, createMeeting } from "../api/meeting";
 
 export default function useMeeting() {
@@ -23,7 +23,7 @@ export default function useMeeting() {
         meeting.meeting_id = meeting_id;
 
     };
-    
+
     const postMeeting = async ({ title, by_end_date }) => {
         const createdMeeting = await createMeeting(title.value, by_end_date.value);
         if (createdMeeting.meeting_id) {
@@ -35,14 +35,14 @@ export default function useMeeting() {
         }
     };
 
-    const updateMeeeting = (updatedMeeting: meeting) => {
+    const updateMeeting = (updatedMeeting: meeting) => {
         Object.assign(meeting, updatedMeeting);
-      };
-      
-      provide("meeting", readonly(meeting));
-      provide("updateMeeting", updateMeeeting);
-    
-    return { 
+    };
+
+    provide("meeting", readonly(meeting));
+    provide("updateMeeting", updateMeeting);
+
+    return {
         meeting,
         getMeeting,
         postMeeting,
