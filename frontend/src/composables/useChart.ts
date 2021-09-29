@@ -19,16 +19,6 @@ export default function useChart() {
   })
 
 
-  const formatAMPMTime = (date: Date) => {
-    let hours: number = date.getHours();
-    let minutes: any = date.getMinutes();
-
-    const ampm = hours > 12 ? "PM" : "AM";
-
-    hours = hours % 12;
-    minutes = minutes < 10 ? "0" + minutes : minutes;
-    return `${hours}:${minutes} ${ampm}`;
-  };
 
   const createChartData = (start15MinBlock, end15MinBlock) => {
     chartData.value = [];
@@ -61,7 +51,11 @@ export default function useChart() {
       const day = new Date((start15MinBlock + y) * 15 * 60 * 1000);
 
       chartData.value.push({
-        name: formatAMPMTime(day),
+        name: day.toLocaleString("en-us", {
+          hour: "numeric",
+          minute: "numeric",
+        }),
+
         data: rawData,
       });
     }

@@ -4,7 +4,8 @@
     <Header :title="meeting.title" />
     <TabMenu :model="items" v-model:activeIndex="active" />
     <div id="tabs">
-      <AllAvailability v-if="active === 0" />
+      <AllAvailability 
+      v-if="active === 0" />
       <MyAvailability v-if="active === 1" />
     </div>
 
@@ -48,6 +49,8 @@ export default {
     const { activeUser } = useAuth();
     onMounted(getMeeting);
 
+    // show table logic, could be moved to a composition function
+
     const showTable = ref(false);
     const tableUser = ref("");
 
@@ -57,6 +60,7 @@ export default {
     };
     provide("updateShowTable", updateShowTable);
     provide("tableUser", readonly(tableUser));
+    //
 
     return {
       meeting,
