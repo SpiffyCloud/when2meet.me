@@ -10,7 +10,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  COMPOSE_ROOT: /srv/when2meet
+  COMPOSE_ROOT: /srv/when2meet-staging
 
 jobs:
   deploy:
