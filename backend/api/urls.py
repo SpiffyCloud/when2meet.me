@@ -1,6 +1,12 @@
-from django.urls import include, path
-from rest_framework import routers
-from .views import CreateMeeting, GetMeeting, SubmitAvailability, SubmitFeedback
+from django.urls import path
+
+from .views import (
+    CreateMeeting,
+    GetMeeting,
+    SubmitAvailability,
+    SubmitFeedback,
+    SubmitHireInquiry,
+)
 
 
 urlpatterns = [
@@ -8,4 +14,5 @@ urlpatterns = [
     path("meetings/<str:id>/", GetMeeting.as_view()),
     path("meetings/<str:id>/availabilities/", SubmitAvailability.as_view()),
     path("feedback/", SubmitFeedback.as_view()),
+    path("hire-us/", SubmitHireInquiry.as_view()),
 ]

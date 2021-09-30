@@ -1,15 +1,15 @@
-from django.shortcuts import render
-
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from .models import Meeting, Availability
 from .serializers import (
     MeetingSerializer,
     AvailabilitySerializer,
     AvailabilitySerializer,
 )
-from .models import Meeting, Availability
 from .utils import send_feedback_email
+
 import json
 
 
@@ -130,24 +130,54 @@ class SubmitFeedback(APIView):
         post data:
         {
             "feedback_message": "Feedback Message",
-            "feedback_quick": ["Quick Messages 1", "Quick Message 2"],
+            "feedback_quick": ["Quick message 1", "Quick message 2", "Quick message 3"],
         }
         *feedback_quick is optional*
 
-        return data:
-        {
-        }
+        return data: None
         """
-        if not "feedback_message" in request.data:
+        feedback_message = request.data.get("feedback_message", "")
+        feedback_quick = request.data.get("feedback_quick", "[]")
+
+        if feedback_message == "" and len(feedback_quick) == 0:
             return Response(
-                {"error": "Missing feedback message"},
+                {"error": "Must provide feedback in request."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
         feedback_data = {
-            "feedback_message": request.data["feedback_message"],
-            "feedback_quick": request.data.get("feedback_quick", "[]"),
+            "feedback_message": feedback_message,
+            "feedback_quick": feedback_quick,
         }
 
         send_feedback_email(feedback_data)
-        return Response({}, status=status.HTTP_202_ACCEPTED)
+        return Response(status=status.HTTP_202_ACCEPTED)
+
+
+class SubmitHireInquiry(APIView):
+    """api/v1/hire-us/"""
+
+    def post(self, request, *args, **kwargs):
+        """
+        post data:
+        {
+            "hire_inquiry": "Hire Inquiry",
+        }
+
+        return data: None
+        """
+        hire_inquiry = request.data.get("hire_inquiry", "")
+
+        if hire_inquiry == "":
+            return Response(
+                {"error": "Must provide hire inquiry in request."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        feedback_data = {
+            "feedback_message": hire_inquiry,
+            "feedback_quick": ["hire-inquiry"],
+        }
+
+        send_feedback_email(feedback_data)
+        return Response(status=status.HTTP_202_ACCEPTED)

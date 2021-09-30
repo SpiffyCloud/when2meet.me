@@ -1,21 +1,21 @@
 <template>
-    <div id="about" class="p-d-flex p-flex-column p-jc-between p-p-4">
-        <h1 id="heading" class="p-text-center p-text-bold p-pb-4">
+    <div id="about-page" class="p-d-flex p-flex-column p-jc-between p-p-4">
+        <h1 id="heading" class="p-text-center p-text-bold p-pb-3">
             When 2 Meet Me
         </h1>
 
-        <div
-            id="what-is"
-            class="p-field p-text-left p-d-flex p-flex-column p-pb-2"
-        >
-            <h4 class="p-pb-2">What is When2MeetMe?</h4>
+        <div id="what-is" class="p-text-left p-d-flex p-flex-column p-pb-2">
+            <h4 class="p-pb-2">What is When2Meet.Me?</h4>
             <p class="p-pb-2">
-                When2MeetMe is a quick and easy availability survey tool that
+                When2Meet.Me is a quick and easy availability survey tool that
                 helps you find the best times you and your group can meet.
             </p>
             <p class="p-pb-2">
                 Please read our
-                <a href="#" class="p-underline" @click="openTerms"
+                <a
+                    href="#"
+                    class="p-underline"
+                    @click="displayModalTerms = true"
                     >terms and conditions</a
                 >
                 for details on what we track and use the data we collect.
@@ -30,68 +30,93 @@
             <p class="">A document that says legal stuff...</p>
         </Dialog>
 
-        <div
-            id="quick-feedback-group"
-            class="p-field p-text-left p-d-flex p-flex-column p-pb-2"
-        >
-            <h4 class="p-pb-2">We'd love your feedback!</h4>
-            <p class="p-pb-2">The good, the bad, and the ugly.</p>
+        <div id="feedback-block" v-if="showFeedbackBlock">
+            <div
+                id="quick-feedback-group"
+                class="p-text-left p-d-flex p-flex-column p-pb-2"
+            >
+                <h4 class="p-pb-2">We'd love your feedback!</h4>
+                <p class="p-pb-2">The good, the bad, and the ugly.</p>
 
-            <div id="quick-feedback" class="p-d-flex p-jc-start p-flex-wrap">
-                <Button
-                    v-for="(message, index) in quickFeedback"
-                    :key="index"
-                    @click="selectQuickFeedback(message)"
-                    class="p-button p-bg-white p-m-1 p-button-lg p-shadow-2"
-                    :label="message"
+                <div
+                    id="quick-feedback-actions"
+                    class="p-d-flex p-jc-start p-flex-wrap"
                 >
-                </Button>
+                    <Button
+                        class="p-button p-bg-white p-m-1 p-button-lg p-shadow-2"
+                        v-for="(selected, message, index) in quickFeedback"
+                        :key="index"
+                        :icon="`${selected ? 'pi pi-check' : ''}`"
+                        :iconPos="`${selected ? 'right' : ''}`"
+                        :label="message"
+                        @click="selectQuickFeedback(message)"
+                    >
+                    </Button>
+                </div>
+            </div>
+
+            <div
+                id="feedback-message-group"
+                class="p-text-left p-d-flex p-flex-column p-pb-2"
+            >
+                <h4 class="p-pb-2">Would you like to say something?</h4>
+                <p class="p-pb-2">
+                    Share your thoughts and ideas. <span>(optional)</span>
+                </p>
+                <Textarea
+                    v-model="feedbackMessage"
+                    rows="5"
+                    cols="30"
+                    placeholder="This is cool!"
+                    :autoResize="true"
+                />
+                <Button
+                    id="submit-feedback"
+                    class="
+                        p-button-raised
+                        p-button-success
+                        p-button-lg
+                        p-mt-2
+                        p-mb-2
+                    "
+                    label="Submit My Feedback"
+                    :disabled="!submitFeedbackFormValid"
+                    @click="onSubmitFeedback"
+                />
+            </div>
+        </div>
+
+        <div id="feedback-block-submmited" v-else>
+            <div class="p-text-center p-d-flex p-flex-column p-pb-2">
+                <i class="pi pi-bell"></i>
+                <h1 class="p-mb-2">We appreciate your feedback!</h1>
+                <Button
+                    id="give-more-feedback"
+                    class="p-button-raised p-button-success p-button-lg p-mb-2"
+                    label="Give More Feedback"
+                    @click="showFeedbackBlock = true"
+                />
             </div>
         </div>
 
         <div
-            id="feedback-message"
-            class="p-field p-text-left p-d-flex p-flex-column p-pb-2"
-        >
-            <h4 class="p-pb-2">Would you like to say something?</h4>
-            <p class="p-pb-2">
-                Share your thoughts and ideas. <span>optional</span>
-            </p>
-            <Textarea
-                v-model="feedbackMessage"
-                :autoResize="true"
-                rows="5"
-                cols="30"
-                placeholder="This is cool!"
-            />
-            <br />
-            <Button
-                id="submit-feedback"
-                label="Submit My Feedback"
-                @click="onSubmitFeedback"
-                class="p-button-raised p-button-success p-button-lg"
-            />
-        </div>
-
-        <div
             id="hire-contact"
-            class="p-field p-text-left p-d-flex p-flex-column p-pb-2"
+            class="p-text-left p-d-flex p-flex-column p-pb-2"
         >
             <h4 class="p-pb-2">Like our style?</h4>
             <p class="p-pb-2">
-                When2MeetMe is designed, developed, and maintained by a stellar
+                When2Meet.Me is designed, developed, and maintained by a stellar
                 group of people who love to make great products.
             </p>
-            <p class="">
+            <p class="p-mb-2">
                 If you've got an idea and would like to hire us - just let us
                 know!
             </p>
-            <br />
             <Button
                 id="hire-us"
-                label="Hire Us"
-                @click="openHireUs"
                 class="p-button-raised p-button-success p-button-lg"
+                label="Hire Us"
+                @click="displayModalHireUs = true"
             />
 
             <Dialog
@@ -99,97 +124,133 @@
                 v-model:visible="displayModalHireUs"
                 :modal="true"
             >
-                <Textarea
-                    v-model="hireContactMessage"
-                    :autoResize="true"
-                    rows="5"
-                    cols="30"
-                    placeholder="You guys rock!"
-                />
-                <Button
-                    id="submit-hire-contact"
-                    label="Hire Us"
-                    @click="onSubmitHireUs"
-                    class="p-button-raised p-button-success p-button-lg"
-                />
+                <div id="hire-us-block" v-if="showHireUsBlock">
+                    <Textarea
+                        v-model="hireContactMessage"
+                        :autoResize="true"
+                        rows="5"
+                        cols="30"
+                        placeholder="You guys rock!"
+                    />
+                    <Button
+                        id="submit-hire-contact"
+                        class="p-button-raised p-button-success p-button-lg"
+                        label="Hire Us"
+                        :disabled="!submitHireUsFormValid"
+                        @click="onSubmitHireUs"
+                    />
+                </div>
+                <div id="hire-us-block-submmited" v-else>
+                    <p>Thanks for contacting us.</p>
+                </div>
             </Dialog>
         </div>
-        <h3 id="footer" class="p-text-center p-text-bold p-pt-2">Home</h3>
+
+        <h3 id="footer" class="p-text-center p-text-bold p-pt-2">
+            <router-link :to="{ name: 'Create' }">Home</router-link>
+        </h3>
     </div>
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
+import { computed, ref } from "vue";
 import Button from "primevue/button";
 import Textarea from "primevue/textarea";
 import Dialog from "primevue/dialog";
-import SelectButton from "primevue/selectbutton";
 
-@Options({
+export default {
     name: "About",
     components: {
         Button,
         Textarea,
         Dialog,
-        SelectButton,
     },
-})
-export default class About extends Vue {
-    displayModalTerms = false;
-    displayModalHireUs = false;
+    setup() {
+        const displayModalTerms = ref(false);
 
-    quickFeedback = [
-        "I love it!",
-        "I hate it!",
-        "Fast",
-        "Great experience",
-        "Easy to use",
-        "It's confusing",
-        "Unintuitive",
-    ];
+        const showFeedbackBlock = ref(true);
 
-    selectedQuickFeedback = new Set();
+        const quickFeedback = ref({
+            "I love it!": false,
+            "I hate it!": false,
+            Fast: false,
+            "Great experience": false,
+            "Easy to use": false,
+            "It's confusing": false,
+            Unintuitive: false,
+        } as any);
 
-    feedbackMessage = "";
-
-    hireContactMessage = "";
-
-    openTerms() {
-        this.displayModalTerms = true;
-    }
-
-    openHireUs() {
-        this.displayModalHireUs = true;
-    }
-
-    selectQuickFeedback(message) {
-        if (this.selectedQuickFeedback.has(message)) {
-            this.selectedQuickFeedback.delete(message);
-        } else {
-            this.selectedQuickFeedback.add(message);
-        }
-    }
-
-    async onSubmitFeedback() {
-        console.log("[debug] onSubmitFeedback");
-
-        const requestOptions = {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                feedback_message: this.feedbackMessage,
-                feedback_quick: Array.from(this.selectedQuickFeedback),
-            }),
+        const selectQuickFeedback = (message) => {
+            quickFeedback.value[message] = !quickFeedback.value[message];
         };
-        const response = await fetch(`/api/v1/feedback/`, requestOptions);
-        console.log(await response.json());
-        return await response.json();
-    }
 
-    onSubmitHireUs() {
-        console.log("[todo] onSubmitHireUs");
-    }
-}
+        const feedbackMessage = ref("");
+
+        const selectedQuickFeedback = computed(() => {
+            return Object.keys(quickFeedback.value).filter(
+                (message) => quickFeedback.value[message]
+            );
+        });
+
+        const submitFeedbackFormValid = computed(
+            () =>
+                feedbackMessage.value || selectedQuickFeedback.value.length > 0
+        );
+
+        const onSubmitFeedback = async () => {
+            const requestOptions = {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    feedback_message: feedbackMessage.value,
+                    feedback_quick: selectedQuickFeedback.value,
+                }),
+            };
+            const response = await fetch(`/api/v1/feedback/`, requestOptions);
+            if (response.status == 202) {
+                showFeedbackBlock.value = false;
+            }
+        };
+
+        const displayModalHireUs = ref(false);
+
+        const showHireUsBlock = ref(true);
+
+        const hireContactMessage = ref("");
+
+        const submitHireUsFormValid = computed(() => hireContactMessage.value);
+
+        const onSubmitHireUs = async () => {
+            const requestOptions = {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    hire_inquiry: hireContactMessage.value,
+                }),
+            };
+            const response = await fetch(`/api/v1/hire-us/`, requestOptions);
+            if (response.status == 202) {
+                hireContactMessage.value = "";
+                showHireUsBlock.value = false;
+            }
+        };
+
+        return {
+            displayModalTerms,
+            showFeedbackBlock,
+            quickFeedback,
+            selectQuickFeedback,
+            feedbackMessage,
+            submitFeedbackFormValid,
+            onSubmitFeedback,
+            displayModalHireUs,
+            showHireUsBlock,
+            hireContactMessage,
+            submitHireUsFormValid,
+            onSubmitHireUs,
+        };
+    },
+};
 </script>
 
 <style lang="css">
@@ -199,16 +260,9 @@ export default class About extends Vue {
     margin: 0;
 }
 
-#about {
+#about-page {
     background-color: var(--primary-color);
     color: var(--primary-color-text);
     font-family: var(--font-family);
-}
-
-.p-field {
-    min-width: 320px;
-    max-width: 500px;
-    margin-right: auto;
-    margin-left: auto;
 }
 </style>
