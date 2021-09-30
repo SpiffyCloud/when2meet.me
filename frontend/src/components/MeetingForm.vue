@@ -1,20 +1,22 @@
 <template>
-    <span v-if="serverError">{{ serverError }}</span>
-    <NameInput v-model:title="title" />
+    <form @submit.prevent="submitMeeting">
+        <span v-if="serverError">{{ serverError }}</span>
+        <NameInput v-model:title="title" :error="titleError" />
 
-    <CalendarInput v-model:date="by_end_date" />
+        <CalendarInput v-model:date="by_end_date" :error="dateError" />
 
-    <Button
-        id="create-meeting"
-        label="Create Meeting"
-        :disabled="!formValid"
-        @click="submitMeeting"
-        class="p-button-raised p-button-success p-button-lg"
-    />
+        <Button
+            id="create-meeting"
+            label="Create Meeting"
+            class="p-button-raised p-button-success p-button-lg"
+            style="width: 100%"
+            @click="submitMeeting"
+        />
+    </form>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, Ref } from "vue";
+import { computed, defineComponent, ref } from "vue";
 
 import Button from "primevue/button";
 
@@ -37,22 +39,46 @@ export default defineComponent({
     emits: ["submit-meeting"],
     setup(_, { emit }) {
         const title = ref("");
-        const by_end_date = ref("");
-        const formValid: Ref<boolean> = computed(
-            () =>
-                title.value.length > 0 &&
-                new Date(by_end_date.value).setHours(0) >=
-                    new Date().setHours(0)
-        );
+        const titleError = ref("");
+        const by_end_date = ref(new Date().toISOString());
+        const dateError = computed(() => {
+            // if date is before today, show error
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const endDate = new Date(
+                by_end_date.value
+                    .concat("T00:00:00")
+                    .replace(/-/g, "/")
+                    .replace(/T.+/, "")
+            );
+            if (endDate < today) {
+                return "Date cannot be in the past";
+            }
+            return "";
+        });
 
         const submitMeeting = () => {
-            emit("submit-meeting", { title, by_end_date });
+            // if title is empy, show error
+            if (title.value === "") {
+                titleError.value = "Please enter a meeting name!";
+            } else {
+                titleError.value = "";
+            }
+
+            // if no errors, submit
+            if (!titleError.value && !dateError.value) {
+                emit("submit-meeting", {
+                    title,
+                    by_end_date,
+                });
+            }
         };
 
         return {
             title,
             by_end_date,
-            formValid,
+            titleError,
+            dateError,
             submitMeeting,
         };
     },
