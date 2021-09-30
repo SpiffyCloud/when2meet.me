@@ -1,0 +1,7 @@
+--- BEGIN MESSAGE ---
+
+Feedback Message: {{ feedback_message }}
+
+{% if feedback_quick %}Quick Feedback Messages: {% for message in feedback_quick %}{{message}}{%if not forloop.last%} | {% endif %}{% endfor %}{% endif %}
+
+--- END MESSAGE ---

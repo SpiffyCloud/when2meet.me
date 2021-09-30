@@ -123,3 +123,10 @@ REST_FRAMEWORK = {
         "rest_framework.renderers.JSONRenderer",
     ]
 }
+
+# Feedback Settings
+
+FEEDBACK_FROM_EMAIL = "feedback@when2meet.me"
+FEEDBACK_TO_EMAIL = "feedback@when2meet.me"
+FEEDBACK_SUBJECT = "[when2meet.me] Feedback Message"
+FEEDBACK_TEMPLATE = "feedback.txt"

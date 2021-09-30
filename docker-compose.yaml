@@ -55,7 +55,6 @@ services:
       - "traefik.http.routers.frontend.rule=PathPrefix(`/`)"
       - "traefik.http.routers.frontend.entrypoints=web"
     volumes:
-      - node_modules:/app/node_modules
       - ./frontend:/app
 
   ingress:
@@ -94,6 +93,10 @@ services:
       - POSTGRES_PASSWORD=compose
       - POSTGRES_DB=when2meet
 
+  mailhog:
+    image: mailhog/mailhog:latest
+    ports:
+      - 8025:8025
+
 volumes:
   postgres-data:
-  node_modules:

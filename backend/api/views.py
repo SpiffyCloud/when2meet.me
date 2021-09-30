@@ -1,19 +1,20 @@
-from django.shortcuts import render
-
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from .models import Meeting, Availability
 from .serializers import (
     MeetingSerializer,
     AvailabilitySerializer,
     AvailabilitySerializer,
 )
-from .models import Meeting, Availability
+from .utils import send_feedback_email
+
 import json
 
 
 class CreateMeeting(APIView):
-    """/api/v1/meetings"""
+    """/api/v1/meetings/"""
 
     def post(self, request):
         """
@@ -22,7 +23,6 @@ class CreateMeeting(APIView):
             "title": "Meeting Title",
             "by_end_date": "YYYY-MM-DD",
         }
-
         *by_end_date is optional*
 
         return data:
@@ -48,7 +48,7 @@ class CreateMeeting(APIView):
 
 
 class GetMeeting(APIView):
-    """/api/v1/meetings/<meeting_id>"""
+    """/api/v1/meetings/<str:id>/"""
 
     def get(self, request, *args, **kwargs):
         """
@@ -80,15 +80,16 @@ class GetMeeting(APIView):
 
 
 class SubmitAvailability(APIView):
+    """api/v1/meetings/<str:id>/availabilities/"""
+
     def post(self, request, *args, **kwargs):
         """
-        api/v1/meetings/<str:id>/availabilities/
         post data:
         {
             "name": "Name",
             "slots": [],
         }
-        *slots are optional*
+        *slots is optional*
         *meeting id comes from url*
 
         return data:
@@ -97,20 +98,19 @@ class SubmitAvailability(APIView):
             "slots": [],
             "meeting_id": "integer"
         }
-
         """
         new_data = {
             "name": request.data["name"],
-            "slots": [int(slot) for slot in json.loads(request.data.get("slots", "[]"))],
+            "slots": [
+                int(slot) for slot in json.loads(request.data.get("slots", "[]"))
+            ],
             "meeting": kwargs["id"],
         }
         availability = Availability.objects.filter(
             meeting=new_data["meeting"], name__iexact=new_data["name"]
         )
         if availability.exists():
-            serializer = AvailabilitySerializer(
-                availability.first(), data=new_data
-            )
+            serializer = AvailabilitySerializer(availability.first(), data=new_data)
         else:
             serializer = AvailabilitySerializer(data=new_data)
 
@@ -120,3 +120,64 @@ class SubmitAvailability(APIView):
             meeting_serializer = MeetingSerializer(meeting)
             return Response(meeting_serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SubmitFeedback(APIView):
+    """api/v1/feedback/"""
+
+    def post(self, request, *args, **kwargs):
+        """
+        post data:
+        {
+            "feedback_message": "Feedback Message",
+            "feedback_quick": ["Quick message 1", "Quick message 2", "Quick message 3"],
+        }
+        *feedback_quick is optional*
+
+        return data: None
+        """
+        feedback_message = request.data.get("feedback_message", "")
+        feedback_quick = request.data.get("feedback_quick", "[]")
+
+        if feedback_message == "" and len(feedback_quick) == 0:
+            return Response(
+                {"error": "Must provide feedback in request."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        feedback_data = {
+            "feedback_message": feedback_message,
+            "feedback_quick": feedback_quick,
+        }
+
+        send_feedback_email(feedback_data)
+        return Response(status=status.HTTP_202_ACCEPTED)
+
+
+class SubmitHireInquiry(APIView):
+    """api/v1/hire-us/"""
+
+    def post(self, request, *args, **kwargs):
+        """
+        post data:
+        {
+            "hire_inquiry": "Hire Inquiry",
+        }
+
+        return data: None
+        """
+        hire_inquiry = request.data.get("hire_inquiry", "")
+
+        if hire_inquiry == "":
+            return Response(
+                {"error": "Must provide hire inquiry in request."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        feedback_data = {
+            "feedback_message": hire_inquiry,
+            "feedback_quick": ["hire-inquiry"],
+        }
+
+        send_feedback_email(feedback_data)
+        return Response(status=status.HTTP_202_ACCEPTED)

@@ -8,9 +8,7 @@ import datetime
 class AvailabilitySerializer(serializers.Serializer):
     name = serializers.CharField(required=True, max_length=100)
     meeting = serializers.PrimaryKeyRelatedField(queryset=Meeting.objects.all())
-    slots = serializers.ListField(
-        child=serializers.IntegerField(), required=False
-    )
+    slots = serializers.ListField(child=serializers.IntegerField(), required=False)
 
     def create(self, validated_data):
         meeting = validated_data.get("meeting")
@@ -37,17 +35,13 @@ class MeetingSerializer(serializers.Serializer):
         try:
             meeting = Meeting.objects.get(meeting_id=meeting_id)
         except Meeting.DoesNotExist:
-            raise serializers.ValidationError(
-                f"Meeting {meeting_id} does not exist"
-            )
+            raise serializers.ValidationError(f"Meeting {meeting_id} does not exist")
 
         return meeting_id
 
     def validate_by_end_date(self, by_end_date):
         if by_end_date < datetime.date.today():
-            raise serializers.ValidationError(
-                f"End date cannot be in the past."
-            )
+            raise serializers.ValidationError(f"End date cannot be in the past.")
         return by_end_date
 
     def create(self, validated_data):
@@ -58,8 +52,7 @@ class MeetingSerializer(serializers.Serializer):
 
         # generate a random 8 char string
         meeting_id = "".join(
-            random.choice(string.ascii_lowercase + string.digits)
-            for _ in range(8)
+            random.choice(string.ascii_lowercase + string.digits) for _ in range(8)
         )
 
         # loop until you find a free meeting id
@@ -67,8 +60,7 @@ class MeetingSerializer(serializers.Serializer):
             meeting_id=meeting_id
         ).exists():  # pragma: no cover
             meeting_id = "".join(
-                random.choice(string.ascii_lowercase + string.digits)
-                for _ in range(8)
+                random.choice(string.ascii_lowercase + string.digits) for _ in range(8)
             )
 
         return Meeting.objects.create(
