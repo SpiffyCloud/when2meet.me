@@ -14,8 +14,7 @@ export default {
     name: 'MyAvailability',
     components: {
         UserSummary,
-        NewUserForm,
-        Button
+        NewUserForm
     },
     setup() {
         const activeUser = inject('activeUser') as string
