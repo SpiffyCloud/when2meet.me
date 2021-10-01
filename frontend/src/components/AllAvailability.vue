@@ -6,20 +6,20 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent } from 'vue'
 
 // Internal Components
-import BestWindows from "@/components/BestWindows.vue";
-import Responders from "@/components/Responders.vue";
+import BestWindows from '@/components/BestWindows.vue'
+import Responders from '@/components/Responders.vue'
 
 export default defineComponent({
-    name: "AllAvailability",
+    name: 'AllAvailability',
     components: {
         BestWindows,
-        Responders,
+        Responders
     },
     setup() {
-        return {};
-    },
-});
+        return {}
+    }
+})
 </script>

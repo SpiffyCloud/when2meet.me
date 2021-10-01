@@ -1,29 +1,29 @@
 <template>
-  <UserSummary v-if="activeUser" />
-  <NewUserForm v-else />
+    <UserSummary v-if="activeUser" />
+    <NewUserForm v-else />
 </template>
 
 <script lang="ts">
-import UserSummary from "@/components/UserSummary.vue";
-import NewUserForm from "@/components/NewUserForm.vue";
+import UserSummary from '@/components/UserSummary.vue'
+import NewUserForm from '@/components/NewUserForm.vue'
 
-import Button from "primevue/button";
-import { inject } from "vue";
+import Button from 'primevue/button'
+import { inject } from 'vue'
 
 export default {
-  name: "MyAvailability",
-  components: {
-    UserSummary,
-    NewUserForm,
-    Button,
-  },
-  setup() {
-    const activeUser = inject("activeUser") as string;
-    return {
-      activeUser,
-    };
-  },
-};
+    name: 'MyAvailability',
+    components: {
+        UserSummary,
+        NewUserForm,
+        Button
+    },
+    setup() {
+        const activeUser = inject('activeUser') as string
+        return {
+            activeUser
+        }
+    }
+}
 </script>
 
 <style></style>

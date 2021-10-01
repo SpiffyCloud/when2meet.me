@@ -153,87 +153,82 @@
 </template>
 
 <script lang="ts">
-import { computed, ref } from "vue";
-import Button from "primevue/button";
-import Textarea from "primevue/textarea";
-import Dialog from "primevue/dialog";
+import { computed, ref } from 'vue'
+import Button from 'primevue/button'
+import Textarea from 'primevue/textarea'
+import Dialog from 'primevue/dialog'
 
 export default {
-    name: "About",
+    name: 'About',
     components: {
         Button,
         Textarea,
-        Dialog,
+        Dialog
     },
     setup() {
-        const displayModalTerms = ref(false);
+        const displayModalTerms = ref(false)
 
-        const showFeedbackBlock = ref(true);
+        const showFeedbackBlock = ref(true)
 
         const quickFeedback = ref({
-            "I love it!": false,
-            "I hate it!": false,
+            'I love it!': false,
+            'I hate it!': false,
             Fast: false,
-            "Great experience": false,
-            "Easy to use": false,
+            'Great experience': false,
+            'Easy to use': false,
             "It's confusing": false,
-            Unintuitive: false,
-        } as any);
+            Unintuitive: false
+        } as any)
 
         const selectQuickFeedback = (message) => {
-            quickFeedback.value[message] = !quickFeedback.value[message];
-        };
+            quickFeedback.value[message] = !quickFeedback.value[message]
+        }
 
-        const feedbackMessage = ref("");
+        const feedbackMessage = ref('')
 
         const selectedQuickFeedback = computed(() => {
             return Object.keys(quickFeedback.value).filter(
                 (message) => quickFeedback.value[message]
-            );
-        });
+            )
+        })
 
         const submitFeedbackFormValid = computed(
             () =>
                 feedbackMessage.value || selectedQuickFeedback.value.length > 0
-        );
+        )
 
-        const onSubmitFeedback = async () => {
+        const onSubmitFeedback = () => {
             const requestOptions = {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     feedback_message: feedbackMessage.value,
-                    feedback_quick: selectedQuickFeedback.value,
-                }),
-            };
-            const response = await fetch(`/api/v1/feedback/`, requestOptions);
-            if (response.status == 202) {
-                showFeedbackBlock.value = false;
+                    feedback_quick: selectedQuickFeedback.value
+                })
             }
-        };
+            fetch(`/api/v1/feedback/`, requestOptions)
+            showFeedbackBlock.value = false
+        }
 
-        const displayModalHireUs = ref(false);
+        const displayModalHireUs = ref(false)
 
-        const showHireUsBlock = ref(true);
+        const showHireUsBlock = ref(true)
 
-        const hireContactMessage = ref("");
+        const hireContactMessage = ref('')
 
-        const submitHireUsFormValid = computed(() => hireContactMessage.value);
+        const submitHireUsFormValid = computed(() => hireContactMessage.value)
 
-        const onSubmitHireUs = async () => {
+        const onSubmitHireUs = () => {
             const requestOptions = {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    hire_inquiry: hireContactMessage.value,
-                }),
-            };
-            const response = await fetch(`/api/v1/hire-us/`, requestOptions);
-            if (response.status == 202) {
-                hireContactMessage.value = "";
-                showHireUsBlock.value = false;
+                    hire_inquiry: hireContactMessage.value
+                })
             }
-        };
+            fetch(`/api/v1/hire-us/`, requestOptions)
+            showHireUsBlock.value = false
+        }
 
         return {
             displayModalTerms,
@@ -247,10 +242,10 @@ export default {
             showHireUsBlock,
             hireContactMessage,
             submitHireUsFormValid,
-            onSubmitHireUs,
-        };
-    },
-};
+            onSubmitHireUs
+        }
+    }
+}
 </script>
 
 <style lang="css">

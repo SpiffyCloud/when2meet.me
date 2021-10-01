@@ -1,29 +1,29 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import Create from "../views/Create.vue";
-import Meeting from "../views/Meeting.vue";
-import About from "../views/About.vue";
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import Create from '../views/Create.vue'
+import Meeting from '../views/Meeting.vue'
+import About from '../views/About.vue'
 
 const routes: Array<RouteRecordRaw> = [
-  {
-    path: "/",
-    name: "Create",
-    component: Create,
-  },
-  {
-    path: "/:id",
-    name: "Meeting",
-    component: Meeting,
-  },
-  {
-    path: "/about",
-    name: "About",
-    component: About,
-  },
-];
+    {
+        path: '/',
+        name: 'Create',
+        component: Create
+    },
+    {
+        path: '/:id',
+        name: 'Meeting',
+        component: Meeting
+    },
+    {
+        path: '/about',
+        name: 'About',
+        component: About
+    }
+]
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
-  routes,
-});
+    history: createWebHistory(process.env.BASE_URL),
+    routes
+})
 
-export default router;
+export default router

@@ -1,47 +1,47 @@
 <template>
-  <div id="name-group" class="p-field p-text-left p-d-flex p-flex-column">
-    <label class="p-text-bold" for="name">What is this meeting for?</label>
-    <InputText
-      id="name"
-      type="text"
-      v-model="title"
-      placeholder="The Grandiose Meeting"
-      :class="{ 'p-invalid': error }"
-      class="p-shadow-5 p-inputtext-lg"
-    />
-    <p v-if="error" id="name-help" class="p-error p-text-bold p-mt-2">
-      <i class="pi pi-exclamation-triangle p-mr-1"></i>{{ error }}
-    </p>
-  </div>
+    <div id="name-group" class="p-field p-text-left p-d-flex p-flex-column">
+        <label class="p-text-bold" for="name">What is this meeting for?</label>
+        <InputText
+            id="name"
+            type="text"
+            v-model="title"
+            placeholder="The Grandiose Meeting"
+            :class="{ 'p-invalid': error }"
+            class="p-shadow-5 p-inputtext-lg"
+        />
+        <p v-if="error" id="name-help" class="p-error p-text-bold p-mt-2">
+            <i class="pi pi-exclamation-triangle p-mr-1"></i>{{ error }}
+        </p>
+    </div>
 </template>
 
 <script lang="ts">
-import { ref, toRefs, watch } from "vue";
+import { ref, toRefs, watch } from 'vue'
 
-import InputText from "primevue/inputtext";
+import InputText from 'primevue/inputtext'
 
 export default {
-  name: "NameInput",
-  components: {
-    InputText,
-  },
-  emits: ["update:title"],
-  props: {
-    error: {
-      type: String,
-      default: "",
+    name: 'NameInput',
+    components: {
+        InputText
     },
-  },
-  setup(_, context: any) {
-    const title = ref(context.attrs.title);
+    emits: ['update:title'],
+    props: {
+        error: {
+            type: String,
+            default: ''
+        }
+    },
+    setup(_, context: any) {
+        const title = ref(context.attrs.title)
 
-    watch(title, (newVal: string) => {
-      context.emit("update:title", newVal);
-    });
+        watch(title, (newVal: string) => {
+            context.emit('update:title', newVal)
+        })
 
-    return {
-      title,
-    };
-  },
-};
+        return {
+            title
+        }
+    }
+}
 </script>

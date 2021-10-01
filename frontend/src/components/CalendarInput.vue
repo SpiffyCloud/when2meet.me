@@ -20,29 +20,29 @@
 </template>
 
 <script lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch } from 'vue'
 
-import Calendar from "primevue/calendar";
+import Calendar from 'primevue/calendar'
 
 export default {
-    name: "CalendarInput",
+    name: 'CalendarInput',
     components: {
-        Calendar,
+        Calendar
     },
     props: {
         error: {
             type: String,
-            default: "",
-        },
+            default: ''
+        }
     },
     setup(_, context: any) {
-        const date = ref(new Date());
+        const date = ref(new Date())
         watch(date, (newVal: Date) => {
-          context.emit("update:date", newVal.toISOString());
-        });
+            context.emit('update:date', newVal.toISOString())
+        })
         return {
-            date,
-        };
-    },
-};
+            date
+        }
+    }
+}
 </script>
