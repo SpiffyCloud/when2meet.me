@@ -1,76 +1,76 @@
 <template>
-    <div id="meeting" class="p-d-flex p-flex-column p-p-4">
-        <Toast position="bottom-right" group="br" />
-        <Header :title="meeting.title" />
-        <TabMenu :model="items" v-model:activeIndex="active" />
-        <div id="tabs">
-            <AllAvailability v-if="active === 0" />
-            <MyAvailability v-if="active === 1" />
-        </div>
-
-        <transition name="slide">
-            <AvailabilityTable
-                v-model:visible="showTable"
-                :user="tableUser"
-                :disabled="tableUser !== activeUser"
-            />
-        </transition>
+  <div id="meeting" class="p-d-flex p-flex-column p-p-4">
+    <Toast position="bottom-right" group="br" />
+    <Header :title="meeting.title" />
+    <TabMenu :model="items" v-model:activeIndex="active" />
+    <div id="tabs">
+      <AllAvailability v-if="active === 0" />
+      <MyAvailability v-if="active === 1" />
     </div>
+
+    <transition name="slide">
+      <AvailabilityTable
+        v-model:visible="showTable"
+        :user="tableUser"
+        :disabled="tableUser !== activeUser"
+      />
+    </transition>
+  </div>
 </template>
 
 <script lang="tsx">
-import { onMounted, provide, readonly, ref } from 'vue'
+import { onMounted, provide, readonly, ref } from "vue";
 // Prime Vue components
-import Toast from 'primevue/toast'
-import TabMenu from 'primevue/tabmenu'
+import Toast from "primevue/toast";
+import TabMenu from "primevue/tabmenu";
 // Internal components
-import Header from '@/components/Header.vue'
-import AllAvailability from '@/components/AllAvailability.vue'
-import MyAvailability from '@/components/MyAvailability.vue'
-import AvailabilityTable from '@/components/AvailabilityTable.vue'
+import Header from "@/components/Header.vue";
+import AllAvailability from "@/components/AllAvailability.vue";
+import MyAvailability from "@/components/MyAvailability.vue";
+import AvailabilityTable from "@/components/AvailabilityTable.vue";
 // Composables
-import useTabMenu from '@/composables/useTabMenu'
-import useMeeting from '@/composables/useMeeting'
-import useAuth from '@/composables/useAuth'
+import useTabMenu from "@/composables/useTabMenu";
+import useMeeting from "@/composables/useMeeting";
+import useAuth from "@/composables/useAuth";
 
 export default {
-    name: 'Meeting',
-    components: {
-        Header,
-        AllAvailability,
-        MyAvailability,
-        AvailabilityTable,
-        TabMenu,
-        Toast
-    },
-    setup() {
-        const { getMeeting, meeting } = useMeeting()
-        const { activeUser } = useAuth()
-        onMounted(getMeeting)
+  name: "Meeting",
+  components: {
+    Header,
+    AllAvailability,
+    MyAvailability,
+    AvailabilityTable,
+    TabMenu,
+    Toast,
+  },
+  setup() {
+    const { getMeeting, meeting } = useMeeting();
+    const { activeUser } = useAuth();
+    onMounted(getMeeting);
 
-        // show table logic, could be moved to a composition function
+    // show table logic, could be moved to a composition function
 
-        const showTable = ref(false)
-        const tableUser = ref('')
+    const showTable = ref(false);
+    const tableUser = ref("");
 
-        const updateShowTable = (show: boolean, user: string) => {
-            showTable.value = show
-            tableUser.value = user
-        }
-        provide('updateShowTable', updateShowTable)
-        provide('tableUser', readonly(tableUser))
-        //
+    const updateShowTable = (show: boolean, user: string) => {
+      showTable.value = show;
+      tableUser.value = user;
+    };
+    provide("updateShowTable", updateShowTable);
+    provide("tableUser", readonly(tableUser));
+    //
 
-        return {
-            meeting,
-            activeUser,
-            ...useTabMenu(),
-            // Showing the table features
-            showTable,
-            tableUser
-        }
-    }
-}
+    return {
+      meeting,
+      activeUser,
+      ...useTabMenu(),
+      // Showing the table features
+      showTable,
+      tableUser,
+    };
+  },
+};
 </script>
 
 <style>

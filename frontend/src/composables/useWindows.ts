@@ -5,7 +5,7 @@ export default function useWindows() {
     const meeting = inject('meeting') as meeting
     const windows = ref([] as any)
 
-  const urgencyOptions = ["Soonest", "Latest"];
+    const urgencyOptions = ['Soonest', 'Latest']
 
     const durationOptions = [
         { label: '15 minutes', value: 0 },
@@ -25,15 +25,61 @@ export default function useWindows() {
         )
     })
 
-  const filters = reactive({
-    urgency: "Soonest", // Soonest
-    duration: 0, // 1 hour
-    available: meeting.availability.length,
-  });
-  provide("filters", filters);
-  watch(filters, () => {
-      updateWindows();
-  })
+    const filters = reactive({
+        urgency: 'Soonest', // Soonest
+        duration: 0, // 1 hour
+        available: meeting.availability.length
+    })
+    provide('filters', filters)
+
+    const combinations = (arr: any[]) => {
+        const res = arr.map((a) => [a])
+        for (let i = 0; i < arr.length; i++) {
+            for (let j = i + 1; j < arr.length; j++) {
+                for (let k = 0; k < arr.length; k++) {
+                    res.push([arr[i], ...arr.slice(j, j + k)])
+                }
+            }
+        }
+        return res
+    }
+
+    const updateWindows = () => {
+        const slots = meeting.availability.map((a) =>
+            Array.from(a.slots).sort((a, b) => a - b)
+        )
+        const combos = combinations(slots)
+        const filteredCombos = combos.filter((c) => {
+            return c.length >= filters.available
+        })
+
+        const allWindows = filteredCombos.map((combo) => {
+            const intersections = intersectMany(...combo)
+            const continuousIntervals = getContinuousIntervals(
+                intersections,
+                combo.length
+            ) as any
+            const newWindows = continuousIntervals?.filter(
+                (i) => i.windowLength > filters.duration
+            )
+
+            if (newWindows) {
+                if (filters.urgency === 'Soonest') {
+                    newWindows.sort((a, b) => a.start - b.start)
+                } else {
+                    newWindows.sort((a, b) => b.start - a.start)
+                }
+            }
+            return newWindows
+        })
+
+        console.log('all windows', allWindows)
+        windows.value = [...allWindows.flat()]
+    }
+
+    watch(filters, () => {
+        updateWindows()
+    })
 
     const updateFilter = (filter: string, { value }) => {
         filters[filter] = value
@@ -64,71 +110,27 @@ export default function useWindows() {
         return res
     }
 
-  const getContinuousIntervals = (arr: any[], numOfPeople: number) => {
-    if (!arr) return;
-    const res = [] as any;
-    let windowLength = 1;
-    let start = arr[0];
-    for (let i = 1; i < arr.length; i++) {
-      if (arr[i] - arr[i - 1] > 1) {
-        res.push({
-          start,
-          numOfPeople,
-          windowLength,
-        });
-        start = arr[i];
-        windowLength = 0;
-      } else {
-        windowLength++;
-      }
+    const getContinuousIntervals = (arr: any[], numOfPeople: number) => {
+        if (!arr) return
+        const res = [] as any
+        let windowLength = 1
+        let start = arr[0]
+        for (let i = 1; i < arr.length; i++) {
+            if (arr[i] - arr[i - 1] > 1) {
+                res.push({
+                    start,
+                    numOfPeople,
+                    windowLength
+                })
+                start = arr[i]
+                windowLength = 0
+            } else {
+                windowLength++
+            }
+        }
     }
 
-
-  const combinations = (arr: any[]) => {
-    const res = arr.map(a => [a])
-    for (let i = 0; i < arr.length; i++) {
-      for (let j = i + 1; j < arr.length; j++) {
-        for (let k = 0; k < arr.length; k++) {
-          res.push([arr[i], ...arr.slice(j, j+k)])
-        }
-      }
-    }
-    return res;
-  }
-
-  const updateWindows = () => {
-    const slots = meeting.availability.map((a) =>
-      Array.from(a.slots).sort((a, b) => a - b)
-    );
-    const combos = combinations(slots)
-    const filteredCombos = combos.filter(c => {
-      return c.length >= filters.available})
-
-    const allWindows = filteredCombos.map(combo => {
-      const intersections = intersectMany(...combo);
-      const continuousIntervals = getContinuousIntervals(intersections, combo.length);
-      const newWindows = continuousIntervals?.filter(
-        (i) => i.windowLength > filters.duration
-        );
-
-      if (newWindows) {
-        if (filters.urgency === "Soonest") {
-            newWindows.sort((a, b) => a.start - b.start)
-        }
-        else {
-            newWindows.sort((a, b) => b.start - a.start)
-        }
-      }
-      return newWindows;
-    })
-
-    console.log("all windows", allWindows);
-    windows.value = [...allWindows.flat()]
-
-
-  };
-
-  onMounted(updateWindows);
+    onMounted(updateWindows)
 
     return {
         windows,
