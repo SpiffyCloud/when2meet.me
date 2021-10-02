@@ -129,7 +129,7 @@ export default function useWindows() {
                 windowLength++
             }
         }
-        return res;
+        return res
     }
 
     onMounted(updateWindows)

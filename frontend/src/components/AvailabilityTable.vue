@@ -28,7 +28,7 @@
               class="sticky-column"
               :data-time="series.name === '8:45 AM' ? 'start' : series.name"
             >
-              {{ parseInt(y) % 2 == 0 ? series.name : null }}
+              {{ y % 2 == 0 ? series.name : null }}
             </td>
             <td
               class="noselect data"
