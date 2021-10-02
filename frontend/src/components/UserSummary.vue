@@ -1,12 +1,20 @@
 <template>
-  <h3>Summary of your availability</h3>
-  <i>See your availability stats and make adjustments</i>
+  <label class="label p-mb-2">Summary of your availability</label>
+  <em class="assistive">See your availability stats and make adjustments</em>
   <div class="stats">
-    <div>Total availability: {{ totalAvailability }}</div>
-    <div>Longest you can meet: {{ longestMeeting }}</div>
-    <div>Ovelap with others: {{ overlapWithOthers }}</div>
+    <div class="label p-my-2">
+      Total availability: <span class="stat">{{ totalAvailability }}</span>
+    </div>
+    <div class="label p-mb-2">
+      Longest you can meet: <span class="stat">{{ longestMeeting }}</span>
+    </div>
+    <div class="label p-mb-2">
+      Ovelap with others: <span class="stat">{{ overlapWithOthers }}</span>
+    </div>
   </div>
-  <Button @click="handleAdjustBtn" label="Adjust my availability" />
+  <button class="button p-mt-5" @click="handleAdjustBtn">
+    Adjust my availability
+  </button>
 </template>
 
 <script lang="ts">
@@ -14,13 +22,8 @@ import { defineComponent, inject, Ref } from 'vue'
 
 import { useStats } from '@/composables/useStats'
 
-import Button from 'primevue/button'
-
 export default defineComponent({
   name: 'UserSummary',
-  components: {
-    Button
-  },
   emits: ['show-adjust'],
   setup() {
     const updateShowTable = inject('updateShowTable') as (
@@ -41,4 +44,8 @@ export default defineComponent({
 })
 </script>
 
-<style></style>
+<style>
+.stat {
+  color: var(--text-secondary);
+}
+</style>

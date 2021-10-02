@@ -5,12 +5,12 @@
 
     <CalendarInput v-model:date="by_end_date" :error="dateError" />
 
-    <button type="submit" class="submit p-mt-2">Create Meeting</button>
+    <button type="submit" class="button p-mt-2">Create Meeting</button>
   </form>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, watch, ref } from 'vue'
 
 import NameInput from '../components/NameInput.vue'
 import CalendarInput from '../components/CalendarInput.vue'
@@ -46,6 +46,12 @@ export default defineComponent({
         return 'Date cannot be in theca past'
       }
       return ''
+    })
+
+    watch(title, () => {
+      if (title.value) {
+        titleError.value = ''
+      }
     })
 
     const submitMeeting = () => {

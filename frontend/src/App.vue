@@ -8,6 +8,8 @@
   --primary: #27284e;
   --secondary: #1a9399;
   --text: #ffffff;
+  --text-secondary: #f49729;
+  --error: #d74c4c;
 }
 
 /* app styles */
@@ -51,5 +53,27 @@ body {
   color: var(--text);
   font-size: 1.75rem;
   font-weight: bold;
+}
+
+.input {
+  height: 2.5rem;
+  width: 100%;
+  background: none;
+  color: var(--text);
+  font-size: 1.5rem;
+  outline: none;
+  border: none;
+  border-bottom: 2px solid var(--secondary);
+  border-radius: 0 !important;
+}
+
+.input-error {
+  border-bottom: 2px solid var(--error);
+}
+
+.error-text {
+  color: var(--error);
+  font-size: 1.5rem;
+  margin-top: 0.5rem;
 }
 </style>

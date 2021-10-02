@@ -17,7 +17,7 @@ export default function usePostNewUser() {
 
     const addNewUser = async () => {
         if (name.value.trim() === '') {
-            nameError.value = 'Please fill out a name!'
+            nameError.value = 'You need a name to add your availability.'
             return
         }
         nameError.value = ''
