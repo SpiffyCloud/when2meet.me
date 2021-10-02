@@ -20,6 +20,7 @@
   outline: none;
   border: none;
   border-bottom: 2px solid var(--secondary);
+  border-radius: 0 !important;
 }
 </style>
 

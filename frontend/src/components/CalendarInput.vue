@@ -29,15 +29,18 @@
   background: var(--primary) !important;
   color: var(--text) !important;
   border: none !important;
+  font-size: 1.5rem;
 }
 td.p-datepicker-other-month > .p-disabled {
   display: none !important;
 }
 .p-datepicker {
   font-size: 1.5rem;
+  padding: 0 !important;
 }
 .p-datepicker table {
   font-size: 1.5rem !important;
+  font-weight: 600 !important;
 }
 .p-datepicker-group-container {
   width: 100%;
@@ -48,7 +51,8 @@ td.p-datepicker-other-month > .p-disabled {
   width: 3rem;
 }
 
-.p-datepicker table td > span.p-highlight {
+.p-datepicker table td > span.p-highlight,
+.p-datepicker table td.p-datepicker-today > span {
   border: 2px var(--secondary) solid !important;
   background: none !important;
   color: var(--text) !important;

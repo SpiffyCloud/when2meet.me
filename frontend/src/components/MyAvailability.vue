@@ -1,9 +1,4 @@
 <template>
-  <template v-if="activeUser">
-    <h2>Welcome back, {{ activeUser }}</h2>
-    <p>Not you? <a href="#" @click="changeUser">Change user</a></p>
-  </template>
-
   <UserSummary v-if="activeUser" />
   <NewUserForm v-else />
 </template>
@@ -22,22 +17,11 @@ export default {
   },
   setup() {
     const activeUser = inject('activeUser') as string
-    const clearActiveUser = inject('clearActiveUser') as () => void
-
-    const changeUser = (e) => {
-      e.preventDefault()
-      clearActiveUser()
-    }
     return {
-      activeUser,
-      changeUser
+      activeUser
     }
   }
 }
 </script>
 
-<style>
-a {
-  text-decoration: none;
-}
-</style>
+<style></style>

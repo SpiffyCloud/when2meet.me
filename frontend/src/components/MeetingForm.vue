@@ -5,20 +5,12 @@
 
     <CalendarInput v-model:date="by_end_date" :error="dateError" />
 
-    <Button
-      id="create-meeting"
-      label="Create Meeting"
-      class="p-button-raised p-button-success p-button-lg"
-      style="width: 100%"
-      @click="submitMeeting"
-    />
+    <button type="submit" class="submit p-mt-2">Create Meeting</button>
   </form>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue'
-
-import Button from 'primevue/button'
 
 import NameInput from '../components/NameInput.vue'
 import CalendarInput from '../components/CalendarInput.vue'
@@ -26,7 +18,6 @@ import CalendarInput from '../components/CalendarInput.vue'
 export default defineComponent({
   name: 'MeetingForm',
   components: {
-    Button,
     NameInput,
     CalendarInput
   },
@@ -52,7 +43,7 @@ export default defineComponent({
           .replace(/T.+/, '')
       )
       if (endDate < today) {
-        return 'Date cannot be in the past'
+        return 'Date cannot be in theca past'
       }
       return ''
     })
@@ -95,5 +86,17 @@ export default defineComponent({
 .assistive {
   font-size: 1.3rem;
   opacity: 0.5;
+}
+
+.submit {
+  display: block;
+  margin: 0 auto;
+  width: 100%;
+  height: 4rem;
+  border: none;
+  background-color: var(--secondary);
+  color: var(--text);
+  font-size: 1.75rem;
+  font-weight: bold;
 }
 </style>

@@ -4,7 +4,11 @@
       <i class="pi pi-clock logo p-mb-4"></i>
       <h1 id="heading">When 2 Meet Me</h1>
     </div>
-    <MeetingForm :serverError="serverError" @submit-meeting="postMeeting" />
+    <MeetingForm
+      class="p-p-5"
+      :serverError="serverError"
+      @submit-meeting="postMeeting"
+    />
   </div>
 </template>
 
