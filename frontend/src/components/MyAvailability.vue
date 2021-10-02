@@ -25,7 +25,6 @@ export default {
     const clearActiveUser = inject('clearActiveUser') as () => void
 
     const changeUser = (e) => {
-      console.log('here')
       e.preventDefault()
       clearActiveUser()
     }

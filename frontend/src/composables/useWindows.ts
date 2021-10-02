@@ -72,8 +72,10 @@ export default function useWindows() {
             }
             return newWindows
         })
-
-        windows.value = [...allWindows.flat().slice(0, 3)]
+        const flattened = allWindows.flat()
+        // sort flatted by numOfPeople  from highest to lowest
+        flattened.sort((a, b) => b.numOfPeople - a.numOfPeople)
+        windows.value = [...flattened.slice(0, 3)]
     }
 
     watch(filters, () => {
