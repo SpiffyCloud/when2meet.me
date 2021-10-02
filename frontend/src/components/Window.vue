@@ -14,12 +14,18 @@
         <span>to</span>
         <span class="p-text-bold">{{ endTimeString }}</span>
       </div>
+      <div class="responses">
+        <i class="pi pi-user p-mb-1"></i>
+        <span class="p-text-bold">{{ fraction }}</span>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { toRefs } from 'vue'
+import { computed, inject, toRefs } from 'vue'
+
+import { meeting } from '@/api/meeting'
 export default {
   name: 'Window',
   props: {
@@ -27,6 +33,9 @@ export default {
       type: Number
     },
     duration: {
+      type: Number
+    },
+    responses: {
       type: Number
     }
   },
@@ -47,13 +56,19 @@ export default {
       minute: 'numeric'
     })
     const durationInMinutes = duration.value * 15
+
+    const { availability } = inject('meeting') as meeting
+    const fraction = computed(() => {
+      return `${props.responses}/${availability.length}`
+    })
     return {
       month,
       day,
       weekDay,
       startTimeString,
       endTimeString,
-      durationInMinutes
+      durationInMinutes,
+      fraction
     }
   }
 }
@@ -89,7 +104,8 @@ export default {
 }
 
 .time,
-.duration {
+.duration,
+.responses {
   display: flex;
   flex-direction: column;
   justify-content: center;

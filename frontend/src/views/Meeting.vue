@@ -19,7 +19,7 @@
 </template>
 
 <script lang="tsx">
-import { onMounted, provide, readonly, ref } from 'vue'
+import { onMounted, provide, readonly, ref, defineComponent } from 'vue'
 // Prime Vue components
 import Toast from 'primevue/toast'
 import TabMenu from 'primevue/tabmenu'
@@ -33,7 +33,7 @@ import useTabMenu from '@/composables/useTabMenu'
 import useMeeting from '@/composables/useMeeting'
 import useAuth from '@/composables/useAuth'
 
-export default {
+export default defineComponent({
   name: 'Meeting',
   components: {
     Header,
@@ -70,7 +70,7 @@ export default {
       tableUser
     }
   }
-}
+})
 </script>
 
 <style>
