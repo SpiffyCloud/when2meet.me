@@ -1,11 +1,11 @@
 <template>
-  <div id="meeting" class="p-d-flex p-flex-column p-p-4">
+  <div id="meeting">
     <Toast position="bottom-right" group="br" />
     <Header :title="meeting.title" />
     <TabMenu :model="items" v-model:activeIndex="active" />
     <div id="tabs">
-      <AllAvailability v-if="active === 0" />
-      <MyAvailability v-if="active === 1" />
+      <AllAvailability v-if="active === 1" />
+      <MyAvailability v-if="active === 0" />
     </div>
 
     <transition name="slide">

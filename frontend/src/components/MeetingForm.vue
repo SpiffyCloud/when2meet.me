@@ -5,12 +5,12 @@
 
     <CalendarInput v-model:date="by_end_date" :error="dateError" />
 
-    <button type="submit" class="submit p-mt-2">Create Meeting</button>
+    <button type="submit" class="button p-mt-2">Create Meeting</button>
   </form>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, watch, ref } from 'vue'
 
 import NameInput from '../components/NameInput.vue'
 import CalendarInput from '../components/CalendarInput.vue'
@@ -48,6 +48,12 @@ export default defineComponent({
       return ''
     })
 
+    watch(title, () => {
+      if (title.value) {
+        titleError.value = ''
+      }
+    })
+
     const submitMeeting = () => {
       // if title is empy, show error
       if (title.value === '') {
@@ -76,27 +82,3 @@ export default defineComponent({
 })
 </script>
 
-<style>
-.label {
-  font-size: 1.5rem;
-  font-weight: bold;
-  display: block;
-}
-
-.assistive {
-  font-size: 1.3rem;
-  opacity: 0.5;
-}
-
-.submit {
-  display: block;
-  margin: 0 auto;
-  width: 100%;
-  height: 4rem;
-  border: none;
-  background-color: var(--secondary);
-  color: var(--text);
-  font-size: 1.75rem;
-  font-weight: bold;
-}
-</style>

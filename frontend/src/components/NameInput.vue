@@ -2,26 +2,19 @@
   <div id="name-group">
     <label class="label p-mb-2" for="name">What's its name?</label>
     <em class="assistive">Type the meeting name you want here.</em>
-    <input class="input p-mt-2" v-model="title" />
+    <input
+      class="input p-mt-2"
+      v-model="title"
+      :class="{ 'input-error': error }"
+    />
 
-    <p v-if="error" id="name-help" class="p-error p-text-bold p-mt-2">
-      <i class="pi pi-exclamation-triangle p-mr-1"></i>{{ error }}
+    <p v-if="error" id="name-help" class="error-text">
+      {{ error }}
     </p>
   </div>
 </template>
 
 <style>
-.input {
-  height: 2.5rem;
-  width: 100%;
-  background: none;
-  color: var(--text);
-  font-size: 1.5rem;
-  outline: none;
-  border: none;
-  border-bottom: 2px solid var(--secondary);
-  border-radius: 0 !important;
-}
 </style>
 
 <script lang="ts">
