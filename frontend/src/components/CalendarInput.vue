@@ -1,14 +1,16 @@
 <template>
-  <div id="date-group" class="p-field p-text-left p-d-flex p-flex-column">
-    <label for="date" class="p-text-bold">When do you need to meet by?</label>
+  <div id="date-group">
+    <label for="date" class="label p-mt-5 p-mb-2"
+      >When do you need to meet by?</label
+    >
+    <em class="assistive">This is optional.</em>
     <Calendar
       id="touchUI"
       name="date"
       v-model="date"
       :inline="true"
       :class="{ 'p-invalid': error }"
-      class="p-shadow-5 p-inputtext-lg"
-      :selectOtherMonths="true"
+      class="p-mt-2"
       :minDate="new Date()"
     />
     <p v-if="error" id="date-help" class="p-error p-text-bold p-mt-2">
@@ -16,6 +18,46 @@
     </p>
   </div>
 </template>
+
+<style>
+/* Overriding base calendar styles */
+.p-calendar {
+  width: 100%;
+}
+.p-datepicker,
+.p-datepicker-header {
+  background: var(--primary) !important;
+  color: var(--text) !important;
+  border: none !important;
+  font-size: 1.5rem;
+}
+td.p-datepicker-other-month > .p-disabled {
+  display: none !important;
+}
+.p-datepicker {
+  font-size: 1.5rem;
+  padding: 0 !important;
+}
+.p-datepicker table {
+  font-size: 1.5rem !important;
+  font-weight: 600 !important;
+}
+.p-datepicker-group-container {
+  width: 100%;
+}
+
+.p-datepicker table td > span {
+  height: 3rem;
+  width: 3rem;
+}
+
+.p-datepicker table td > span.p-highlight,
+.p-datepicker table td.p-datepicker-today > span {
+  border: 2px var(--secondary) solid !important;
+  background: none !important;
+  color: var(--text) !important;
+}
+</style>
 
 <script lang="ts">
 import { ref, watch } from 'vue'
