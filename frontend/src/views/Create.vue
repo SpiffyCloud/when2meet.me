@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div id="title" class="p-d-flex p-ai-center p-flex-column">
+    <div id="title" class="p-d-flex p-ai-center p-flex-column p-my-5">
       <i class="pi pi-clock logo p-mb-4"></i>
       <h1 id="heading">When 2 Meet Me</h1>
     </div>
@@ -30,10 +30,8 @@ export default {
 
 <style>
 .container {
-  height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
   align-items: center;
 }
 

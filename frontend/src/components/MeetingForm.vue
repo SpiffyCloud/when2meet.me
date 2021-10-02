@@ -85,4 +85,15 @@ export default defineComponent({
 })
 </script>
 
-<style></style>
+<style>
+.label {
+  font-size: 1.5rem;
+  font-weight: bold;
+  display: block;
+}
+
+.assistive {
+  font-size: 1.3rem;
+  opacity: 0.5;
+}
+</style>
