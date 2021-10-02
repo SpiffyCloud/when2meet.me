@@ -6,23 +6,23 @@
 </template>
 
 <script lang="ts">
-import MeetingForm from "@/components/MeetingForm.vue";
+import MeetingForm from '@/components/MeetingForm.vue'
 
-import useMeeting from "@/composables/useMeeting";
+import useMeeting from '@/composables/useMeeting'
 
 export default {
-  name: "Create",
+  name: 'Create',
   components: {
-    MeetingForm,
+    MeetingForm
   },
   setup() {
-    const { serverError, postMeeting } = useMeeting();
+    const { serverError, postMeeting } = useMeeting()
     return {
       serverError,
-      postMeeting,
-    };
-  },
-};
+      postMeeting
+    }
+  }
+}
 </script>
 
 <style></style>

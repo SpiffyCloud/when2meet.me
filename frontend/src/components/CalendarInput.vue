@@ -37,7 +37,7 @@ export default {
     },
     setup(_, context: any) {
         const date = ref(new Date())
-        watch(date, (newVal: Date) => {
+        watch(date as any, (newVal: Date) => {
             context.emit('update:date', newVal.toISOString())
         })
         return {
