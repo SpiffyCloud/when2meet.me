@@ -1,6 +1,9 @@
 <template>
-  <div id="home" class="p-d-flex p-flex-column p-jc-evenly p-p-5">
-    <h1 id="heading" class="p-text-center p-text-bold">When 2 Meet Me</h1>
+  <div class="container">
+    <div id="title" class="p-d-flex p-ai-center p-flex-column">
+      <i class="pi pi-clock logo p-mb-4"></i>
+      <h1 id="heading">When 2 Meet Me</h1>
+    </div>
     <MeetingForm :serverError="serverError" @submit-meeting="postMeeting" />
   </div>
 </template>
@@ -25,4 +28,17 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.logo {
+  font-size: 4rem !important;
+  opacity: 0.5;
+}
+</style>
