@@ -14,7 +14,7 @@ export default function useAuth() {
 
     provide('activeUser', readonly(activeUser))
     provide('setActiveUser', setActiveUser)
-    provide('clearActiveUser', clearActiveUser);
+    provide('clearActiveUser', clearActiveUser)
 
     onMounted(setActiveUser)
 
