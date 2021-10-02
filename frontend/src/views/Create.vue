@@ -9,6 +9,9 @@
       :serverError="serverError"
       @submit-meeting="postMeeting"
     />
+    <div class="footer">
+      <router-link class="link" to="/about">About</router-link>
+    </div>
   </div>
 </template>
 
@@ -42,5 +45,17 @@ export default {
 .logo {
   font-size: 4rem !important;
   opacity: 0.5;
+}
+
+.footer {
+  display: flex;
+  height: 10rem;
+  align-items: center;
+}
+.link {
+  color: var(--secondary);
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-decoration: none;
 }
 </style>
