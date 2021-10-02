@@ -1,6 +1,8 @@
 <template>
-  <UserSummary v-if="activeUser" />
-  <NewUserForm v-else />
+  <div class="p-p-5">
+    <UserSummary v-if="activeUser" />
+    <NewUserForm v-else />
+  </div>
 </template>
 
 <script lang="ts">

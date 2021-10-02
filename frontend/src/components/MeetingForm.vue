@@ -76,27 +76,3 @@ export default defineComponent({
 })
 </script>
 
-<style>
-.label {
-  font-size: 1.5rem;
-  font-weight: bold;
-  display: block;
-}
-
-.assistive {
-  font-size: 1.3rem;
-  opacity: 0.5;
-}
-
-.submit {
-  display: block;
-  margin: 0 auto;
-  width: 100%;
-  height: 4rem;
-  border: none;
-  background-color: var(--secondary);
-  color: var(--text);
-  font-size: 1.75rem;
-  font-weight: bold;
-}
-</style>
