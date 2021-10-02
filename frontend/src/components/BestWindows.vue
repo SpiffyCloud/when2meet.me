@@ -12,6 +12,7 @@
       v-for="window in windows"
       :time="window.start"
       :duration="window.windowLength"
+      :responses="window.numOfPeople"
       :key="window.start"
     />
   </div>
