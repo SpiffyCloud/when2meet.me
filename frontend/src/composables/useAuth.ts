@@ -7,9 +7,14 @@ export default function useAuth() {
     const setActiveUser = () => {
         activeUser.value = localStorage.getItem(`${route.params.id}`) as string
     }
+    const clearActiveUser = () => {
+        localStorage.removeItem(`${route.params.id}`)
+        activeUser.value = ''
+    }
 
     provide('activeUser', readonly(activeUser))
     provide('setActiveUser', setActiveUser)
+    provide('clearActiveUser', clearActiveUser);
 
     onMounted(setActiveUser)
 
