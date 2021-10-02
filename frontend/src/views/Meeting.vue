@@ -4,8 +4,8 @@
     <Header :title="meeting.title" />
     <TabMenu :model="items" v-model:activeIndex="active" />
     <div id="tabs">
-      <AllAvailability v-if="active === 1" />
-      <MyAvailability v-if="active === 0" />
+      <AllAvailability v-if="active === 0" />
+      <MyAvailability v-if="active === 1" />
     </div>
 
     <transition name="slide">
@@ -94,7 +94,6 @@ export default defineComponent({
 
 .p-tabmenu.p-component {
   width: 100vw;
-  margin-left: -1.5rem;
 }
 
 .p-tabmenu-nav.p-reset {

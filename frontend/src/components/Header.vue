@@ -1,31 +1,25 @@
 <template>
-  <h1 id="heading">{{ title }}</h1>
-  <Button
-    label="Copy Meeting URL"
-    @click="copyMeetingUrl"
-    class="p-button-lg p-button-success p-my-3 p-shadow-5"
-  />
-  <Button
-    label="View All Availability"
-    @click="updateShowTable(true, 'All')"
-    class="p-button-lg p-button-success p-my-3 p-shadow-5"
-  />
+  <div class="header p-p-4">
+    <div class="title">
+      <h1 class="heading">{{ title }}</h1>
+    </div>
+    <button @click="copyMeetingUrl" class="button p-my-4">
+      Copy Meeting URL
+    </button>
+    <button @click="updateShowTable(true, 'All')" class="button p-my-4">
+      View All Availability
+    </button>
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, inject } from 'vue'
-
-// Primevue components
-import Button from 'primevue/button'
 
 // Composables
 import useCopyUrl from '@/composables/useCopyUrl'
 
 export default defineComponent({
   name: 'Header',
-  components: {
-    Button
-  },
   props: {
     title: String
   },
@@ -42,3 +36,14 @@ export default defineComponent({
   }
 })
 </script>
+
+<style>
+.title {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-transform: capitalize;
+  height: 5rem;
+}
+</style>
