@@ -73,8 +73,7 @@ export default function useWindows() {
             return newWindows
         })
 
-        console.log('all windows', allWindows)
-        windows.value = [...allWindows.flat()]
+        windows.value = [...allWindows.flat().slice(0, 3)]
     }
 
     watch(filters, () => {
@@ -128,6 +127,7 @@ export default function useWindows() {
                 windowLength++
             }
         }
+        return res;
     }
 
     onMounted(updateWindows)
