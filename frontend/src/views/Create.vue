@@ -46,16 +46,4 @@ export default {
   font-size: 4rem !important;
   opacity: 0.5;
 }
-
-.footer {
-  display: flex;
-  height: 10rem;
-  align-items: center;
-}
-.link {
-  color: var(--secondary);
-  font-size: 1.5rem;
-  font-weight: bold;
-  text-decoration: none;
-}
 </style>

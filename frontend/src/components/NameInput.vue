@@ -4,6 +4,7 @@
     <em class="assistive">Type the meeting name you want here.</em>
     <input
       class="input p-mt-2"
+      id="title-input"
       v-model="title"
       :class="{ 'input-error': error }"
     />

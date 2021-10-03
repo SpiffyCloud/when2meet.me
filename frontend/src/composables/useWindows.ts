@@ -129,6 +129,14 @@ export default function useWindows() {
                 windowLength++
             }
         }
+        if (windowLength > 0) {
+            res.push({
+                start,
+                numOfPeople,
+                windowLength
+            })
+        }
+
         return res
     }
 
