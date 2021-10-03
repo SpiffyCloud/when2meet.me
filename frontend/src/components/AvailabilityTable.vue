@@ -5,28 +5,25 @@
         <em class="assistive"
           >Click & drag over the times that you are available</em
         >
-        <Button label="Done" @click="onDone" />
+        <button class="button" @click="onDone">Done</button>
       </template>
       <template v-else>
         <em class="assistive">{{ header }}</em>
         <button class="button" @click="onExit">Exit</button>
       </template>
     </div>
-    <div ref="table-wrapper" class="table-wrapper">
-      <table tabindex="0" id="table" class="availability-table">
-        <thead class="sticky-header">
+    <div ref="table-wrapper">
+      <table tabindex="0" id="table">
+        <thead>
           <tr>
-            <th v-for="(date, index) in dates" :key="index" class="header">
-              {{ date }}
+            <th v-for="(date, index) in dates" :key="index">
+              {{ date.month }} {{ date.day }} {{ date.weekDay }}
             </th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(series, y) in chartData" :key="series.name">
-            <td
-              class="sticky-column"
-              :data-time="series.name === '8:45 AM' ? 'start' : series.name"
-            >
+            <td :data-time="series.name === '8:45 AM' ? 'start' : series.name">
               {{ y % 2 == 0 ? series.name : null }}
             </td>
             <td
@@ -59,9 +56,6 @@
 </template>
 
 <script lang="ts">
-// Prime Vue Components
-import Button from 'primevue/button'
-
 // Composables
 import useDrag from '@/composables/useDrag'
 import useChart from '@/composables/useChart'
@@ -72,9 +66,6 @@ import { meeting } from '@/api/meeting'
 
 export default {
   name: 'AvailabilityTable',
-  components: {
-    Button
-  },
   props: {
     visible: {
       type: Boolean,

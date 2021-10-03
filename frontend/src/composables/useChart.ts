@@ -61,14 +61,27 @@ export default function useChart() {
         }
     }
 
+    const monthDateDay = (dateString: string) => {
+        const date = new Date(dateString)
+        const month = date.toLocaleString('en-us', { month: 'short' })
+        const day = date.getDate()
+        const weekDay = date.toLocaleString('en-us', { weekday: 'short' })
+        return {
+            month,
+            day,
+            weekDay
+        }
+    }
+
     const dates = computed(() => {
         return chartData.value.length > 0
-            ? chartData.value[0].data.map((dataPoint) => dataPoint.x)
+            ? chartData.value[0].data.map((dataPoint) =>
+                  monthDateDay(dataPoint.x)
+              )
             : []
     })
 
     const initChartData = () => {
-        // CHANGE TO REAL DATE
         const { today, endDate } = getStartAndEndDate()
         const start15MinBlock = get15MinuteBlock(today)
         const end15MinBlock = get15MinuteBlock(endDate)
