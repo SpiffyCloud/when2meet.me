@@ -3,8 +3,12 @@
     <div class="title">
       <h1 class="heading">{{ title }}</h1>
     </div>
-    <button @click="copyMeetingUrl" class="button p-my-4">
-      Copy Meeting URL
+    <button
+      @click="copyMeetingUrl"
+      class="button p-my-4"
+      :class="{ copied: copied }"
+    >
+      {{ buttonText }}
     </button>
     <button @click="updateShowTable(true, 'All')" class="button p-my-4">
       View All Availability
@@ -45,5 +49,10 @@ export default defineComponent({
   align-items: center;
   text-transform: capitalize;
   height: 3rem;
+}
+
+.copied {
+  background-color: #7ccba9;
+  font-style: italic;
 }
 </style>

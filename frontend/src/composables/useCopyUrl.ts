@@ -1,21 +1,19 @@
-import { useRoute } from 'vue-router'
-import { useToast } from 'primevue/usetoast'
+import { computed, ref } from '@vue/runtime-dom'
 
 export default function useCopyUrl() {
-    const route = useRoute()
-    const toast = useToast()
+    const copied = ref(false)
+
+    const buttonText = computed(() => {
+        return copied.value ? 'Copied!' : 'Copy Meeting Url'
+    })
     const copyMeetingUrl = async () => {
-        await navigator.clipboard.writeText(route.fullPath as string)
-        toast.add({
-            severity: 'success',
-            summary: '',
-            detail: 'Copied to clipboard',
-            group: 'br',
-            life: 3000
-        })
+        await navigator.clipboard.writeText(window.location.href as string)
+        copied.value = true
     }
 
     return {
+        copied,
+        buttonText,
         copyMeetingUrl
     }
 }
