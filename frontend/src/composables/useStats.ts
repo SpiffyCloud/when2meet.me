@@ -55,6 +55,7 @@ export function useStats() {
             return userSlots.includes(slot)
         })
         // return perecentage of overlap to slots roudned to 2 decimal places
+        if (slots.length === 0) return '0%'
         const fraction = (overlap.length / slots.length) * 100
         return `${fraction.toFixed(2)}%`
     })

@@ -2,12 +2,12 @@ import { ref, reactive, onMounted, Ref } from 'vue'
 
 export default function useDrag(emit: any, isDisabled: Ref<boolean>) {
     const mousedown = ref(false)
+    const scrollingId = ref(0)
     const isSelecting = ref(false)
     const startingBox = reactive({
         x: 0,
         y: 0
     })
-    const selectedSlots = ref([] as number[])
 
     const scrollDirection = reactive({
         x: 0,
@@ -44,19 +44,14 @@ export default function useDrag(emit: any, isDisabled: Ref<boolean>) {
         if (!mousedown.value || isDisabled.value) {
             return
         }
-        const wrapper = document.querySelector('.table-wrapper')
-
-        wrapper?.addEventListener('scroll', () => {
+        window.addEventListener('scroll', () => {
             setTimeout(() => {
                 if (mousedown.value) {
-                    wrapper?.scrollBy(scrollDirection.x, scrollDirection.y)
+                    window.scrollBy(scrollDirection.x, scrollDirection.y)
                 }
             })
         })
-        // e.preventDefault();
-
         const event = e.touches ? e.touches[0] : e
-
         // log sidebar wrapper scroll offset
         const eventTd = document.elementFromPoint(
             event.clientX,
@@ -68,15 +63,15 @@ export default function useDrag(emit: any, isDisabled: Ref<boolean>) {
         } else if (event.clientX < 100) {
             scrollDirection.x = -1
             scrollDirection.y = 0
-        } else if (eventTd.classList.contains('header')) {
+        } else if (eventTd.classList.contains('column')) {
             scrollDirection.x = 0
             scrollDirection.y = -1
-        } else if (eventTd.classList.contains('footer')) {
+        } else if (window.innerHeight - event.clientY < 20) {
             scrollDirection.x = 0
             scrollDirection.y = 1
         }
+        window.scrollBy(scrollDirection.x, scrollDirection.y)
 
-        wrapper!.scrollBy(scrollDirection.x, scrollDirection.y)
         e.preventDefault()
 
         // get all tds

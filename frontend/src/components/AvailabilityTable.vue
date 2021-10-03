@@ -1,57 +1,77 @@
 <template>
   <div v-if="visible" class="page">
-    <div class="heading p-p-3">
+    <div class="table-banner">
       <template v-if="!disabled">
-        <i>Click & drag over the times that you are available</i>
-        <Button label="Done" @click="onDone" />
+        <em class="assistive"
+          >Click & drag over the times that you are available</em
+        >
+        <button class="button" @click="onDone">Done</button>
       </template>
       <template v-else>
-        <i>{{ header }}</i>
-        <Button @click="onExit" label="Exit" />
+        <em class="assistive">{{ header }}</em>
+        <button class="button" @click="onExit">Exit</button>
       </template>
     </div>
-    <div ref="table-wrapper" class="table-wrapper">
-      <table tabindex="0" id="table" class="availability-table">
-        <thead class="sticky-header">
-          <tr>
-            <th>
-              <i class="pi pi-angle-double-up" />
-            </th>
-            <th v-for="(date, index) in dates" :key="index" class="header">
-              {{ date }}
-            </th>
-          </tr>
-        </thead>
+    <div class="table-wrapper">
+      <table tabindex="0" id="table">
         <tbody>
-          <tr v-for="(series, y) in chartData" :key="series.name">
-            <td
-              class="sticky-column"
-              :data-time="series.name === '8:45 AM' ? 'start' : series.name"
-            >
-              {{ y % 2 == 0 ? series.name : null }}
+          <tr class="table-header">
+            <td></td>
+            <td v-for="(date, index) in dates" class="column" :key="index">
+              <span class="assistive"
+                >{{ date.month }} <br />
+                {{ date.day }} <br
+              /></span>
+              <span class="label">
+                {{ date.weekDay }}
+              </span>
             </td>
-            <td
-              class="noselect data"
-              :class="{ selected: dataPoint.y > 0 }"
-              v-for="(dataPoint, x) in series.data"
-              :key="{ x, y }"
-              :data-x="x"
-              :data-y="y"
-              :data-slot="dataPoint.slot"
-              @click="onClick"
-              @mousemove="handleDragging"
-              @touchmove="handleDragging"
-              @touchstart="startDragging"
-              @mousedown="startDragging"
-              @touchend="endDragging"
-              @mouseup="endDragging"
-            ></td>
           </tr>
+          <tr></tr>
+          <template v-for="(series, y) in chartData" :key="series.name">
+            <tr v-if="y % 4 === 0">
+              <td class="divider" colspan="100%"></td>
+            </tr>
+            <tr>
+              <td
+                :id="series.name"
+                :data-time="series.name === '8:45 AM' ? 'start' : series.name"
+                :class="{
+                  label: y % 4 === 0
+                }"
+                class="name"
+              >
+                <span
+                  :class="{ 'assistive-small': y % 2 === 0 && y % 4 !== 0 }"
+                  class="name-label"
+                  >{{ getRowName(series.name, y) }}</span
+                >
+              </td>
+              <td
+                class="noselect data"
+                :class="{ selected: dataPoint.y > 0 }"
+                v-for="(dataPoint, x) in series.data"
+                :style="{
+                  opacity: getCellOpacity(dataPoint)
+                }"
+                :key="{ x, y }"
+                :data-x="x"
+                :data-y="y"
+                :data-slot="dataPoint.slot"
+                @click="onClick"
+                @mousemove="handleDragging"
+                @touchmove="handleDragging"
+                @touchstart="startDragging"
+                @mousedown="startDragging"
+                @touchend="endDragging"
+                @mouseup="endDragging"
+              ></td>
+            </tr>
+          </template>
         </tbody>
         <!-- add a footer -->
         <tfoot class="sticky-footer">
           <tr>
-            <td><i class="pi pi-angle-double-down" /></td>
             <td v-for="(date, index) in dates" :key="index" class="footer"></td>
           </tr>
         </tfoot>
@@ -61,22 +81,16 @@
 </template>
 
 <script lang="ts">
-// Prime Vue Components
-import Button from 'primevue/button'
-
 // Composables
 import useDrag from '@/composables/useDrag'
 import useChart from '@/composables/useChart'
 import usePostAvailability from '@/composables/usePostAvailability'
 
-import { computed, inject, onMounted, toRefs, watch } from 'vue'
+import { computed, inject, toRefs, watch } from 'vue'
 import { meeting } from '@/api/meeting'
 
 export default {
   name: 'AvailabilityTable',
-  components: {
-    Button
-  },
   props: {
     visible: {
       type: Boolean,
@@ -150,7 +164,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 div {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -160,95 +174,107 @@ div {
   user-select: none;
 }
 
-.heading {
-  display: flex;
-  align-items: center;
-  height: 4rem;
+.page {
+  position: absolute;
+  width: 100vw;
+  top: 0;
+  left: 0;
+  background: var(--primary);
+  scrollbar-width: none;
 }
+
 .table-wrapper {
   height: 100%;
-  width: 100vw;
-  overflow-y: scroll;
-  overflow-x: scroll;
-  background-color: var(--green-600);
-}
-
-.availability-table {
-  border-collapse: collapse;
-  width: 100%;
+  top: 6rem;
   position: relative;
 }
-.availability-table thead th,
-.availability-table tfoot td,
-.availability-table tbody tr td:first-child {
-  background-color: var(--green-600);
-  color: whitesmoke;
+
+.table-banner {
+  height: 6rem;
+  width: 100%;
+  display: flex;
+  padding: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  background-color: var(--primary);
+}
+
+.column {
+  background-color: var(--primary);
+}
+
+.table-header {
+  position: sticky;
+  top: 6rem;
+  background-color: var(--primary);
+  z-index: 2;
+}
+.button {
+  width: auto;
+  margin: 0;
+  height: 3rem;
+  padding-inline: 1rem;
+}
+.assistive-small {
+  font-size: 1rem;
+  font-weight: bold;
+  opacity: 0.5;
+  vertical-align: bottom;
+}
+.label {
+  font-size: 1rem;
   font-weight: bold;
   text-align: center;
-  border: none;
-  opacity: 1;
-  z-index: 1;
-  white-space: nowrap;
+  vertical-align: bottom;
 }
 
-thead th {
-  padding: 0.5rem;
+table {
+  border-spacing: 2px;
+  width: 100%;
 }
 
-.availability-table tbody td {
-  height: 25px;
+td.data {
+  background-color: gray;
+  opacity: 0.5;
+  min-width: 3.5rem;
+  height: 1.5rem;
 }
 
-.availability-table tbody td {
-  color: white;
-  background-color: white;
+.column {
   text-align: center;
-  border: 1px solid black;
 }
 
-.sticky-header {
-  position: sticky;
-  top: 0;
-  background-color: var(--green-600);
-}
+td.name {
+  display: table-cell;
+  vertical-align: top;
+  text-align: center;
 
-.sticky-footer {
-  position: sticky;
-  bottom: 0;
-  background-color: var(--green-600);
-}
-
-.white-text {
-  color: white !important;
-}
-
-.active {
-  /* green background */
-  background-color: var(--green-600) !important;
-}
-
-.selected {
-  /* blue background */
-  background-color: var(--green-600) !important;
-}
-
-.non-active {
-  /* gray background */
-  background-color: white !important;
-  border: none !important;
-}
-
-.p-tabview .p-tabview-nav li .p-tabview-nav-link:not(.p-disabled):focus {
-  box-shadow: none !important;
-}
-
-tfoot td {
-  height: 2rem;
-}
-
-tr td:first-child {
+  z-index: 1;
   position: sticky;
   left: 0;
-  width: 4rem;
+  background-color: var(--primary);
+}
+
+td.selected,
+td.active {
+  background-color: var(--secondary);
+  opacity: 1;
+}
+
+td.non-active {
+  background-color: grey;
+  opacity: 1;
+}
+
+td.divider {
+  height: 0.5rem;
+}
+.name-label {
+  position: relative;
+  top: -0.5rem;
 }
 </style>

@@ -1,4 +1,4 @@
-import { ref, watch, computed, inject, onMounted, Ref } from 'vue'
+import { ref, watch, computed, inject, onMounted, Ref, provide } from 'vue'
 import { meeting } from '@/api/meeting'
 
 export default function useChart() {
@@ -6,6 +6,28 @@ export default function useChart() {
     const chartData = ref([] as any)
     const tableUser = inject('tableUser') as Ref<string>
     const meeting = inject('meeting') as meeting
+
+    const getRowName = (time: string, index: number) => {
+        // if time is 12:00 AM return midnight
+        if (time === '12:00 AM') {
+            return 'Midnight'
+        }
+        // // else if time includes 30 return the time
+        if (time.includes('30')) {
+            return time.split(' ')[0]
+        }
+        // // else if time includes 00 return the hour + AM/PM
+        if (time.includes('00')) {
+            return `${time.split(':')[0]} ${time.split(' ')[1]}`
+        }
+    }
+
+    const getCellOpacity = (data: any) => {
+        const numOfPeople = meeting.availability.length
+        if (data.y > 0) {
+            return data.y / numOfPeople
+        }
+    }
 
     watch(tableUser, () => {
         if (tableUser.value) {
@@ -43,7 +65,7 @@ export default function useChart() {
                     (start15MinBlock + y + x * 96) * 15 * 60 * 1000
                 )
                 rawData.push({
-                    x: `${date.getMonth() + 1}/${date.getDate()}`,
+                    x: date,
                     y: data,
                     slot: start15MinBlock + y + x * 96
                 })
@@ -61,14 +83,26 @@ export default function useChart() {
         }
     }
 
+    const monthDateDay = (date: Date) => {
+        const month = date.toLocaleString('en-us', { month: 'short' })
+        const day = date.getDate()
+        const weekDay = date.toLocaleString('en-us', { weekday: 'short' })
+        return {
+            month,
+            day,
+            weekDay
+        }
+    }
+
     const dates = computed(() => {
         return chartData.value.length > 0
-            ? chartData.value[0].data.map((dataPoint) => dataPoint.x)
+            ? chartData.value[0].data.map((dataPoint) =>
+                  monthDateDay(dataPoint.x)
+              )
             : []
     })
 
     const initChartData = () => {
-        // CHANGE TO REAL DATE
         const { today, endDate } = getStartAndEndDate()
         const start15MinBlock = get15MinuteBlock(today)
         const end15MinBlock = get15MinuteBlock(endDate)
@@ -106,9 +140,17 @@ export default function useChart() {
         return Math.floor((utc2 - utc1) / _MS_PER_DAY)
     }
 
+    onMounted(() => {
+        if (chartData.value.length === 0) {
+            initChartData()
+        }
+    })
+
     return {
         chartData,
         dates,
-        initChartData
+        initChartData,
+        getRowName,
+        getCellOpacity
     }
 }

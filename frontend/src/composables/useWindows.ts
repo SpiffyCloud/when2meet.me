@@ -45,9 +45,10 @@ export default function useWindows() {
     }
 
     const updateWindows = () => {
-        const slots = meeting.availability.map((a) =>
-            Array.from(a.slots).sort((a, b) => a - b)
-        )
+        const slots = meeting.availability
+            .map((a) => Array.from(a.slots).sort((a, b) => a - b))
+            .filter((s) => s.length > 0)
+        if (!slots) return
         const combos = combinations(slots)
         const filteredCombos = combos.filter((c) => {
             return c.length >= filters.available

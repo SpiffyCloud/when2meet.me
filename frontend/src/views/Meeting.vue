@@ -88,14 +88,6 @@ export default defineComponent({
 .slide-leave-to {
   transform: translateX(100vw);
 }
-.page {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  z-index: 1;
-  background: var(--primary-color);
-}
 </style>
 
 <style>
@@ -106,6 +98,10 @@ export default defineComponent({
 }
 .p-tabmenuitem {
   width: 100%;
+}
+.p-tabmenu-nav .p-menuitem-text {
+  width: 100%;
+  text-align: center;
 }
 
 .p-tabmenu .p-tabmenu-nav .p-tabmenuitem.p-highlight .p-menuitem-link {
