@@ -18,9 +18,9 @@
       :key="window.start"
     />
   </div>
-  <em class="assisitve" v-else-if="meeting.availability.length > 0"
-    >No windows match those filters! Click the filter icon above to find new
-    windows!</em
+  <em class="assistive" v-else-if="meeting.availability.length > 0"
+    >No windows match those filters. Click the filter icon above to find new
+    windows.</em
   >
   <em class="assistive" v-else>No availability yet! Be the first!</em>
 

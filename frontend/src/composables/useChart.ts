@@ -58,7 +58,7 @@ export default function useChart() {
                     (start15MinBlock + y + x * 96) * 15 * 60 * 1000
                 )
                 rawData.push({
-                    x: `${date.getMonth() + 1}/${date.getDate()}`,
+                    x: date,
                     y: data,
                     slot: start15MinBlock + y + x * 96
                 })
@@ -76,8 +76,7 @@ export default function useChart() {
         }
     }
 
-    const monthDateDay = (dateString: string) => {
-        const date = new Date(dateString)
+    const monthDateDay = (date: Date) => {
         const month = date.toLocaleString('en-us', { month: 'short' })
         const day = date.getDate()
         const weekDay = date.toLocaleString('en-us', { weekday: 'short' })

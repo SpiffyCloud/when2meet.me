@@ -14,9 +14,8 @@
     </div>
     <div class="table-wrapper">
       <table tabindex="0" id="table">
-        <thead></thead>
         <tbody>
-          <tr>
+          <tr class="table-header">
             <td></td>
             <td v-for="(date, index) in dates" class="column" :key="index">
               <span class="assistive"
@@ -28,35 +27,44 @@
               </span>
             </td>
           </tr>
-          <tr v-for="(series, y) in chartData" :key="series.name">
-            <td
-              :id="series.name"
-              :data-time="series.name === '8:45 AM' ? 'start' : series.name"
-              :class="{
-                label: y % 4 === 0,
-                'assistive-small': y % 2 === 0 && y % 4 !== 0
-              }"
-              class="name"
-            >
-              {{ getRowName(series.name, y) }}
-            </td>
-            <td
-              class="noselect data"
-              :class="{ selected: dataPoint.y > 0 }"
-              v-for="(dataPoint, x) in series.data"
-              :key="{ x, y }"
-              :data-x="x"
-              :data-y="y"
-              :data-slot="dataPoint.slot"
-              @click="onClick"
-              @mousemove="handleDragging"
-              @touchmove="handleDragging"
-              @touchstart="startDragging"
-              @mousedown="startDragging"
-              @touchend="endDragging"
-              @mouseup="endDragging"
-            ></td>
-          </tr>
+          <tr></tr>
+          <template v-for="(series, y) in chartData" :key="series.name">
+            <tr v-if="y % 4 === 0">
+              <td class="divider" colspan="100%"></td>
+            </tr>
+            <tr>
+              <td
+                :id="series.name"
+                :data-time="series.name === '8:45 AM' ? 'start' : series.name"
+                :class="{
+                  label: y % 4 === 0
+                }"
+                class="name"
+              >
+                <span
+                  :class="{ 'assistive-small': y % 2 === 0 && y % 4 !== 0 }"
+                  class="name-label"
+                  >{{ getRowName(series.name, y) }}</span
+                >
+              </td>
+              <td
+                class="noselect data"
+                :class="{ selected: dataPoint.y > 0 }"
+                v-for="(dataPoint, x) in series.data"
+                :key="{ x, y }"
+                :data-x="x"
+                :data-y="y"
+                :data-slot="dataPoint.slot"
+                @click="onClick"
+                @mousemove="handleDragging"
+                @touchmove="handleDragging"
+                @touchstart="startDragging"
+                @mousedown="startDragging"
+                @touchend="endDragging"
+                @mouseup="endDragging"
+              ></td>
+            </tr>
+          </template>
         </tbody>
         <!-- add a footer -->
         <tfoot class="sticky-footer">
@@ -165,12 +173,17 @@ div {
 
 .page {
   position: absolute;
-  height: 100%;
   width: 100vw;
   top: 0;
   left: 0;
-  z-index: 1;
   background: var(--primary);
+  scrollbar-width: none;
+}
+
+.table-wrapper {
+  height: 100%;
+  top: 6rem;
+  position: relative;
 }
 
 .table-banner {
@@ -180,16 +193,32 @@ div {
   padding: 1rem;
   align-items: center;
   justify-content: space-between;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  background-color: var(--primary);
+}
+
+.column {
+  background-color: var(--primary);
+}
+
+.table-header {
+  position: sticky;
+  top: 6rem;
+  background-color: var(--primary);
+  z-index: 2;
 }
 .button {
   width: auto;
+  margin: 0;
   height: 3rem;
   padding-inline: 1rem;
 }
 .assistive-small {
   font-size: 1rem;
   font-weight: bold;
-  text-align: center;
   opacity: 0.5;
   vertical-align: bottom;
 }
@@ -201,13 +230,14 @@ div {
 }
 
 table {
-  border-spacing: 1px;
+  border-spacing: 2px;
+  width: 100%;
 }
 
 td.data {
   background-color: gray;
   opacity: 0.5;
-  width: 3.5rem;
+  min-width: 3.5rem;
   height: 1.5rem;
 }
 
@@ -217,8 +247,13 @@ td.data {
 
 td.name {
   display: table-cell;
+  vertical-align: top;
+  text-align: center;
 
-  vertical-align: bottom;
+  z-index: 1;
+  position: sticky;
+  left: 0;
+  background-color: var(--primary);
 }
 
 td.selected,
@@ -230,5 +265,13 @@ td.active {
 td.non-active {
   background-color: grey;
   opacity: 1;
+}
+
+td.divider {
+  height: 0.5rem;
+}
+.name-label {
+  position: relative;
+  top: -0.5rem;
 }
 </style>

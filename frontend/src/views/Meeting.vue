@@ -54,7 +54,7 @@ export default defineComponent({
 
     // show table logic, could be moved to a composition function
 
-    const showTable = ref(true)
+    const showTable = ref(false)
     const tableUser = ref('')
 
     const updateShowTable = (show: boolean, user: string) => {
