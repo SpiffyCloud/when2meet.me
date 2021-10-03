@@ -18,6 +18,8 @@ export const fetchMeeting = async (id: string) => {
     const response = await fetch(`/api/v1/meetings/${id}`, requestOptions)
     if (response.status === 200) {
         return await response.json()
+    } else if (response.status === 404) {
+        return null
     }
     throw new Error('Bad response from server')
 }
