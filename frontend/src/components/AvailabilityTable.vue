@@ -51,6 +51,9 @@
                 class="noselect data"
                 :class="{ selected: dataPoint.y > 0 }"
                 v-for="(dataPoint, x) in series.data"
+                :style="{
+                  opacity: getCellOpacity(dataPoint)
+                }"
                 :key="{ x, y }"
                 :data-x="x"
                 :data-y="y"

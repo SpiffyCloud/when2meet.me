@@ -22,6 +22,13 @@ export default function useChart() {
         }
     }
 
+    const getCellOpacity = (data: any) => {
+        const numOfPeople = meeting.availability.length
+        if (data.y > 0) {
+            return data.y / numOfPeople
+        }
+    }
+
     watch(tableUser, () => {
         if (tableUser.value) {
             initChartData()
@@ -143,6 +150,7 @@ export default function useChart() {
         chartData,
         dates,
         initChartData,
-        getRowName
+        getRowName,
+        getCellOpacity
     }
 }

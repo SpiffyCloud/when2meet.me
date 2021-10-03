@@ -57,8 +57,7 @@ export default function useDrag(emit: any, isDisabled: Ref<boolean>) {
             event.clientX,
             event.clientY
         ) as any
-        console.log(eventTd)
-        if (window.innerWidth - event.clientX < 30) {
+        if (window.innerWidth - event.clientX < 20) {
             scrollDirection.x = 1
             scrollDirection.y = 0
         } else if (event.clientX < 100) {
@@ -67,7 +66,7 @@ export default function useDrag(emit: any, isDisabled: Ref<boolean>) {
         } else if (eventTd.classList.contains('column')) {
             scrollDirection.x = 0
             scrollDirection.y = -1
-        } else if (window.innerHeight - event.clientY < 30) {
+        } else if (window.innerHeight - event.clientY < 20) {
             scrollDirection.x = 0
             scrollDirection.y = 1
         }

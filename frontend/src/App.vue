@@ -57,7 +57,7 @@ body {
 
 .button-secondary {
   display: inline-block;
-  margin: 1rem;
+  margin: 0.5rem;
   padding: 1rem 1.5rem;
   height: fit-content;
   min-height: 3.5rem;
