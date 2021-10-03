@@ -12,19 +12,33 @@
         <button class="button" @click="onExit">Exit</button>
       </template>
     </div>
-    <div ref="table-wrapper">
+    <div class="table-wrapper">
       <table tabindex="0" id="table">
-        <thead>
-          <tr>
-            <th v-for="(date, index) in dates" :key="index">
-              {{ date.month }} {{ date.day }} {{ date.weekDay }}
-            </th>
-          </tr>
-        </thead>
+        <thead></thead>
         <tbody>
+          <tr>
+            <td></td>
+            <td v-for="(date, index) in dates" class="column" :key="index">
+              <span class="assistive"
+                >{{ date.month }} <br />
+                {{ date.day }} <br
+              /></span>
+              <span class="label">
+                {{ date.weekDay }}
+              </span>
+            </td>
+          </tr>
           <tr v-for="(series, y) in chartData" :key="series.name">
-            <td :data-time="series.name === '8:45 AM' ? 'start' : series.name">
-              {{ y % 2 == 0 ? series.name : null }}
+            <td
+              :id="series.name"
+              :data-time="series.name === '8:45 AM' ? 'start' : series.name"
+              :class="{
+                label: y % 4 === 0,
+                'assistive-small': y % 2 === 0 && y % 4 !== 0
+              }"
+              class="name"
+            >
+              {{ getRowName(series.name, y) }}
             </td>
             <td
               class="noselect data"
@@ -61,7 +75,7 @@ import useDrag from '@/composables/useDrag'
 import useChart from '@/composables/useChart'
 import usePostAvailability from '@/composables/usePostAvailability'
 
-import { computed, inject, onMounted, toRefs, watch } from 'vue'
+import { computed, inject, toRefs, watch } from 'vue'
 import { meeting } from '@/api/meeting'
 
 export default {
@@ -172,7 +186,49 @@ div {
   height: 3rem;
   padding-inline: 1rem;
 }
-.assistive {
-  width: 100%;
+.assistive-small {
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center;
+  opacity: 0.5;
+  vertical-align: bottom;
+}
+.label {
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center;
+  vertical-align: bottom;
+}
+
+table {
+  border-spacing: 1px;
+}
+
+td.data {
+  background-color: gray;
+  opacity: 0.5;
+  width: 3.5rem;
+  height: 1.5rem;
+}
+
+.column {
+  text-align: center;
+}
+
+td.name {
+  display: table-cell;
+
+  vertical-align: bottom;
+}
+
+td.selected,
+td.active {
+  background-color: var(--secondary);
+  opacity: 1;
+}
+
+td.non-active {
+  background-color: grey;
+  opacity: 1;
 }
 </style>

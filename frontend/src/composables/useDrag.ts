@@ -7,7 +7,6 @@ export default function useDrag(emit: any, isDisabled: Ref<boolean>) {
         x: 0,
         y: 0
     })
-    const selectedSlots = ref([] as number[])
 
     const scrollDirection = reactive({
         x: 0,

@@ -1,4 +1,4 @@
-import { ref, watch, computed, inject, onMounted, Ref } from 'vue'
+import { ref, watch, computed, inject, onMounted, Ref, provide } from 'vue'
 import { meeting } from '@/api/meeting'
 
 export default function useChart() {
@@ -6,6 +6,21 @@ export default function useChart() {
     const chartData = ref([] as any)
     const tableUser = inject('tableUser') as Ref<string>
     const meeting = inject('meeting') as meeting
+
+    const getRowName = (time: string, index: number) => {
+        // if time is 12:00 AM return midnight
+        if (time === '12:00 AM') {
+            return 'Midnight'
+        }
+        // // else if time includes 30 return the time
+        if (time.includes('30')) {
+            return time.split(' ')[0]
+        }
+        // // else if time includes 00 return the hour + AM/PM
+        if (time.includes('00')) {
+            return `${time.split(':')[0]} ${time.split(' ')[1]}`
+        }
+    }
 
     watch(tableUser, () => {
         if (tableUser.value) {
@@ -128,6 +143,7 @@ export default function useChart() {
     return {
         chartData,
         dates,
-        initChartData
+        initChartData,
+        getRowName
     }
 }
