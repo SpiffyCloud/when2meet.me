@@ -78,6 +78,7 @@ export default defineComponent({
 </script>
 
 <style>
+/* Table CSS */
 .slide-enter-active,
 .slide-leave-active {
   transition: all 1s;
@@ -95,62 +96,39 @@ export default defineComponent({
   z-index: 1;
   background: var(--primary-color);
 }
+</style>
 
-.p-tabmenu.p-component {
-  width: 100vw;
-}
-
-.p-tabmenu-nav.p-reset {
-  display: flex;
-  justify-content: space-evenly;
+<style>
+/* Tab Menu CSS overrides */
+.p-tabmenu .p-tabmenu-nav {
+  background: var(--primary) !important;
+  border: none !important;
 }
 .p-tabmenuitem {
-  width: 50%;
-  text-align: center;
-}
-
-.p-menuitem-text {
   width: 100%;
-  font-size: 1rem;
 }
 
-.p-button.p-bg-white {
-  background-color: white !important;
-  color: var(--primary-color) !important;
+.p-tabmenu .p-tabmenu-nav .p-tabmenuitem.p-highlight .p-menuitem-link {
+  background: var(--primary) !important;
+  color: var(--secondary) !important;
+  border: none !important;
+  opacity: 1;
+  border-bottom: 0.25rem solid var(--secondary) !important;
+  margin: 0;
 }
 
-.settings-icon {
-  font-size: 2rem !important;
+.p-tabmenu .p-tabmenu-nav .p-tabmenuitem .p-menuitem-link {
+  border: none !important;
+  background: var(--primary) !important;
+  color: var(--text) !important;
+  opacity: 0.5;
+  font-size: 1.5rem;
+  margin: 0;
 }
-
-.p-toast {
-  width: fit-content !important;
-}
-
-h1.active-user {
-  position: fixed;
-  top: 0;
-  margin-top: 1rem;
-  color: black;
-}
-
-.response-btn {
-  transition: all 0.5s ease-in-out !important;
-}
-
-.response-btn-lg {
-  transform: scale(1.1);
-}
-
-.empty-message {
-  background-color: white;
-  border-radius: 1rem;
-  color: var(--primary-color);
-  padding: 1rem;
-}
-
-.p-tabview .p-tabview-panels,
-.p-sidebar-content {
-  padding: 0 !important;
+.p-tabmenu
+  .p-tabmenu-nav
+  .p-tabmenuitem
+  .p-menuitem-link:not(.p-disabled):focus {
+  box-shadow: none !important;
 }
 </style>
