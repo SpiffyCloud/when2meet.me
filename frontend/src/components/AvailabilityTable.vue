@@ -1,22 +1,21 @@
 <template>
   <div v-if="visible" class="page">
-    <div class="heading p-p-3">
+    <div class="table-banner">
       <template v-if="!disabled">
-        <i>Click & drag over the times that you are available</i>
+        <em class="assistive"
+          >Click & drag over the times that you are available</em
+        >
         <Button label="Done" @click="onDone" />
       </template>
       <template v-else>
-        <i>{{ header }}</i>
-        <Button @click="onExit" label="Exit" />
+        <em class="assistive">{{ header }}</em>
+        <button class="button" @click="onExit">Exit</button>
       </template>
     </div>
     <div ref="table-wrapper" class="table-wrapper">
       <table tabindex="0" id="table" class="availability-table">
         <thead class="sticky-header">
           <tr>
-            <th>
-              <i class="pi pi-angle-double-up" />
-            </th>
             <th v-for="(date, index) in dates" :key="index" class="header">
               {{ date }}
             </th>
@@ -51,7 +50,6 @@
         <!-- add a footer -->
         <tfoot class="sticky-footer">
           <tr>
-            <td><i class="pi pi-angle-double-down" /></td>
             <td v-for="(date, index) in dates" :key="index" class="footer"></td>
           </tr>
         </tfoot>
@@ -150,7 +148,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 div {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -160,95 +158,30 @@ div {
   user-select: none;
 }
 
-.heading {
-  display: flex;
-  align-items: center;
-  height: 4rem;
-}
-.table-wrapper {
+.page {
+  position: absolute;
   height: 100%;
   width: 100vw;
-  overflow-y: scroll;
-  overflow-x: scroll;
-  background-color: var(--green-600);
-}
-
-.availability-table {
-  border-collapse: collapse;
-  width: 100%;
-  position: relative;
-}
-.availability-table thead th,
-.availability-table tfoot td,
-.availability-table tbody tr td:first-child {
-  background-color: var(--green-600);
-  color: whitesmoke;
-  font-weight: bold;
-  text-align: center;
-  border: none;
-  opacity: 1;
-  z-index: 1;
-  white-space: nowrap;
-}
-
-thead th {
-  padding: 0.5rem;
-}
-
-.availability-table tbody td {
-  height: 25px;
-}
-
-.availability-table tbody td {
-  color: white;
-  background-color: white;
-  text-align: center;
-  border: 1px solid black;
-}
-
-.sticky-header {
-  position: sticky;
   top: 0;
-  background-color: var(--green-600);
-}
-
-.sticky-footer {
-  position: sticky;
-  bottom: 0;
-  background-color: var(--green-600);
-}
-
-.white-text {
-  color: white !important;
-}
-
-.active {
-  /* green background */
-  background-color: var(--green-600) !important;
-}
-
-.selected {
-  /* blue background */
-  background-color: var(--green-600) !important;
-}
-
-.non-active {
-  /* gray background */
-  background-color: white !important;
-  border: none !important;
-}
-
-.p-tabview .p-tabview-nav li .p-tabview-nav-link:not(.p-disabled):focus {
-  box-shadow: none !important;
-}
-
-tfoot td {
-  height: 2rem;
-}
-
-tr td:first-child {
-  position: sticky;
   left: 0;
-  width: 4rem;
+  z-index: 1;
+  background: var(--primary);
+}
+
+.table-banner {
+  height: 6rem;
+  width: 100%;
+  display: flex;
+  padding: 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+.button {
+  width: auto;
+  height: 3rem;
+  padding-inline: 1rem;
+}
+.assistive {
+  width: 100%;
 }
 </style>

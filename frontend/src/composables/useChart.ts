@@ -106,6 +106,12 @@ export default function useChart() {
         return Math.floor((utc2 - utc1) / _MS_PER_DAY)
     }
 
+    onMounted(() => {
+        if (chartData.value.length === 0) {
+            initChartData()
+        }
+    })
+
     return {
         chartData,
         dates,

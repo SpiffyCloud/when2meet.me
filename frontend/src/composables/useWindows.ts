@@ -48,6 +48,11 @@ export default function useWindows() {
         const slots = meeting.availability.map((a) =>
             Array.from(a.slots).sort((a, b) => a - b)
         )
+        // if slots only contains an empty array, return
+        if (slots.length === 1 && slots[0].length === 0) {
+            return
+        }
+
         const combos = combinations(slots)
         const filteredCombos = combos.filter((c) => {
             return c.length >= filters.available
