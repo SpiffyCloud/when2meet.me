@@ -58,6 +58,10 @@ export default defineComponent({
       // if title is empy, show error
       if (title.value === '') {
         titleError.value = 'Please enter a meeting name!'
+        // focus on title input
+
+        const titleInput = document.getElementById('title-input')
+        titleInput?.focus()
       } else {
         titleError.value = ''
       }

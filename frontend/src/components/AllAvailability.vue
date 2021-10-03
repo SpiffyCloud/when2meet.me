@@ -1,5 +1,5 @@
 <template>
-  <div class="p-mt-5">
+  <div class="p-mt-5 p-p-3">
     <BestWindows />
     <Responders />
   </div>

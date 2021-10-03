@@ -1,13 +1,15 @@
 <template>
-  <h3 class="p-mb-2">
+  <h3 class="label">
     Best Windows of Availability
     <i
+      v-if="meeting.availability.length > 0"
       class="pi pi-filter"
       @click="updateWindowFilter(true)"
       style="fontsize: 2rem"
     ></i>
   </h3>
   <div v-if="windows.length > 0" class="window-group">
+    <em class="assistive">Click the filter icon above to update windows</em>
     <Window
       v-for="window in windows"
       :time="window.start"
@@ -16,10 +18,11 @@
       :key="window.start"
     />
   </div>
-  <i v-else-if="meeting.availability.length > 0"
-    >No meetings match those filters!</i
+  <em class="assisitve" v-else-if="meeting.availability.length > 0"
+    >No windows match those filters! Click the filter icon above to find new
+    windows!</em
   >
-  <i v-else>No availability yet! Be the first!</i>
+  <em class="assistive" v-else>No availability yet! Be the first!</em>
 
   <Dialog
     header="Best Window Options"
@@ -66,4 +69,4 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style></style>

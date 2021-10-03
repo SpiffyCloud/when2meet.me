@@ -55,6 +55,23 @@ body {
   font-weight: bold;
 }
 
+.button-secondary {
+  display: inline-block;
+  margin: 1rem;
+  padding: 1rem 1.5rem;
+  height: fit-content;
+  min-height: 3.5rem;
+  border: none;
+  background-color: white;
+  font-size: 1.75rem;
+}
+
+/* button pressed effect */
+.button-secondary:active,
+.button:active {
+  opacity: 0.9;
+}
+
 .input {
   height: 2.5rem;
   width: 100%;
@@ -75,5 +92,20 @@ body {
   color: var(--error);
   font-size: 1.5rem;
   margin-top: 0.5rem;
+}
+
+.footer {
+  display: flex;
+  width: 100%;
+  height: 10rem;
+  justify-content: space-evenly;
+  align-items: center;
+}
+.link {
+  color: var(--secondary);
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-decoration: none;
+  margin-block: 1rem;
 }
 </style>

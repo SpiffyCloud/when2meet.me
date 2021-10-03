@@ -85,7 +85,7 @@ export default {
 
 .window-date {
   width: 20%;
-  background-color: var(--green-600);
+  background-color: var(--secondary);
   height: 5rem;
   display: flex;
   flex-direction: column;
@@ -110,7 +110,7 @@ export default {
   flex-direction: column;
   justify-content: center;
   font-size: 1.25rem;
-  color: var(--primary-color);
+  color: var(--primary);
 }
 .month {
   font-size: 0.75rem;
