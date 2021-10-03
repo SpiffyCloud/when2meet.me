@@ -19,13 +19,15 @@ export default function useMeeting() {
     } as meeting)
 
     const getMeeting = async () => {
-        const { title, availability, by_end_date, meeting_id } =
-            await fetchMeeting(route.params.id as string)
-
-        meeting.title = title
-        meeting.availability = availability
-        meeting.by_end_date = by_end_date
-        meeting.meeting_id = meeting_id
+        const response = await fetchMeeting(route.params.id as string)
+        if (response) {
+            meeting.title = response.title
+            meeting.availability = response.availability
+            meeting.by_end_date = response.by_end_date
+            meeting.meeting_id = response.meeting_id
+        } else {
+            router.push('/')
+        }
     }
 
     const postMeeting = async ({ title, by_end_date }) => {
