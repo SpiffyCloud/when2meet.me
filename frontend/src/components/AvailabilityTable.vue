@@ -257,7 +257,7 @@ td.name {
   display: table-cell;
   vertical-align: top;
   text-align: center;
-  max-width: 2rem;
+  max-width: 6rem;
 
   z-index: 1;
   position: sticky;
@@ -281,6 +281,6 @@ td.divider {
 }
 .name-label {
   position: relative;
-  top: -0.5rem;
+  top: -1rem;
 }
 </style>
