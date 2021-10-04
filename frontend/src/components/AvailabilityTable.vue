@@ -191,7 +191,6 @@ div {
 
 .table-wrapper {
   height: 100%;
-  top: 6rem;
   position: relative;
 }
 
