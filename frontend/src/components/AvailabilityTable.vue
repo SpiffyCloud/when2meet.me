@@ -57,7 +57,7 @@
                 :class="{ selected: dataPoint.y > 0 }"
                 v-for="(dataPoint, x) in series.data"
                 :style="{
-                  opacity: getCellOpacity(dataPoint)
+                  opacity: !disabled ? 1 : getCellOpacity(dataPoint)
                 }"
                 :key="{ x, y }"
                 :data-x="x"

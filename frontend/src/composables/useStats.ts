@@ -26,22 +26,21 @@ export function useStats() {
     })
 
     const longestMeeting = computed(() => {
-        // longest continuous block of time ( using a reducer for fun)
-        let previous
+        // longest continuous block of time
         let max = 0
-        const longest = getUserSlots().reduce((acc, curr) => {
-            if (acc == 0) {
-                previous = curr
-                return 1
-            } else if (curr - previous == 1) {
-                previous = curr
-                return acc + 1
+        let curr = 1
+        const slots = getUserSlots()
+        for (let i = 1; i < slots.length; i++) {
+            if (slots[i] - slots[i - 1] === 1) {
+                curr++
+                if (curr > max) {
+                    max = curr
+                }
             } else {
-                max = acc
-                return max
+                curr = 1
             }
-        }, 0)
-        return getHourMinutes(longest * 15)
+        }
+        return getHourMinutes(max * 15)
     })
 
     const overlapWithOthers = computed(() => {
