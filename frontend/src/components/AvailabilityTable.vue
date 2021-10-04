@@ -151,9 +151,10 @@ export default {
     const { visible } = toRefs(props)
     watch(visible, () => {
       if (visible) {
-        const wrapper = document.querySelector('.table-wrapper')
-        const start = document.querySelector('[data-time=start]') as HTMLElement
-        wrapper?.scrollTo(0, start.offsetTop)
+        setTimeout(() => {
+          const start = document.getElementById('8:15 AM') as HTMLElement
+          window.scrollTo(0, start.offsetTop)
+        }, 0)
       }
     })
 
