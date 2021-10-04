@@ -40,7 +40,7 @@ td.p-datepicker-other-month > .p-disabled {
 }
 .p-datepicker table {
   font-size: 1.5rem !important;
-  font-weight: 600 !important;
+  font-weight: 500 !important;
 }
 .p-datepicker-group-container {
   width: 100%;
@@ -56,6 +56,19 @@ td.p-datepicker-other-month > .p-disabled {
   border: 2px var(--secondary) solid !important;
   background: none !important;
   color: var(--text) !important;
+}
+
+table.p-datepicker-calendar > thead {
+  display: none;
+}
+
+.p-datepicker-other-month {
+  border-top: none !important;
+}
+
+table.p-datepicker-calendar > tbody > tr > td {
+  border-top: 1px solid var(--secondary);
+  padding-bottom: 1rem;
 }
 </style>
 
