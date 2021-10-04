@@ -22,6 +22,7 @@ body {
   height: 100%;
   background-color: var(--primary);
   color: var(--text);
+  font-family: 'Open Sans', sans-serif;
 }
 
 /* reset default margin and paddings */

@@ -1,154 +1,108 @@
 <template>
-  <div id="about-page" class="p-d-flex p-flex-column p-jc-between p-p-4">
-    <h1 id="heading" class="p-text-center p-text-bold p-pb-3">
-      When 2 Meet Me
-    </h1>
-
-    <div id="what-is" class="p-text-left p-d-flex p-flex-column p-pb-2">
-      <h4 class="p-pb-2">What is When2Meet.Me?</h4>
-      <p class="p-pb-2">
-        When2Meet.Me is a quick and easy availability survey tool that helps you
-        find the best times you and your group can meet.
-      </p>
-      <p class="p-pb-2">
-        Please read our
-        <a href="#" class="p-underline" @click="displayModalTerms = true"
-          >terms and conditions</a
-        >
-        for details on what we track and use the data we collect.
-      </p>
+  <div class="container">
+    <div id="title" class="p-d-flex p-ai-center p-flex-column p-my-5">
+      <i class="pi pi-clock logo p-mb-4"></i>
+      <h1 id="heading">When 2 Meet Me</h1>
     </div>
 
-    <Dialog
-      header="Terms and Conditions"
-      v-model:visible="displayModalTerms"
-      :modal="true"
-    >
-      <p class="">A document that says legal stuff...</p>
-    </Dialog>
+    <h2>What is When2Meet.Me?</h2>
+    <p class="text p-px-5 p-pt-2 p-pb-5">
+      When2Meet.Me is a quick and easy availability survey tool that helps you
+      find the best times you and your group can meet.
+    </p>
 
-    <div id="feedback-block" v-if="showFeedbackBlock">
-      <div
-        id="quick-feedback-group"
-        class="p-text-left p-d-flex p-flex-column p-pb-2"
-      >
-        <h4 class="p-pb-2">We'd love your feedback!</h4>
-        <p class="p-pb-2">The good, the bad, and the ugly.</p>
+    <template v-if="showFeedbackBlock">
+      <h2>We'd love your feedback!</h2>
+      <p class="assistive p-pb-2">The good, the bad, and the ugly.</p>
 
-        <div
-          id="quick-feedback-actions"
-          class="p-d-flex p-jc-start p-flex-wrap"
-        >
-          <Button
-            class="p-button p-bg-white p-m-1 p-button-lg p-shadow-2"
-            v-for="(selected, message, index) in quickFeedback"
+      <div class="p-pb-4 p-px-2" id="quick-feedback-actions">
+        <div class="p-d-flex p-flex-wrap">
+          <button
             :key="index"
-            :icon="`${selected ? 'pi pi-check' : ''}`"
-            :iconPos="`${selected ? 'right' : ''}`"
-            :label="message"
+            v-for="(selected, message, index) in quickFeedback"
+            class="button"
             @click="selectQuickFeedback(message)"
+            style="width: auto; padding-inline: 1rem; margin: 0.25rem"
           >
-          </Button>
+            {{ message }}
+            <i class="pi pi-check" v-if="selected"></i>
+          </button>
         </div>
       </div>
 
-      <div
-        id="feedback-message-group"
-        class="p-text-left p-d-flex p-flex-column p-pb-2"
-      >
-        <h4 class="p-pb-2">Would you like to say something?</h4>
-        <p class="p-pb-2">
-          Share your thoughts and ideas. <span>(optional)</span>
-        </p>
+      <h2>Would you like to say something?</h2>
+      <p class="assistive p-pb-3">
+        Share your thoughts and ideas. <span>(optional)</span>
+      </p>
+      <Textarea
+        v-model="feedbackMessage"
+        rows="5"
+        cols="30"
+        placeholder="This is cool!"
+        :autoResize="true"
+      />
+      <div class="button-container">
+        <button class="button p-my-4" @click="onSubmitFeedback">
+          Submit My Feedback
+        </button>
+      </div>
+    </template>
+
+    <template v-else>
+      <i class="pi pi-bell logo"></i>
+      <h2>We appreciate your feedback!</h2>
+      <div class="button-container">
+        <button @click="showFeedbackBlock = true" class="button p-my-4">
+          Give More Feedback
+        </button>
+      </div>
+    </template>
+
+    <h2>Like our style?</h2>
+    <p class="text p-px-5 p-pt-2 p-pb-5">
+      When2Meet.Me is designed, developed, and maintained by a stellar group of
+      people who love to make great products.
+    </p>
+    <p class="text p-px-5 p-pt-2 p-pb-5">
+      If you've got an idea and would like to hire us - just let us know!
+    </p>
+    <div class="button-container">
+      <button class="button" @click="displayModalHireUs = true">Hire Us</button>
+    </div>
+
+    <Dialog header="Hire Us" v-model:visible="displayModalHireUs" :modal="true">
+      <template v-if="showHireUsBlock">
         <Textarea
-          v-model="feedbackMessage"
+          v-model="hireContactMessage"
+          :autoResize="true"
           rows="5"
           cols="30"
-          placeholder="This is cool!"
-          :autoResize="true"
+          class="p-my-2"
+          placeholder="You guys rock!"
         />
-        <Button
-          id="submit-feedback"
-          class="p-button-raised p-button-success p-button-lg p-mt-2 p-mb-2"
-          label="Submit My Feedback"
-          :disabled="!submitFeedbackFormValid"
-          @click="onSubmitFeedback"
-        />
-      </div>
-    </div>
-
-    <div id="feedback-block-submmited" v-else>
-      <div class="p-text-center p-d-flex p-flex-column p-pb-2">
-        <i class="pi pi-bell"></i>
-        <h1 class="p-mb-2">We appreciate your feedback!</h1>
-        <Button
-          id="give-more-feedback"
-          class="p-button-raised p-button-success p-button-lg p-mb-2"
-          label="Give More Feedback"
-          @click="showFeedbackBlock = true"
-        />
-      </div>
-    </div>
-
-    <div id="hire-contact" class="p-text-left p-d-flex p-flex-column p-pb-2">
-      <h4 class="p-pb-2">Like our style?</h4>
-      <p class="p-pb-2">
-        When2Meet.Me is designed, developed, and maintained by a stellar group
-        of people who love to make great products.
-      </p>
-      <p class="p-mb-2">
-        If you've got an idea and would like to hire us - just let us know!
-      </p>
-      <Button
-        id="hire-us"
-        class="p-button-raised p-button-success p-button-lg"
-        label="Hire Us"
-        @click="displayModalHireUs = true"
-      />
-
-      <Dialog
-        header="Hire Us"
-        v-model:visible="displayModalHireUs"
-        :modal="true"
-      >
-        <div id="hire-us-block" v-if="showHireUsBlock">
-          <Textarea
-            v-model="hireContactMessage"
-            :autoResize="true"
-            rows="5"
-            cols="30"
-            placeholder="You guys rock!"
-          />
-          <Button
-            id="submit-hire-contact"
-            class="p-button-raised p-button-success p-button-lg"
-            label="Hire Us"
-            :disabled="!submitHireUsFormValid"
-            @click="onSubmitHireUs"
-          />
+        <div class="button-container">
+          <button class="button" @click="onSubmitHireUs">Hire Us</button>
         </div>
-        <div id="hire-us-block-submmited" v-else>
-          <p>Thanks for contacting us.</p>
-        </div>
-      </Dialog>
-    </div>
+      </template>
+      <template v-else>
+        <h2 class="p-my-2">Thanks for contacting us!</h2>
+      </template>
+    </Dialog>
 
-    <h3 id="footer" class="p-text-center p-text-bold p-pt-2">
-      <router-link :to="{ name: 'Create' }">Home</router-link>
-    </h3>
+    <div class="footer">
+      <router-link class="link" to="/">Create</router-link>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { computed, ref } from 'vue'
-import Button from 'primevue/button'
 import Textarea from 'primevue/textarea'
 import Dialog from 'primevue/dialog'
 
 export default {
   name: 'About',
   components: {
-    Button,
     Textarea,
     Dialog
   },
@@ -241,9 +195,11 @@ export default {
   margin: 0;
 }
 
-#about-page {
-  background-color: var(--primary-color);
-  color: var(--primary-color-text);
-  font-family: var(--font-family);
+.text {
+  font-size: 1.5rem;
+}
+.button-container {
+  width: 100%;
+  padding-inline: 1.5rem;
 }
 </style>
