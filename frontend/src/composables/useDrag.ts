@@ -43,33 +43,35 @@ export default function useDrag(emit: any, isDisabled: Ref<boolean>) {
         if (!mousedown.value || isDisabled.value) {
             return
         }
-        window.addEventListener('scroll', () => {
-            setTimeout(() => {
-                if (mousedown.value) {
-                    window.scrollBy(scrollDirection.x, scrollDirection.y)
-                }
-            })
-        })
+
+        // TODO: Find a better way to continue scrolling
+        // window.addEventListener('scroll', () => {
+        //     setTimeout(() => {
+        //         if (mousedown.value) {
+        //             window.scrollBy(scrollDirection.x, scrollDirection.y)
+        //         }
+        //     })
+        // })
         const event = e.touches ? e.touches[0] : e
         // log sidebar wrapper scroll offset
         const eventTd = document.elementFromPoint(
             event.clientX,
             event.clientY
         ) as any
-        if (window.innerWidth - event.clientX < 20) {
-            scrollDirection.x = 1
-            scrollDirection.y = 0
-        } else if (event.clientX < 100) {
-            scrollDirection.x = -1
-            scrollDirection.y = 0
-        } else if (eventTd.classList.contains('column')) {
-            scrollDirection.x = 0
-            scrollDirection.y = -1
-        } else if (window.innerHeight - event.clientY < 20) {
-            scrollDirection.x = 0
-            scrollDirection.y = 1
-        }
-        window.scrollBy(scrollDirection.x, scrollDirection.y)
+        // if (window.innerWidth - event.clientX < 20) {
+        //     scrollDirection.x = 1
+        //     scrollDirection.y = 0
+        // } else if (event.clientX < 100) {
+        //     scrollDirection.x = -1
+        //     scrollDirection.y = 0
+        // } else if (eventTd.classList.contains('column')) {
+        //     scrollDirection.x = 0
+        //     scrollDirection.y = -1
+        // } else if (window.innerHeight - event.clientY < 20) {
+        //     scrollDirection.x = 0
+        //     scrollDirection.y = 1
+        // }
+        // window.scrollBy(scrollDirection.x, scrollDirection.y)
 
         e.preventDefault()
 

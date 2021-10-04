@@ -202,9 +202,8 @@ div {
   padding: 1rem;
   align-items: center;
   justify-content: space-between;
-  position: fixed;
+  position: sticky;
   top: 0;
-  left: 0;
   z-index: 3;
   background-color: var(--primary);
 }
@@ -258,6 +257,7 @@ td.name {
   display: table-cell;
   vertical-align: top;
   text-align: center;
+  max-width: 2rem;
 
   z-index: 1;
   position: sticky;
