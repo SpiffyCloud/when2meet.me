@@ -16,7 +16,7 @@
       <p class="assistive p-pb-2">The good, the bad, and the ugly.</p>
 
       <div class="p-pb-4 p-px-2" id="quick-feedback-actions">
-        <div class="p-d-flex p-flex-wrap">
+        <div class="p-d-flex p-flex-wrap p-jc-center">
           <button
             :key="index"
             v-for="(selected, message, index) in quickFeedback"
@@ -189,6 +189,10 @@ export default {
 </script>
 
 <style lang="css">
+.container {
+  max-width: 750px;
+  margin-inline: auto;
+}
 * {
   box-sizing: border-box;
   padding: 0;
