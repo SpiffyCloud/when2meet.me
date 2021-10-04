@@ -1,5 +1,5 @@
 <template>
-  <div id="meeting">
+  <div id="meeting" style="max-width: 600px; margin-inline: auto">
     <Toast position="bottom-right" group="br" />
     <Header :title="meeting.title" />
     <TabMenu :model="items" v-model:activeIndex="active" />
