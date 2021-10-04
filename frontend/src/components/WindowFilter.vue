@@ -29,21 +29,19 @@
       />
     </div>
     <div class="p-d-flex p-my-1 p-jc-center p-align-center">
-      <Button label="Apply" @click="updateWindowFilter(false)" />
+      <button class="button" @click="updateWindowFilter(false)">Apply</button>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import Dropdown from 'primevue/dropdown'
-import Button from 'primevue/button'
 import { inject } from 'vue'
 
 export default {
   name: 'Window Filter',
   components: {
-    Dropdown,
-    Button
+    Dropdown
   },
   props: {
     urgencyOptions: {
