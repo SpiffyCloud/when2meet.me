@@ -30,7 +30,12 @@
           <tr></tr>
           <template v-for="(series, y) in chartData" :key="series.name">
             <tr v-if="y % 4 === 0">
-              <td class="divider" colspan="100%"></td>
+              <td
+                @touchend="endDragging"
+                @mouseup="endDragging"
+                class="divider"
+                colspan="100%"
+              ></td>
             </tr>
             <tr>
               <td

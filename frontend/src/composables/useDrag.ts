@@ -2,7 +2,6 @@ import { ref, reactive, onMounted, Ref } from 'vue'
 
 export default function useDrag(emit: any, isDisabled: Ref<boolean>) {
     const mousedown = ref(false)
-    const scrollingId = ref(0)
     const isSelecting = ref(false)
     const startingBox = reactive({
         x: 0,
