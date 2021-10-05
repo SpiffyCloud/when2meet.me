@@ -74,12 +74,6 @@
             </tr>
           </template>
         </tbody>
-        <!-- add a footer -->
-        <tfoot class="sticky-footer">
-          <tr>
-            <td v-for="(date, index) in dates" :key="index" class="footer"></td>
-          </tr>
-        </tfoot>
       </table>
     </div>
   </div>
@@ -150,10 +144,10 @@ export default {
 
     const { visible } = toRefs(props)
     watch(visible, () => {
-      if (visible) {
+      if (visible.value) {
         setTimeout(() => {
           const start = document.getElementById('8:15 AM') as HTMLElement
-          window.scrollTo(0, start.offsetTop)
+          window.scrollTo(0, start.offsetTop - 1)
         }, 0)
       }
     })
@@ -191,6 +185,7 @@ div {
 
 .table-wrapper {
   height: 100%;
+  top: 6rem;
   position: relative;
 }
 
@@ -201,8 +196,9 @@ div {
   padding: 1rem;
   align-items: center;
   justify-content: space-between;
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
   z-index: 3;
   background-color: var(--primary);
 }
@@ -239,6 +235,7 @@ div {
 table {
   border-spacing: 2px;
   width: 100%;
+  position: relative;
 }
 
 td.data {

@@ -1,5 +1,8 @@
 <template>
-  <div id="meeting" style="max-width: 600px; margin-inline: auto">
+  <div
+    id="meeting"
+    style="max-width: 600px; margin-inline: auto; position: relative"
+  >
     <Toast position="bottom-right" group="br" />
     <Header :title="meeting.title" />
     <TabMenu :model="items" v-model:activeIndex="active" />
@@ -87,6 +90,16 @@ export default defineComponent({
 .slide-enter-from,
 .slide-leave-to {
   transform: translateX(100vw);
+}
+
+.slide-enter-active .table-banner,
+.slide-leave-active .table-banner {
+  position: sticky !important;
+}
+
+.slide-enter-active .table-wrapper,
+.slide-leave-active .table-wrapper {
+  top: 0 !important;
 }
 </style>
 
