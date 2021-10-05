@@ -201,7 +201,7 @@ div {
   padding: 1rem;
   align-items: center;
   justify-content: space-between;
-  position: fixed;
+  position: sticky;
   top: 0;
   z-index: 3;
   background-color: var(--primary);
