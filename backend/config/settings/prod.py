@@ -38,9 +38,9 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 # Email Backend
 
-EMAIL_HOST = "localhost"
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+EMAIL_HOST = config("EMAIL_HOST", default="host.docker.internal")
+EMAIL_PORT = config("EMAIL_PORT", default="25")
+#EMAIL_USE_TLS = True
 
 # Security
 
