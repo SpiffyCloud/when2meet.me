@@ -32,6 +32,7 @@ services:
     volumes:
       - ./backend:/app
     environment:
+      - SECRET_KEY=${SECRET_KEY}
       - RECAPTCHA_SECRET_KEY=${RECAPTCHA_SECRET_KEY}
       - RECAPTCHA_SITE_KEY=${RECAPTCHA_SITE_KEY}
       - SQL_USER=compose
