@@ -10,8 +10,8 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  DEPLOY_ROOT: /srv/when2meet-staging
   DEPLOY_SERVER: aws-gen-1.cliqteam.com
+  DEPLOY_ROOT: /srv/when2meet-staging
   DEPLOY_KEY: ${{ secrets.DEPLOY_KEY_STAGING }}
 
 jobs:
