@@ -10,7 +10,9 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  COMPOSE_ROOT: /srv/when2meet-staging
+  DEPLOY_ROOT: /srv/when2meet-staging
+  DEPLOY_SERVER: aws-gen-1.cliqteam.com
+  DEPLOY_KEY: ${{ secrets.DEPLOY_KEY_STAGING }}
 
 jobs:
   deploy:
@@ -27,10 +29,10 @@ jobs:
         with:
           command: |
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            cd ${{ env.COMPOSE_ROOT }}
+            cd ${{ env.DEPLOY_ROOT }}
             docker-compose down
             docker-compose pull
             docker-compose up -d || exit 1
-          host: ${{ secrets.STAGING_SERVER }}
+          host: ${{ env.DEPLOY_SERVER }}
           username: root
-          privateKey: ${{ secrets.DEPLOY_KEY_STAGING }}
+          privateKey: ${{ env.DEPLOY_KEY }}
