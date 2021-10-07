@@ -162,7 +162,7 @@ export default {
       onDone,
       onExit,
       header,
-      ...useDrag(emit, disabled),
+      // ...useDrag(emit, disabled),
       ...useChart()
     }
   }

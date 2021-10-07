@@ -3,9 +3,9 @@
     Best Windows of Availability
     <i
       v-if="meeting.availability.length > 0"
-      class="pi pi-filter"
-      @click="updateWindowFilter(true)"
+      class="pi pi-filter clickable"
       style="fontsize: 2rem"
+      @click="updateWindowFilter(true)"
     ></i>
   </h3>
   <div v-if="windows.length > 0" class="window-group">
