@@ -11,6 +11,7 @@ on:
 env:
   REGISTRY: ghcr.io
   DEPLOY_SERVER: aws-gen-1.cliqteam.com
+  DEPLOY_USER: when2meet-staging
   DEPLOY_ROOT: /srv/when2meet-staging
   DEPLOY_KEY: ${{ secrets.DEPLOY_KEY_STAGING }}
 
@@ -34,5 +35,5 @@ jobs:
             docker-compose pull
             docker-compose up -d || exit 1
           host: ${{ env.DEPLOY_SERVER }}
-          username: root
+          username: ${{ env.DEPLOY_USER }}
           privateKey: ${{ env.DEPLOY_KEY }}
