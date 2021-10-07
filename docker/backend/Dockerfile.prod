@@ -35,7 +35,8 @@ COPY --from=build-layer /opt/venv /opt/venv
 COPY ./backend .
 
 # Build static files
-RUN RECAPTCHA_SECRET_KEY='NULL' \
+RUN SECRET_KEY='NULL' \
+    RECAPTCHA_SECRET_KEY='NULL' \
     RECAPTCHA_SITE_KEY='NULL' \
     SQL_HOST='NULL' \
     SQL_DATABASE='NULL' \

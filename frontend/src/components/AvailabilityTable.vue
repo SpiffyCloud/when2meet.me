@@ -57,7 +57,7 @@
                 :class="{ selected: dataPoint.y > 0 }"
                 v-for="(dataPoint, x) in series.data"
                 :style="{
-                  opacity: getCellOpacity(dataPoint)
+                  opacity: !disabled ? 1 : getCellOpacity(dataPoint)
                 }"
                 :key="{ x, y }"
                 :data-x="x"
@@ -74,12 +74,6 @@
             </tr>
           </template>
         </tbody>
-        <!-- add a footer -->
-        <tfoot class="sticky-footer">
-          <tr>
-            <td v-for="(date, index) in dates" :key="index" class="footer"></td>
-          </tr>
-        </tfoot>
       </table>
     </div>
   </div>
@@ -150,10 +144,11 @@ export default {
 
     const { visible } = toRefs(props)
     watch(visible, () => {
-      if (visible) {
-        const wrapper = document.querySelector('.table-wrapper')
-        const start = document.querySelector('[data-time=start]') as HTMLElement
-        wrapper?.scrollTo(0, start.offsetTop)
+      if (visible.value) {
+        setTimeout(() => {
+          const start = document.getElementById('8:15 AM') as HTMLElement
+          window.scrollTo(0, start.offsetTop - 1)
+        }, 0)
       }
     })
 
@@ -181,7 +176,7 @@ div {
 
 .page {
   position: absolute;
-  width: 100vw;
+  width: 100%;
   top: 0;
   left: 0;
   background: var(--primary);
@@ -240,6 +235,7 @@ div {
 table {
   border-spacing: 2px;
   width: 100%;
+  position: relative;
 }
 
 td.data {
@@ -257,6 +253,7 @@ td.name {
   display: table-cell;
   vertical-align: top;
   text-align: center;
+  max-width: 6rem;
 
   z-index: 1;
   position: sticky;
@@ -280,6 +277,6 @@ td.divider {
 }
 .name-label {
   position: relative;
-  top: -0.5rem;
+  top: -1rem;
 }
 </style>

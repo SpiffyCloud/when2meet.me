@@ -4,7 +4,7 @@ Django Base Settings
 
 from pathlib import Path
 from decouple import config
-from django.core.management.utils import get_random_secret_key
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent  # [Added one level]
@@ -90,7 +90,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Basic Settings
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config("SECRET_KEY", default=get_random_secret_key())
+SECRET_KEY = config("SECRET_KEY")
 
 ALLOWED_HOSTS = ["*"]
 

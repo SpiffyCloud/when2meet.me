@@ -115,14 +115,15 @@ export default function useWindows() {
     const getContinuousIntervals = (arr: any[], numOfPeople: number) => {
         if (!arr) return
         const res = [] as any
-        let windowLength = 1
+        let windowLength = 0
         let start = arr[0]
         for (let i = 1; i < arr.length; i++) {
             if (arr[i] - arr[i - 1] > 1) {
+                const length = windowLength > 0 ? windowLength : 1
                 res.push({
                     start,
                     numOfPeople,
-                    windowLength
+                    windowLength: length
                 })
                 start = arr[i]
                 windowLength = 0

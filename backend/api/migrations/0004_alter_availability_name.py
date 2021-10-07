@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0003_alter_availability_slots'),
+        ("api", "0003_alter_availability_slots"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='availability',
-            name='name',
+            model_name="availability",
+            name="name",
             field=models.CharField(max_length=100),
         ),
     ]
