@@ -29,7 +29,6 @@ jobs:
         uses: garygrossgarten/github-action-ssh@release
         with:
           command: |
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             cd ${{ env.DEPLOY_ROOT }}
             docker-compose down
             docker-compose pull
