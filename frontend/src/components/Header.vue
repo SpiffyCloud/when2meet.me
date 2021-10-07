@@ -1,20 +1,23 @@
 <template>
   <div class="header p-p-4">
     <div class="title">
-      <h1 class="heading">
-        {{ title }}
-      </h1>
-      <i
-        class="pi pi-link clickable"
-        style="font-size: 1.6rem; margin-left: 10px;"
-        @click="copyMeetingUrl"
-      ></i>
+      <h1 class="heading">{{ title }}</h1>
     </div>
+    <button
+      @click="copyMeetingUrl"
+      class="button p-my-4"
+      :class="{ copied: copied }"
+    >
+      {{ buttonText }}
+    </button>
+    <button @click="updateShowTable(true, 'All')" class="button p-my-4">
+      View All Availability
+    </button>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, inject } from 'vue'
 
 // Composables
 import useCopyUrl from '@/composables/useCopyUrl'
@@ -25,7 +28,13 @@ export default defineComponent({
     title: String
   },
   setup() {
+    const updateShowTable = inject('updateShowTable') as (
+      show: boolean,
+      user: string
+    ) => void
+
     return {
+      updateShowTable,
       ...useCopyUrl()
     }
   }

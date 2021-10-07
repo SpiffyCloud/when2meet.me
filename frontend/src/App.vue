@@ -54,7 +54,6 @@ body {
   color: var(--text);
   font-size: 1.75rem;
   font-weight: bold;
-  cursor: pointer;
 }
 
 .button-secondary {
@@ -66,25 +65,11 @@ body {
   border: none;
   background-color: white;
   font-size: 1.75rem;
-  cursor: pointer;
 }
 
 /* button pressed effect */
-.button:active,
-.button-secondary:active {
-  opacity: 0.9;
-}
-
-.button:hover,
-.button-secondary:hover {
-  opacity: 0.9;
-}
-
-.clickable {
-  cursor: pointer;
-}
-
-.clickable:hover {
+.button-secondary:active,
+.button:active {
   opacity: 0.9;
 }
 

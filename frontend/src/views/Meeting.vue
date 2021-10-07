@@ -7,12 +7,12 @@
     <Header :title="meeting.title" />
     <TabMenu :model="items" v-model:activeIndex="active" />
     <div id="tabs">
-      <Availability v-if="active === 0" />
+      <AllAvailability v-if="active === 0" />
       <MyAvailability v-if="active === 1" />
     </div>
     <div class="footer">
-      <router-link class="link" to="/">Create a New Meeting</router-link>
-      <router-link class="link" to="/about">About Us</router-link>
+      <router-link class="link" to="/">Create</router-link>
+      <router-link class="link" to="/about">About</router-link>
     </div>
 
     <transition name="slide">
@@ -32,7 +32,7 @@ import Toast from 'primevue/toast'
 import TabMenu from 'primevue/tabmenu'
 // Internal components
 import Header from '@/components/Header.vue'
-import Availability from '@/components/Availability.vue'
+import AllAvailability from '@/components/AllAvailability.vue'
 import MyAvailability from '@/components/MyAvailability.vue'
 import AvailabilityTable from '@/components/AvailabilityTable.vue'
 // Composables
@@ -44,7 +44,7 @@ export default defineComponent({
   name: 'Meeting',
   components: {
     Header,
-    Availability,
+    AllAvailability,
     MyAvailability,
     AvailabilityTable,
     TabMenu,

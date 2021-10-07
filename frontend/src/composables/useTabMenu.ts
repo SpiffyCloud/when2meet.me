@@ -6,10 +6,10 @@ export default function useTabMenu() {
     const active = ref(0)
     const items = ref([
         {
-            label: 'Meeting Details'
+            label: 'All Availability'
         },
         {
-            label: 'Attendees'
+            label: 'My Availability'
         }
     ])
 

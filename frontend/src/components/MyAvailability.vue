@@ -3,26 +3,25 @@
     <div class="p-mb-4" v-if="activeUser">
       <h2 class="label">Welcome back, {{ activeUser }}</h2>
       <p class="assistive" @click="changeUser">
-        Not you? <span class="action clickable">Change user</span>
+        Not you? <span class="action">Change user</span>
       </p>
     </div>
     <UserSummary v-if="activeUser" />
     <NewUserForm v-else />
-    <Responders />
   </div>
 </template>
 
 <script lang="ts">
+import UserSummary from '@/components/UserSummary.vue'
 import NewUserForm from '@/components/NewUserForm.vue'
-import Responders from '@/components/Responders.vue'
 
 import { inject } from 'vue'
 
 export default {
   name: 'MyAvailability',
   components: {
-    NewUserForm,
-    Responders,
+    UserSummary,
+    NewUserForm
   },
   setup() {
     const activeUser = inject('activeUser') as string
