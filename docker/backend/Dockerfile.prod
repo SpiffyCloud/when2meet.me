@@ -34,15 +34,14 @@ COPY --from=build-layer /opt/venv /opt/venv
 # Copy files for production builds
 COPY ./backend .
 
+# Copy .env.example for default values
+COPY ./.env.example .
+
 # Build static files
-RUN SECRET_KEY='NULL' \
-    RECAPTCHA_SECRET_KEY='NULL' \
-    RECAPTCHA_SITE_KEY='NULL' \
-    SQL_HOST='NULL' \
-    SQL_DATABASE='NULL' \
-    SQL_USER='NULL' \
-    SQL_PASSWORD='NULL' \
-    python manage.py collectstatic --noinput --settings=config.settings.prod
+RUN python manage.py collectstatic --noinput --settings=config.settings.prod
+
+# Remove .env.example after building static files
+RUN rm .env.example
 
 # Install container scripts
 COPY ./docker/backend/*.sh /
