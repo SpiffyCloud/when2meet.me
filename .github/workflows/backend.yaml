@@ -34,7 +34,7 @@ jobs:
       - name: Setup environment
         run: cp .env.example .env
 
-      - name: Build docker images
+      - name: Build Docker images necessary for testing
         run: docker-compose build backend
 
       - name: Run tests
