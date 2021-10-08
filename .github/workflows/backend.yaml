@@ -50,6 +50,9 @@ jobs:
             -e EMAIL_HOST=mailhog \
             -e EMAIL_PORT=1025 \
             -e EMAIL_USE_TLS=False \
+            -e POSTGRES_USER=srv_when2meet \
+            -e POSTGRES_PASSWORD=qwerty123 \
+            -e POSTGRES_DB=db_when2meet \
             backend /test.sh
 
       - name: Extract metadata (tags, labels) for Docker
