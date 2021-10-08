@@ -38,7 +38,7 @@ COPY ./backend .
 COPY ./.env.example .
 
 # Build static files
-RUN python manage.py collectstatic --noinput --settings=config.settings.prod
+RUN (source '.env' && bash 'python manage.py collectstatic --noinput --settings=config.settings.prod')
 
 # Remove .env.example after building static files
 RUN rm .env.example
