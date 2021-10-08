@@ -35,13 +35,13 @@ COPY --from=build-layer /opt/venv /opt/venv
 COPY ./backend .
 
 # Copy .env.example for default values
-COPY ./.env.example .
+COPY ./.env.example ./.env
 
 # Build static files
-RUN (source '.env' && bash 'python manage.py collectstatic --noinput --settings=config.settings.prod')
+RUN (source '.env' && python manage.py collectstatic --noinput --settings=config.settings.prod)
 
 # Remove .env.example after building static files
-RUN rm .env.example
+RUN rm .env
 
 # Install container scripts
 COPY ./docker/backend/*.sh /
