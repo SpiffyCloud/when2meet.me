@@ -35,7 +35,7 @@ jobs:
         run: docker-compose build backend
 
       - name: Setup environment
-        rune: cp .env.example .env
+        run: cp .env.example .env
 
       - name: Run tests
         run: |
