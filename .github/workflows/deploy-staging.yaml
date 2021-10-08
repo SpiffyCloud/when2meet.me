@@ -17,9 +17,6 @@ env:
 
 jobs:
   deploy:
-    # Using workflow_run instead
-    # needs: [build-and-push-frontend, build-and-push-backend]
-
     runs-on: ubuntu-latest
     permissions:
       packages: read
