@@ -101,6 +101,19 @@ INSTALLED_APPS += [
     "api",
 ]
 
+# Databases
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": config("SQL_DATABASE"),
+        "USER": config("SQL_USER"),
+        "PASSWORD": config("SQL_PASSWORD"),
+        "HOST": config("SQL_HOST"),
+        "PORT": config("SQL_PORT"),
+    }
+}
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
@@ -115,6 +128,12 @@ RECAPTCHA_SITE_KEY = config("RECAPTCHA_SITE_KEY")
 
 LOGIN_URL = "core:login"
 LOGOUT_REDIRECT_URL = "core:logout"
+
+# Email Backend
+
+EMAIL_HOST = config("EMAIL_HOST")
+EMAIL_PORT = config("EMAIL_PORT")
+EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool)
 
 # Rest Framework
 

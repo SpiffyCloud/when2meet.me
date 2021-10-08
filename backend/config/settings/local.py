@@ -9,31 +9,6 @@ from .base import *
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# Databases
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": config("SQL_DATABASE", default="djangotemplate"),
-        "USER": config("SQL_USER"),
-        "PASSWORD": config("SQL_USER"),
-        "HOST": config("SQL_HOST", default="postgres") or "postgres",
-        "PORT": config("SQL_PORT", default="5432"),
-    }
-}
-
-# Email Backend
-
-EMAIL_HOST = "mailhog"
-EMAIL_PORT = 1025
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-# REST_FRAMEWORK = {
-#     "DEFAULT_RENDERER_CLASSES": [
-#         "rest_framework.renderers.JSONRenderer",
-#     ]
-# }
-
 REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = REST_FRAMEWORK.get(
     "DEFAULT_RENDERER_CLASSES", []
 ) + ["rest_framework.renderers.BrowsableAPIRenderer"]
