@@ -17,9 +17,18 @@ services:
       - "traefik.http.routers.backend.middlewares=xForwardedProto"
     volumes:
       - ./backend:/app
-    env_file:
-      - .env.example
-      - .env
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      - RECAPTCHA_SECRET_KEY=${RECAPTCHA_SECRET_KEY}
+      - RECAPTCHA_SITE_KEY=${RECAPTCHA_SITE_KEY}
+      - SQL_USER=${SQL_USER}
+      - SQL_PASSWORD=${SQL_PASSWORD}
+      - SQL_DATABASE=${SQL_DATABASE}
+      - SQL_HOST=${SQL_HOST}
+      - SQL_PORT=${SQL_PORT}
+      - EMAIL_HOST=${EMAIL_HOST}
+      - EMAIL_PORT=${EMAIL_PORT}
+      - EMAIL_USE_TLS=${EMAIL_USE_TLS}
 
   frontend:
     image: ghcr.io/cliqteam/when2meet-frontend:local

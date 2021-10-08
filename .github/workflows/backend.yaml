@@ -34,15 +34,23 @@ jobs:
       - name: Build docker images
         run: docker-compose build backend
 
-      # - name: Run tests
-      #   run: |
-      #     docker-compose run \
-      #       --rm \
-      #       -e APP_DOMAIN=localhost \
-      #       -e SECRET_KEY=${{ secrets.SECRET_KEY }} \
-      #       -e RECAPTCHA_SECRET_KEY=${{ secrets.RECAPTCHA_SECRET_KEY }} \
-      #       -e RECAPTCHA_SITE_KEY=${{ secrets.RECAPTCHA_SITE_KEY }} \
-      #       backend /test.sh
+      - name: Run tests
+        run: |
+          docker-compose run \
+            --rm \
+            -e APP_DOMAIN=localhost \
+            -e SECRET_KEY=rxU1ykgpu6y3ku9j1araEbVEzl1ywbAxjzZ8mjgHkGamBELAp6 \
+            -e RECAPTCHA_SECRET_KEY=6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe \
+            -e RECAPTCHA_SITE_KEY=6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI \
+            -e SQL_USER=srv_when2meet \
+            -e SQL_PASSWORD=qwerty123 \
+            -e SQL_DATABASE=db_when2meet \
+            -e SQL_HOST=postgres \
+            -e SQL_PORT=5432 \
+            -e EMAIL_HOST=mailhog \
+            -e EMAIL_PORT=1025 \
+            -e EMAIL_USE_TLS=False \
+            backend /test.sh
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
