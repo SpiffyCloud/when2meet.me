@@ -29,6 +29,8 @@ services:
       - EMAIL_HOST=${EMAIL_HOST}
       - EMAIL_PORT=${EMAIL_PORT}
       - EMAIL_USE_TLS=${EMAIL_USE_TLS}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   frontend:
     image: ghcr.io/cliqteam/when2meet-frontend:local
