@@ -7,13 +7,6 @@ from .base import *
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-# Middleware (extended)
-
-MIDDLEWARE = [
-    "whitenoise.middleware.WhiteNoiseMiddleware",
-    *MIDDLEWARE,
-]
-
 # Static Files (extended)
 
 STATIC_ROOT = BASE_DIR / "static"
