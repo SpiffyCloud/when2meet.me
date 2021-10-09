@@ -38,11 +38,13 @@ jobs:
         run: docker-compose build backend
 
       - name: Run tests
-        run: |
-          docker-compose run \
-            --rm \
-            backend /test.sh
+        run: docker-compose run --rm backend /test.sh
 
+  build-and-push:
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/master' }}
+
+    steps:
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38

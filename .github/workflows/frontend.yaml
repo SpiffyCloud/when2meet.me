@@ -35,17 +35,16 @@ jobs:
         run: docker-compose build frontend
 
       - name: Run linting
-        run: |
-          docker-compose run \
-            --rm \
-            frontend npm run lint
+        run: docker-compose run --rm frontend npm run lint
 
       - name: Run build test
-        run: |
-          docker-compose run \
-            --rm \
-            frontend npm run build
+        run: docker-compose run --rm frontend npm run build
 
+  build-and-push:
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/master' }}
+
+    steps:
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
