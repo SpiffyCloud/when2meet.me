@@ -7,3 +7,4 @@ gunicorn==19.9.0
 whitenoise~=5.3
 flake8==3.9.2
 coverage~=5.5
+sentry-sdk==1.4.3  # https://pypi.org/project/sentry-sdk/
