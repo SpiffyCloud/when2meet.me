@@ -24,6 +24,11 @@
 .p-calendar {
   width: 100%;
 }
+
+.p-component {
+  font-family: 'Montserrat', sans-serif !important;
+}
+
 .p-datepicker,
 .p-datepicker-header {
   background: var(--primary) !important;
