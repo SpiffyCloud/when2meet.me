@@ -6,22 +6,22 @@
         Not you? <span class="action">Change user</span>
       </p>
     </div>
-    <UserSummary v-if="activeUser" />
     <NewUserForm v-else />
+    <Responders v-if="activeUser"/>
   </div>
 </template>
 
 <script lang="ts">
-import UserSummary from '@/components/UserSummary.vue'
 import NewUserForm from '@/components/NewUserForm.vue'
+import Responders from '@/components/Responders.vue'
 
 import { inject } from 'vue'
 
 export default {
   name: 'MyAvailability',
   components: {
-    UserSummary,
-    NewUserForm
+    NewUserForm,
+    Responders
   },
   setup() {
     const activeUser = inject('activeUser') as string
@@ -42,5 +42,9 @@ export default {
 <style>
 .action {
   text-decoration: underline;
+}
+
+.action:hover {
+  cursor: pointer;
 }
 </style>

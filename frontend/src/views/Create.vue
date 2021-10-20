@@ -10,7 +10,7 @@
       @submit-meeting="postMeeting"
     />
     <div class="footer">
-      <router-link class="link" to="/about">About</router-link>
+      <router-link class="link" to="/about">About Us</router-link>
     </div>
   </div>
 </template>

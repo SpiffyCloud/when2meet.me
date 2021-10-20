@@ -8,8 +8,8 @@
       <MyAvailability v-if="active === 1" />
     </div>
     <div class="footer">
-      <router-link class="link" to="/">Create</router-link>
-      <router-link class="link" to="/about">About</router-link>
+      <router-link class="link" to="/">Create a New Meeting</router-link>
+      <router-link class="link" to="/about">About Us</router-link>
     </div>
 
     <transition name="slide">

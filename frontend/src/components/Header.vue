@@ -10,14 +10,11 @@
     >
       {{ buttonText }}
     </button>
-    <button @click="updateShowTable(true, 'All')" class="button p-my-4">
-      View All Availability
-    </button>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, inject } from 'vue'
+import { defineComponent } from 'vue'
 
 // Composables
 import useCopyUrl from '@/composables/useCopyUrl'
@@ -28,13 +25,7 @@ export default defineComponent({
     title: String
   },
   setup() {
-    const updateShowTable = inject('updateShowTable') as (
-      show: boolean,
-      user: string
-    ) => void
-
     return {
-      updateShowTable,
       ...useCopyUrl()
     }
   }
