@@ -34,17 +34,17 @@
   background: var(--primary) !important;
   color: var(--text) !important;
   border: none !important;
-  font-size: 1.5rem;
+  /* font-size: 1.5rem; */
 }
 td.p-datepicker-other-month > .p-disabled {
   display: none !important;
 }
 .p-datepicker {
-  font-size: 1.5rem;
+  /* font-size: 1.5rem; */
   padding: 0 !important;
 }
 .p-datepicker table {
-  font-size: 1.5rem !important;
+  /* font-size: 1.5rem !important; */
   font-weight: 500 !important;
 }
 .p-datepicker-group-container {

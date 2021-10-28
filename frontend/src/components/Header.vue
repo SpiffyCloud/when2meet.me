@@ -51,6 +51,11 @@ export default defineComponent({
   height: 3rem;
 }
 
+h1 {
+  font-size: 1.8rem !important;
+  font-weight: 800 !important;
+}
+
 .copied {
   background-color: #7ccba9;
   font-style: italic;

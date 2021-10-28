@@ -25,6 +25,7 @@ body {
   background-color: var(--primary);
   color: var(--text);
   font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
 }
 
 /* reset default margin and paddings */
@@ -36,13 +37,13 @@ body {
 
 /* Reused Component Styles */
 .label {
-  font-size: 1.5rem;
+  /* font-size: 1.5rem; */
   font-weight: bold;
   display: block;
 }
 
 .assistive {
-  font-size: 1.3rem;
+  /* font-size: 1.3rem; */
   opacity: 0.5;
 }
 
@@ -54,7 +55,7 @@ body {
   border: none;
   background-color: var(--secondary);
   color: var(--text);
-  font-size: 1.75rem;
+  /* font-size: 1.75rem; */
   font-weight: bold;
 }
 
@@ -66,7 +67,7 @@ body {
   min-height: 3.5rem;
   border: none;
   background-color: white;
-  font-size: 1.75rem;
+  /* font-size: 1.75rem; */
 }
 
 /* button pressed effect */
@@ -80,7 +81,7 @@ body {
   width: 100%;
   background: none;
   color: var(--text);
-  font-size: 1.5rem;
+  /* font-size: 1.5rem; */
   outline: none;
   border: none;
   border-bottom: 2px solid var(--secondary);
@@ -93,7 +94,7 @@ body {
 
 .error-text {
   color: var(--error);
-  font-size: 1.5rem;
+  /* font-size: 1.5rem; */
   margin-top: 0.5rem;
 }
 
@@ -106,7 +107,7 @@ body {
 }
 .link {
   color: var(--secondary);
-  font-size: 1.5rem;
+  /* font-size: 1.5rem; */
   font-weight: bold;
   text-decoration: none;
   margin-block: 1rem;
