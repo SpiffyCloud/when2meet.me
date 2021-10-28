@@ -43,7 +43,11 @@ export default {
 }
 
 .logo {
-  font-size: 4rem !important;
+  /* font-size: 4rem !important; */
   opacity: 0.5;
+}
+
+.p-my-5 {
+  margin-top: 80px !important;
 }
 </style>
