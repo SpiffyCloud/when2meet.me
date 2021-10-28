@@ -67,27 +67,8 @@
       If you've got an idea and would like to hire us - just let us know!
     </p>
     <div class="button-container">
-      <button class="button" @click="displayModalHireUs = true">Hire Us</button>
+      <button class="button" @click="onOpenEmail">Hire Us</button>
     </div>
-
-    <Dialog header="Hire Us" v-model:visible="displayModalHireUs" :modal="true">
-      <template v-if="showHireUsBlock">
-        <Textarea
-          v-model="hireContactMessage"
-          :autoResize="true"
-          rows="5"
-          cols="30"
-          class="p-my-2"
-          placeholder="You guys rock!"
-        />
-        <div class="button-container">
-          <button class="button" @click="onSubmitHireUs">Hire Us</button>
-        </div>
-      </template>
-      <template v-else>
-        <h2 class="p-my-2">Thanks for contacting us!</h2>
-      </template>
-    </Dialog>
 
     <div class="footer">
       <router-link class="link" to="/">Create</router-link>
@@ -98,13 +79,11 @@
 <script lang="ts">
 import { computed, ref } from 'vue'
 import Textarea from 'primevue/textarea'
-import Dialog from 'primevue/dialog'
 
 export default {
   name: 'About',
   components: {
     Textarea,
-    Dialog
   },
   setup() {
     const displayModalTerms = ref(false)
@@ -150,24 +129,8 @@ export default {
       showFeedbackBlock.value = false
     }
 
-    const displayModalHireUs = ref(false)
-
-    const showHireUsBlock = ref(true)
-
-    const hireContactMessage = ref('')
-
-    const submitHireUsFormValid = computed(() => hireContactMessage.value)
-
-    const onSubmitHireUs = () => {
-      const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          hire_inquiry: hireContactMessage.value
-        })
-      }
-      fetch(`/api/v1/hire-us/`, requestOptions)
-      showHireUsBlock.value = false
+    const onOpenEmail = () => {
+      window.open("mailto:hire@cliqteam.com?subject=Hire%20Request");
     }
 
     return {
@@ -178,11 +141,7 @@ export default {
       feedbackMessage,
       submitFeedbackFormValid,
       onSubmitFeedback,
-      displayModalHireUs,
-      showHireUsBlock,
-      hireContactMessage,
-      submitHireUsFormValid,
-      onSubmitHireUs
+      onOpenEmail
     }
   }
 }
