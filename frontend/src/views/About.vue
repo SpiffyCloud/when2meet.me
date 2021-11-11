@@ -75,7 +75,7 @@
         </div>
 
         <div class="footer">
-            <router-link class="link" to="/">Create</router-link>
+            <router-link class="link" to="/">Home</router-link>
         </div>
     </div>
 </template>

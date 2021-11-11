@@ -3,9 +3,12 @@ from django.contrib.postgres.fields import ArrayField
 
 
 class Meeting(models.Model):
+    meeting_id = models.CharField(max_length=255, unique=True, primary_key=True)
     title = models.CharField(max_length=255)
     by_end_date = models.DateField()
-    meeting_id = models.CharField(max_length=255, unique=True, primary_key=True)
+    
+    def __str__(self):
+        return f"Meeting ({self.meeting_id}) | {self.title}"
 
 
 class Availability(models.Model):
