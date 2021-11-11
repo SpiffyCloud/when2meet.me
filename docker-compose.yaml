@@ -1,12 +1,12 @@
-version: "3.9"
+version: "3"
 services:
   backend:
     image: ghcr.io/cliqteam/when2meet-backend:local
     build:
       context: .
       dockerfile: ./docker/backend/Dockerfile.local
-    command: /dev.sh
     restart: unless-stopped
+    command: /dev.sh
     depends_on:
       - postgres
     labels:
