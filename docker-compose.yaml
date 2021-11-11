@@ -44,9 +44,10 @@ services:
       - "traefik.http.routers.frontend.entrypoints=web"
     volumes:
       - ./frontend:/app
+      - /app/node_modules
 
   ingress:
-    image: traefik:v2.4
+    image: traefik:2.5
     command:
       - "--api.insecure=true"
       - "--providers.docker"
@@ -62,7 +63,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   postgres:
-    image: postgres:12.3-alpine
+    image: postgres:13-alpine
     restart: unless-stopped
     logging:
       driver: none

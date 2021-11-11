@@ -1,4 +1,4 @@
-FROM python:3.6-alpine AS build-layer
+FROM python:3.8-alpine AS build-layer
 
 # Build dependencies
 RUN apk update &&\
@@ -15,7 +15,7 @@ RUN pip install --upgrade pip
 COPY ./backend/requirements.txt /requirements.txt
 RUN pip install -r /requirements.txt
 
-FROM python:3.6-alpine AS active-layer
+FROM python:3.8-alpine AS active-layer
 
 # Environment defaults
 ENV PYTHONDONTWRITEBYTECODE=1

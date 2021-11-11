@@ -1,28 +1,28 @@
 <template>
-  <div
-    id="meeting"
-    style="max-width: 600px; margin-inline: auto; position: relative"
-  >
-    <Toast position="bottom-right" group="br" />
-    <Header :title="meeting.title" />
-    <TabMenu :model="items" v-model:activeIndex="active" />
-    <div id="tabs">
-      <AllAvailability v-if="active === 0" />
-      <MyAvailability v-if="active === 1" />
-    </div>
-    <div class="footer">
-      <router-link class="link" to="/">Create</router-link>
-      <router-link class="link" to="/about">About</router-link>
-    </div>
+    <div
+        id="meeting"
+        style="max-width: 600px; margin-inline: auto; position: relative"
+    >
+        <Toast position="bottom-right" group="br" />
+        <Header :title="meeting.title" />
+        <TabMenu :model="items" v-model:activeIndex="active" />
+        <div id="tabs">
+            <AllAvailability v-if="active === 0" />
+            <MyAvailability v-if="active === 1" />
+        </div>
+        <div class="footer">
+            <router-link class="link" to="/">Create</router-link>
+            <router-link class="link" to="/about">About</router-link>
+        </div>
 
-    <transition name="slide">
-      <AvailabilityTable
-        v-model:visible="showTable"
-        :user="tableUser"
-        :disabled="tableUser !== activeUser"
-      />
-    </transition>
-  </div>
+        <transition name="slide">
+            <AvailabilityTable
+                v-model:visible="showTable"
+                :user="tableUser"
+                :disabled="tableUser !== activeUser"
+            />
+        </transition>
+    </div>
 </template>
 
 <script lang="tsx">
@@ -41,42 +41,42 @@ import useMeeting from '@/composables/useMeeting'
 import useAuth from '@/composables/useAuth'
 
 export default defineComponent({
-  name: 'Meeting',
-  components: {
-    Header,
-    AllAvailability,
-    MyAvailability,
-    AvailabilityTable,
-    TabMenu,
-    Toast
-  },
-  setup() {
-    const { getMeeting, meeting } = useMeeting()
-    const { activeUser } = useAuth()
-    onMounted(getMeeting)
+    name: 'Meeting',
+    components: {
+        Header,
+        AllAvailability,
+        MyAvailability,
+        AvailabilityTable,
+        TabMenu,
+        Toast
+    },
+    setup() {
+        const { getMeeting, meeting } = useMeeting()
+        const { activeUser } = useAuth()
+        onMounted(getMeeting)
 
-    // show table logic, could be moved to a composition function
+        // show table logic, could be moved to a composition function
 
-    const showTable = ref(false)
-    const tableUser = ref('')
+        const showTable = ref(false)
+        const tableUser = ref('')
 
-    const updateShowTable = (show: boolean, user: string) => {
-      showTable.value = show
-      tableUser.value = user
+        const updateShowTable = (show: boolean, user: string) => {
+            showTable.value = show
+            tableUser.value = user
+        }
+        provide('updateShowTable', updateShowTable)
+        provide('tableUser', readonly(tableUser))
+        //
+
+        return {
+            meeting,
+            activeUser,
+            ...useTabMenu(),
+            // Showing the table features
+            showTable,
+            tableUser
+        }
     }
-    provide('updateShowTable', updateShowTable)
-    provide('tableUser', readonly(tableUser))
-    //
-
-    return {
-      meeting,
-      activeUser,
-      ...useTabMenu(),
-      // Showing the table features
-      showTable,
-      tableUser
-    }
-  }
 })
 </script>
 
@@ -84,60 +84,60 @@ export default defineComponent({
 /* Table CSS */
 .slide-enter-active,
 .slide-leave-active {
-  transition: all 0.5s;
+    transition: all 0.5s;
 }
 
 .slide-enter-from,
 .slide-leave-to {
-  transform: translateX(100vw);
+    transform: translateX(100vw);
 }
 
 .slide-enter-active .table-banner,
 .slide-leave-active .table-banner {
-  position: sticky !important;
+    position: sticky !important;
 }
 
 .slide-enter-active .table-wrapper,
 .slide-leave-active .table-wrapper {
-  top: 0 !important;
+    top: 0 !important;
 }
 </style>
 
 <style>
 /* Tab Menu CSS overrides */
 .p-tabmenu .p-tabmenu-nav {
-  background: var(--primary) !important;
-  border: none !important;
+    background: var(--primary) !important;
+    border: none !important;
 }
 .p-tabmenuitem {
-  width: 100%;
+    width: 100%;
 }
 .p-tabmenu-nav .p-menuitem-text {
-  width: 100%;
-  text-align: center;
+    width: 100%;
+    text-align: center;
 }
 
 .p-tabmenu .p-tabmenu-nav .p-tabmenuitem.p-highlight .p-menuitem-link {
-  background: var(--primary) !important;
-  color: var(--secondary) !important;
-  border: none !important;
-  opacity: 1;
-  border-bottom: 0.25rem solid var(--secondary) !important;
-  margin: 0;
+    background: var(--primary) !important;
+    color: var(--secondary) !important;
+    border: none !important;
+    opacity: 1;
+    border-bottom: 0.25rem solid var(--secondary) !important;
+    margin: 0;
 }
 
 .p-tabmenu .p-tabmenu-nav .p-tabmenuitem .p-menuitem-link {
-  border: none !important;
-  background: var(--primary) !important;
-  color: var(--text) !important;
-  opacity: 0.5;
-  font-size: 1.5rem;
-  margin: 0;
+    border: none !important;
+    background: var(--primary) !important;
+    color: var(--text) !important;
+    opacity: 0.5;
+    font-size: 1.5rem;
+    margin: 0;
 }
 .p-tabmenu
-  .p-tabmenu-nav
-  .p-tabmenuitem
-  .p-menuitem-link:not(.p-disabled):focus {
-  box-shadow: none !important;
+    .p-tabmenu-nav
+    .p-tabmenuitem
+    .p-menuitem-link:not(.p-disabled):focus {
+    box-shadow: none !important;
 }
 </style>

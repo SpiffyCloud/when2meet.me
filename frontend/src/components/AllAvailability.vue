@@ -1,8 +1,8 @@
 <template>
-  <div class="p-mt-5 p-p-3">
-    <BestWindows />
-    <Responders />
-  </div>
+    <div class="p-mt-5 p-p-3">
+        <BestWindows />
+        <Responders />
+    </div>
 </template>
 
 <script lang="ts">
@@ -13,13 +13,13 @@ import BestWindows from '@/components/BestWindows.vue'
 import Responders from '@/components/Responders.vue'
 
 export default defineComponent({
-  name: 'AllAvailability',
-  components: {
-    BestWindows,
-    Responders
-  },
-  setup() {
-    return {}
-  }
+    name: 'AllAvailability',
+    components: {
+        BestWindows,
+        Responders
+    },
+    setup() {
+        return {}
+    }
 })
 </script>
