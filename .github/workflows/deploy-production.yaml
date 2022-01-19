@@ -5,7 +5,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  DEPLOY_SERVER: aws-gen-1.cliqteam.com
+  DEPLOY_SERVER: when2meet.cliqteam.com
   DEPLOY_USER: when2meet-production
   DEPLOY_ROOT: /srv/when2meet-production
   DEPLOY_KEY: ${{ secrets.DEPLOY_KEY_PRODUCTION }}
